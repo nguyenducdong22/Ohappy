@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
-// import com.google.android.material.floatingactionbutton.FloatingActionButton; // Đã bỏ social login icons, nên không cần import này nữa
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -27,9 +26,6 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText etPasswordSignIn;
     private TextView tvForgotPassword;
     private Button btnSignIn;
-    // private FloatingActionButton fabGoogle; // Đã bỏ
-    // private FloatingActionButton fabApple; // Đã bỏ
-    // private FloatingActionButton fabFacebook; // Đã bỏ
     private TextView tvSignUpLink;
 
     @Override
@@ -37,31 +33,24 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        // Hide the default ActionBar
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        // Initialize UI elements
         tvLogoTextSignIn = findViewById(R.id.tvLogoTextSignIn);
         btnBack = findViewById(R.id.btnBack);
         etNameEmail = findViewById(R.id.etNameEmail);
         etPasswordSignIn = findViewById(R.id.etPasswordSignIn);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
-        // fabGoogle = findViewById(R.id.fabGoogle); // Đã bỏ
-        // fabApple = findViewById(R.id.fabApple); // Đã bỏ
-        // fabFacebook = findViewById(R.id.fabFacebook); // Đã bỏ
         tvSignUpLink = findViewById(R.id.tvSignUpLink);
 
-        // Apply custom font and coloring to the text logo
         applyStyledLogoText(tvLogoTextSignIn);
 
-        // Set up Listeners
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed(); // Go back to the previous activity (WelcomeActivity)
+                onBackPressed();
             }
         });
 
@@ -74,15 +63,17 @@ public class SignInActivity extends AppCompatActivity {
                 if (nameOrEmail.isEmpty() || password.isEmpty()) {
                     Toast.makeText(SignInActivity.this, "Please enter name/email and password", Toast.LENGTH_SHORT).show();
                 } else {
-                    // TODO: Implement your actual sign-in logic here
-                    Toast.makeText(SignInActivity.this, "Signing in with: " + nameOrEmail, Toast.LENGTH_SHORT).show();
-                    // Example: if (isValidUser(nameOrEmail, password)) {
-                    // Go to MainActivity after successful login
-                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish(); // Finish SignInActivity
-                    // } else { showError(); }
+                    // === LOGIC ĐĂNG NHẬP TẠM THỜI CHO MỤC ĐÍCH THỬ NGHIỆM ===
+                    if (nameOrEmail.equals("admin") && password.equals("admin")) {
+                        Toast.makeText(SignInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SignInActivity.this, "Invalid credentials. Try admin/admin", Toast.LENGTH_SHORT).show();
+                    }
+                    // =======================================================
                 }
             }
         });
@@ -91,25 +82,18 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(SignInActivity.this, "Forgot Password clicked!", Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to Forgot Password screen
             }
         });
-
-        // fabGoogle.setOnClickListener(new View.OnClickListener() { /* ... */ }); // Đã bỏ
-        // fabApple.setOnClickListener(new View.OnClickListener() { /* ... */ }); // Đã bỏ
-        // fabFacebook.setOnClickListener(new View.OnClickListener() { /* ... */ }); // Đã bỏ
 
         tvSignUpLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to the Sign Up Activity
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-    // This function is similar to the one in WelcomeActivity, ensure it's here
     private void applyStyledLogoText(TextView textView) {
         String fullText = "Expending Money";
         SpannableString spannableString = new SpannableString(fullText);

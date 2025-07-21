@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="dark_background_overlay">#80000000</color> <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#D0D0D0</color> <color name="hint_text">#A0A0A0</color> <color name="input_field_border">#50FFFFFF</color> <color name="link_color">#ADD8E6</color> <color name="facebook_blue">#3B5998</color> <color name="facebook_blue_dark">#2C4673</color> <color name="gradient_start_purple">#8A2BE2</color>
+    <color name="gradient_end_blue">#4169E1</color>
+
+    <color name="bicycle_text_color">#FFFFFF</color>
+    <color name="shop_text_color">#FF4081</color>
+    <color name="get_started_button_color">#FF0033</color> <color name="background_light_pink">#FFE9E9</color> <color name="card_background_white">#FFFFFF</color> <color name="text_dark">#333333</color> <color name="button_red">#FF0033</color> <color name="input_border_light">#E0E0E0</color> <color name="or_divider_color">#B0B0B0</color> <color name="grey_text_link">#808080</color> <color name="facebook_icon_bg">#1877F2</color> <color name="google_icon_bg">#4285F4</color> <color name="apple_icon_bg">#000000</color> </resources>

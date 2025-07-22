@@ -170,10 +170,11 @@ public class MainActivity extends AppCompatActivity {
         fabAddTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to Add Transaction screen (most likely a new Activity or Dialog)
+                Intent intent = new Intent(MainActivity.this, Addtransaction.class);
+                startActivity(intent);
             }
         });
+
     }
 
     // Call this method to update the header and content based on current view

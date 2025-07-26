@@ -45,8 +45,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("de.hdodenhof:circleimageview:3.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(libs.circleimageview)
+    implementation(libs.constraintlayout.v214)
 }
 android {
     // ... các cấu hình khác

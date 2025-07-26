@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
+    private FloatingActionButton fabChatbot; // <<< KHAI BÁO BIẾN MỚI CHO FAB CHATBOT >>>
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -92,9 +93,10 @@ public class MainActivity extends AppCompatActivity {
         btnReportNext = findViewById(R.id.btn_report_next);
         reportPageIndicators = findViewById(R.id.report_page_indicators);
 
-        // Initialize Bottom Navigation and FAB
+        // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
+        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
 
         updateHeaderAndContentForOverview();
 
@@ -136,16 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
                 Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
+                // TODO: Chuyển sang màn hình Số giao dịch
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
+                // TODO: Chuyển sang màn hình Ngân sách
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                // <<< PHẦN ĐƯỢC CẬP NHẬT BẮT ĐẦU TỪ ĐÂY >>>
-                // Mở AccountActivity thay vì hiển thị Toast
-                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                startActivity(intent);
-                // <<< KẾT THÚC PHẦN CẬP NHẬT >>>
+                Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show(); // Có thể thay bằng mở AccountActivity
+                // Nếu AccountActivity được tạo:
+                // Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                // startActivity(intent);
                 return true;
             }
             return false;
@@ -153,6 +156,14 @@ public class MainActivity extends AppCompatActivity {
 
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Add Transaction screen
+        });
+
+        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
+        fabChatbot.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            startActivity(intent);
         });
     }
 

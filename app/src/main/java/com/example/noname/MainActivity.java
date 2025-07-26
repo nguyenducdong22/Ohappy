@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         reportSummaryView = findViewById(R.id.report_summary_view);
         reportTabView = findViewById(R.id.report_tab_view);
         dealCard = findViewById(R.id.deal_card);
-        topExpenseCard = findViewById(R.id.top_expense_card); // Now named top_expense_card
+        topExpenseCard = findViewById(R.id.top_expense_card);
         recentTransactionsCard = findViewById(R.id.recent_transactions_card);
 
         // Initialize Dynamic Report Card elements
@@ -97,23 +96,19 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
 
-        // --- Set up initial state of the UI (Default to Overview Screen - image_ba3ced.jpg) ---
         updateHeaderAndContentForOverview();
 
-        // Set up tab selected listener for Report Card (Tuần/Tháng)
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
                     Toast.makeText(MainActivity.this, "Tuần Selected", Toast.LENGTH_SHORT).show();
-                    // Update content for "Tuần" here
-                    tvCurrentReportValue.setText("500.000 đ"); // Example value
-                    tvTotalSpentPercentage.setText("Tổng đã chi tuần này - 25%"); // Example text
+                    tvCurrentReportValue.setText("500.000 đ");
+                    tvTotalSpentPercentage.setText("Tổng đã chi tuần này - 25%");
                 } else {
                     Toast.makeText(MainActivity.this, "Tháng Selected", Toast.LENGTH_SHORT).show();
-                    // Update content for "Tháng" here
-                    tvCurrentReportValue.setText("1.500.000 đ"); // Example value
-                    tvTotalSpentPercentage.setText("Tổng đã chi tháng này - 15%"); // Example text
+                    tvCurrentReportValue.setText("1.500.000 đ");
+                    tvTotalSpentPercentage.setText("Tổng đã chi tháng này - 15%");
                 }
             }
 
@@ -123,98 +118,82 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
         });
 
-        // Set up Listeners for report navigation arrows
-        btnReportPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2; // Cycle between 0 and 1
-                updateReportGraphView();
-            }
+        btnReportPrev.setOnClickListener(v -> {
+            currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
+            updateReportGraphView();
         });
 
-        btnReportNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentReportGraphPage = (currentReportGraphPage + 1) % 2; // Cycle between 0 and 1
-                updateReportGraphView();
-            }
+        btnReportNext.setOnClickListener(v -> {
+            currentReportGraphPage = (currentReportGraphPage + 1) % 2;
+            updateReportGraphView();
         });
-
 
         // Set up Bottom Navigation Listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.navigation_overview) {
-                    updateHeaderAndContentForOverview();
-                    return true;
-                } else if (itemId == R.id.navigation_transactions) {
-                    // This might be a separate screen/activity or a different view in MainActivity
-                    Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (itemId == R.id.navigation_budget) {
-                    // This might be a separate screen/activity or a different view in MainActivity
-                    Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (itemId == R.id.navigation_account) {
-                    // This might be a separate screen/activity or a different view in MainActivity (e.g., for Logout)
-                    Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_overview) {
+                updateHeaderAndContentForOverview();
+                return true;
+            } else if (itemId == R.id.navigation_transactions) {
+                Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (itemId == R.id.navigation_budget) {
+                Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (itemId == R.id.navigation_account) {
+                // <<< PHẦN ĐƯỢC CẬP NHẬT BẮT ĐẦU TỪ ĐÂY >>>
+                // Mở AccountActivity thay vì hiển thị Toast
+                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                startActivity(intent);
+                // <<< KẾT THÚC PHẦN CẬP NHẬT >>>
+                return true;
             }
+            return false;
         });
 
-        // Set up FAB Listener
-        fabAddTransaction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to Add Transaction screen (most likely a new Activity or Dialog)
-            }
+        fabAddTransaction.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
         });
     }
 
-    // Call this method to update the header and content based on current view
     private void updateHeaderAndContentForOverview() {
         // Top Bar
         tvHeaderMainText.setText("0.00 đ");
         subHeaderBalanceDetails.setVisibility(View.VISIBLE);
-        subHeaderReportDots.setVisibility(View.GONE); // No dots for balance header
-        // btnBackHome.setVisibility(View.GONE); // No back button for overview header
+        subHeaderReportDots.setVisibility(View.GONE);
 
         // Main Content Cards visibility
         walletSummaryCard.setVisibility(View.VISIBLE);
         reportCardDynamicContent.setVisibility(View.VISIBLE);
-        dealCard.setVisibility(View.VISIBLE); // Deal card is visible when scrolling down
+        dealCard.setVisibility(View.VISIBLE);
         topExpenseCard.setVisibility(View.VISIBLE);
         recentTransactionsCard.setVisibility(View.VISIBLE);
 
         // Inside reportCardDynamicContent
-        tvReportSectionTitle.setText("Báo cáo tháng này"); // "Báo cáo tháng này"
+        tvReportSectionTitle.setText("Báo cáo tháng này");
         tvSeeReportDetails.setText("Xem báo cáo");
-        reportSummaryView.setVisibility(View.VISIBLE); // Show Tổng đã chi/Tổng thu
-        reportTabView.setVisibility(View.GONE); // Hide Tuần/Tháng tab content
-        reportPageIndicators.setVisibility(View.VISIBLE); // Show dots for report trend navigation
-        updateReportGraphView(); // Update initial state of report graph navigation
+        reportSummaryView.setVisibility(View.VISIBLE);
+        reportTabView.setVisibility(View.GONE);
+        reportPageIndicators.setVisibility(View.VISIBLE);
+        updateReportGraphView();
     }
 
-    // This method handles switching between report graph views within reportCardDynamicContent
     private void updateReportGraphView() {
-        if (currentReportGraphPage == 0) { // First screenshot (image_ba3ced.jpg) - Default
+        if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);
             reportTabView.setVisibility(View.GONE);
-            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Tháng này"); // Thay đổi tiêu đề báo cáo xu hướng
+            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Tháng này");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_active);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_inactive);
-        } else { // Second screenshot (IMG_1613.png) - Tuần/Tháng tabs
+        } else {
             reportSummaryView.setVisibility(View.GONE);
             reportTabView.setVisibility(View.VISIBLE);
-            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Trung bình 3 tháng trước"); // Thay đổi tiêu đề báo cáo xu hướng
+            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Trung bình 3 tháng trước");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
-            tabLayoutWeekMonthReport.getTabAt(0).select(); // Select "Tuần" tab by default
+            if (tabLayoutWeekMonthReport.getTabCount() > 0) {
+                tabLayoutWeekMonthReport.getTabAt(0).select();
+            }
         }
     }
 }

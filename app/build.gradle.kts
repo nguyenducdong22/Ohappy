@@ -45,4 +45,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.circleimageview)
+    implementation(libs.constraintlayout.v214)
+}
+android {
+    // ... các cấu hình khác
+    buildFeatures {
+        viewBinding = true
+    }
 }

@@ -87,39 +87,8 @@
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
-                app:startIconDrawable="@drawable/ic_person"
+                app:startIconDrawable="@drawable/ic_email"
                 app:startIconTint="@color/text_dark"
-                android:layout_marginBottom="16dp"
-                app:boxStrokeWidthFocused="2dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNameOrEmailSignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Name Or Email"
-                    android:inputType="text"
-                    android:textColor="@color/text_dark"
-                    android:textColorHint="@color/grey_text_link"
-                    android:paddingStart="48dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:background="@android:color/transparent" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/grey_text_link"
-                app:hintTextColor="@color/text_dark"
-                app:boxBackgroundColor="@color/card_background_white"
-                app:boxStrokeColor="@color/input_border_light"
-                app:boxStrokeWidth="1dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:startIconDrawable="@drawable/ic_email" app:startIconTint="@color/text_dark"
                 android:layout_marginBottom="16dp"
                 app:boxStrokeWidthFocused="2dp">
 
@@ -156,11 +125,11 @@
                 app:boxStrokeWidthFocused="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNombreSignUp"
+                    android:id="@+id/etFullNameSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre"
-                    android:inputType="textPersonName"
+                    android:hint="Full Name"
+                    android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/text_dark"
                     android:textColorHint="@color/grey_text_link"
                     android:paddingStart="48dp"
@@ -168,6 +137,38 @@
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
                     android:background="@android:color/transparent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/grey_text_link"
+                app:hintTextColor="@color/text_dark"
+                app:boxBackgroundColor="@color/card_background_white"
+                app:boxStrokeColor="@color/input_border_light"
+                app:boxStrokeWidth="1dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:startIconDrawable="@drawable/ic_phone"
+                app:startIconTint="@color/text_dark"
+                android:layout_marginBottom="16dp"
+                app:boxStrokeWidthFocused="2dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhoneNumberSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+                    android:paddingStart="48dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/text_dark"
+                    android:textColorHint="@color/grey_text_link" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -249,7 +250,8 @@
                     android:id="@+id/cbTermsAndConditions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/button_red" android:paddingStart="8dp" />
+                    android:buttonTint="@color/button_red"
+                    android:paddingStart="8dp" />
 
                 <TextView
                     android:id="@+id/tvTermsAndConditions"
@@ -261,7 +263,6 @@
                     android:clickable="true"
                     android:focusable="true" />
             </LinearLayout>
-
 
             <Button
                 android:id="@+id/btnSignUp"

@@ -146,6 +146,23 @@ public class UserDAO {
             }
         }
     }
+    public int deleteUserByEmail(String email) {
+        int rowsAffected = 0;
+        try {
+            rowsAffected = database.delete(
+                    DatabaseHelper.TABLE_USERS, // Tên bảng
+                    DatabaseHelper.COLUMN_EMAIL + " = ?", // Mệnh đề WHERE
+                    new String[]{email} // Giá trị cho WHERE
+            );
+            Log.d("UserDAO", "Deleted user with email: " + email + ", rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            Log.e("UserDAO", "Error deleting user by email: " + e.getMessage());
+        }
+        return rowsAffected;
+    }
+
+    // ... (các phương thức khác giữ nguyên)
+
 
     // Các phương thức liên quan đến 'username' (getUserByUsername, isUsernameExists) đã bị loại bỏ.
 }

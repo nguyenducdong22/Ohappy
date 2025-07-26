@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">noName</string>
+        <string name="account_option_edit_profile">Chỉnh sửa thông tin</string>
+        <string name="account_option_security">Bảo mật</string>
+        <string name="account_option_notifications">Cài đặt thông báo</string>
+        <string name="account_option_theme">Giao diện</string>
+        <string name="account_option_language">Ngôn ngữ</string>
+        <string name="action_logout">Đăng xuất</string>
+        <string name="action_delete_account">Xóa tài khoản</string>
+        <string name="account_option_help_center">Trung tâm trợ giúp</string>
+        <string name="account_option_terms">Điều khoản &amp; Chính sách</string>
+        <string name="account_and_settings_header">Tài khoản &amp; Cài đặt</string>
+
+</resources>

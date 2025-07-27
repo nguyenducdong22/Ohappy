@@ -18,9 +18,6 @@ public class GeminiApiManager {
     private static final String GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final String TAG = "GeminiApiManager";
 
-    // BỎ HOẶC BỎ COMMENT DÒNG NÀY (KHÔNG CẦN MAX_OUTPUT_TOKENS NỮA)
-    // private static final int MAX_OUTPUT_TOKENS = 100;
-
     public interface GeminiApiResponseListener {
         void onSuccess(String responseText);
         void onFailure(String errorMessage);

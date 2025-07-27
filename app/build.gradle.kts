@@ -47,6 +47,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.circleimageview)
     implementation(libs.constraintlayout.v214)
+    implementation(libs.okhttp)
+    implementation(libs.annotation)
 }
 android {
     // ... các cấu hình khác

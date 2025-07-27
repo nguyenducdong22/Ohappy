@@ -16,11 +16,11 @@
             android:id="@+id/toolbar_notification_settings"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/theme_red_primary"
             app:title="@string/notification_settings_title"
-            app:titleTextColor="?attr/colorOnPrimary"
+            app:titleTextColor="@color/white"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:navigationIconTint="?attr/colorOnPrimary" />
+            app:navigationIconTint="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -44,6 +44,8 @@
                 android:paddingVertical="12dp"
                 android:text="@string/all_notifications"
                 android:textSize="18sp"
+                app:thumbTint="@color/theme_red_primary"
+                app:trackTint="@color/text_secondary_gray"
                 android:checked="true"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -54,6 +56,8 @@
                 android:paddingVertical="12dp"
                 android:text="@string/transaction_notifications"
                 android:textSize="16sp"
+                app:thumbTint="@color/theme_red_primary"
+                app:trackTint="@color/text_secondary_gray"
                 android:checked="true"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -64,6 +68,8 @@
                 android:paddingVertical="12dp"
                 android:text="@string/budget_notifications"
                 android:textSize="16sp"
+                app:thumbTint="@color/theme_red_primary"
+                app:trackTint="@color/text_secondary_gray"
                 android:checked="true"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -74,6 +80,8 @@
                 android:paddingVertical="12dp"
                 android:text="@string/deal_notifications"
                 android:textSize="16sp"
+                app:thumbTint="@color/theme_red_primary"
+                app:trackTint="@color/text_secondary_gray"
                 android:checked="true"/>
 
             <TextView
@@ -82,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/open_system_notification_settings"
                 android:textSize="16sp"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/theme_red_primary"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"

@@ -25,18 +25,19 @@
                 android:id="@+id/toolbar_account"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/theme_red_primary"
                 app:title="@string/title_account"
-                app:titleTextColor="?attr/colorOnPrimary" />
+                app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_avatar"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="24dp"
             android:src="@drawable/ic_person_placeholder"
-            app:civ_border_color="?attr/colorPrimary"
+            app:civ_border_color="@color/theme_red_primary"
             app:civ_border_width="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textColor="@color/text_main_header"
+            android:textColor="?android:textColorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary_gray"
+            android:textColor="?android:textColorSecondary"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +76,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="@string/account_and_settings_header"
-            android:textColor="@color/text_dark"
+            android:textColor="@color/theme_red_primary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,7 +138,6 @@
                     style="@style/AccountOptionItem"
                     app:drawableStartCompat="@drawable/ic_language"
                     android:text="@string/account_option_language" />
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -182,10 +182,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/light_green_background"
+            android:backgroundTint="@color/theme_red_light_background"
             android:paddingVertical="14dp"
             android:text="@string/action_logout"
-            android:textColor="@color/primary_green"
+            android:textColor="@color/theme_red_primary"
             android:textSize="16sp"
             app:cornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -199,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/action_delete_account"
-            android:textColor="@color/expense_item_red"
+            android:textColor="@color/theme_red_primary"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

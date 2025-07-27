@@ -16,11 +16,11 @@
             android:id="@+id/toolbar_edit_profile"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/theme_red_primary"
             app:title="@string/edit_profile_title"
-            app:titleTextColor="?attr/colorOnPrimary"
+            app:titleTextColor="@color/white"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:navigationIconTint="?attr/colorOnPrimary" />
+            app:navigationIconTint="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/personal_information"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/theme_red_primary"
                 android:layout_marginBottom="8dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/change_email"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/theme_red_primary"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/change_password"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/theme_red_primary"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -142,9 +142,11 @@
                 android:id="@+id/btn_save_changes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/save_changes_button"
                 android:layout_marginTop="32dp"
-                android:padding="14dp"/>
+                android:padding="14dp"
+                android:text="@string/save_changes_button"
+                android:backgroundTint="@color/theme_red_primary"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>

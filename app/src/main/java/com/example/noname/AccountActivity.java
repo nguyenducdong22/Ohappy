@@ -23,6 +23,9 @@ import com.example.noname.databinding.ActivityAccountBinding;
 import com.example.noname.account.BaseActivity;
 import com.example.noname.account.LocaleHelper;
 import com.example.noname.account.NotificationSettingsActivity;
+import com.example.noname.account.SecurityActivity;
+import com.example.noname.account.HelpCenterActivity;
+import com.example.noname.account.LegalActivity;
 
 import java.util.Locale; // Import
 
@@ -117,7 +120,12 @@ public class AccountActivity extends BaseActivity {
                 startActivity(new Intent(AccountActivity.this, EditProfileActivity.class))
         );
 
-        binding.optionSecurity.setOnClickListener(v -> showToast("Chức năng đang phát triển"));
+        // ...
+        // Cập nhật listener này
+        binding.optionSecurity.setOnClickListener(v -> {
+            startActivity(new Intent(AccountActivity.this, SecurityActivity.class));
+        });
+        // ...
 
         // SỬA LẠI DÒNG NÀY: Mở màn hình Cài đặt thông báo
         binding.optionNotifications.setOnClickListener(v ->
@@ -130,8 +138,16 @@ public class AccountActivity extends BaseActivity {
         // Mở hộp thoại chọn Ngôn ngữ
         binding.optionLanguage.setOnClickListener(v -> showLanguageSelectionDialog());
 
-        binding.optionHelpCenter.setOnClickListener(v -> showToast("Chức năng đang phát triển"));
-        binding.optionTerms.setOnClickListener(v -> showToast("Chức năng đang phát triển"));
+        // Cập nhật listener này
+        binding.optionHelpCenter.setOnClickListener(v -> {
+            startActivity(new Intent(AccountActivity.this, HelpCenterActivity.class));
+        });
+        // ...
+        // Cập nhật listener này
+        binding.optionTerms.setOnClickListener(v -> {
+            startActivity(new Intent(AccountActivity.this, LegalActivity.class));
+        });
+        // ...
     }
 
     private void setupActionListeners() {

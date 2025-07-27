@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
 
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -38,6 +39,16 @@
         <activity
             android:name=".account.NotificationSettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".account.SecurityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.HelpCenterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.LegalActivity"
+            android:exported="false" />
+
 
     </application>
 

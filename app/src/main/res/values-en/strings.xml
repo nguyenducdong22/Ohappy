@@ -23,7 +23,7 @@
     <string name="action_logout">Logout</string>
     <string name="action_delete_account">Delete Account</string>
     <string name="account_option_help_center">Help Center</string>
-    <string name="account_option_terms">Terms &amp; Policy</string>
+    <string name="account_option_terms">Reviews &amp; Ratings</string>
 
     <string name="edit_profile_title">Edit Profile</string>
     <string name="personal_information">Personal Information</string>
@@ -45,6 +45,24 @@
     <string name="budget_notifications">Budget Notifications</string>
     <string name="deal_notifications">Deal Notifications</string>
     <string name="open_system_notification_settings">Open system notification settings</string>
+
+    <string name="security_title">Security</string>
+    <string name="security_checkup_title">Security Check-up</string>
+    <string name="security_tip_1">Your password is securely encrypted.</string>
+    <string name="security_tip_2">Change your password regularly to enhance protection.</string>
+    <string name="security_tip_3">Do not share your login credentials with anyone.</string>
+
+    <string name="help_center_title">Help Center</string>
+    <string name="faq_q1">How do I change my password?</string>
+    <string name="faq_a1">You can change your password in the "Edit Profile" section. Please enter your current password and a new password to confirm.</string>
+    <string name="faq_q2">How do I add a new transaction?</string>
+    <string name="faq_a2">From the main screen, tap the green plus button on the bottom navigation bar to open the add transaction screen.</string>
+    <string name="faq_q3">Is my data secure?</string>
+    <string name="faq_a3">Yes. We encrypt all sensitive information like your password and do not share your data with any third parties.</string>
+    <string name="contact_support_title">Need more help?</string>
+    <string name="contact_support_details">If you have any other questions, please contact us via email at: datlecong156@gmail.com</string>
+
+    <string name="terms_and_policy_title">Reviews &amp; Ratings</string>
 
 
 

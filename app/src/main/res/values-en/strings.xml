@@ -64,6 +64,14 @@
 
     <string name="terms_and_policy_title">Reviews &amp; Ratings</string>
 
+    <string name="error_fill_all_fields">Please fill all fields</string>
+    <string name="error_passwords_do_not_match">Passwords do not match</string>
+    <string name="error_agree_to_terms">Please agree to the Terms &amp; Conditions</string>
+    <string name="error_email_exists">Email already exists. Please sign in or use another email.</string>
+    <string name="registration_successful">Registration successful!</string>
+    <string name="registration_failed">Registration failed. Please try again.</string>
+    <string name="error_generic_registration">An error occurred during registration.</string>
+
 
 
 </resources>

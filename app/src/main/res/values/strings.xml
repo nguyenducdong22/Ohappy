@@ -65,4 +65,12 @@
 
     <string name="terms_and_policy_title">Nhận Xét &amp; Đánh Giá</string>
 
+    <string name="error_fill_all_fields">Vui lòng điền đầy đủ các trường</string>
+    <string name="error_passwords_do_not_match">Mật khẩu không khớp</string>
+    <string name="error_agree_to_terms">Vui lòng đồng ý với Điều khoản &amp; Điều kiện</string>
+    <string name="error_email_exists">Email đã tồn tại. Vui lòng đăng nhập hoặc dùng email khác.</string>
+    <string name="registration_successful">Đăng ký thành công!</string>
+    <string name="registration_failed">Đăng ký thất bại. Vui lòng thử lại.</string>
+    <string name="error_generic_registration">Đã xảy ra lỗi trong quá trình đăng ký.</string>
+
 </resources>

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F8F8FA">
 
-    <!-- Tiêu đề -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -21,7 +20,6 @@
         android:layout_marginTop="20dp" />
 
 
-    <!-- CardView chứa nội dung -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
@@ -40,7 +38,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Dòng: Ví (Tiền mặt) -->
             <LinearLayout
                 android:id="@+id/layout_choose_wallet"
                 android:layout_width="match_parent"
@@ -72,7 +69,6 @@
             </LinearLayout>
 
 
-            <!-- Dòng: Số tiền -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,21 +101,22 @@
 
             </LinearLayout>
 
-            <!-- Dòng: Chọn nhóm -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/layout_choose_group"  android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:paddingVertical="8dp">
 
                 <ImageView
-                    android:layout_width="24dp"
+                    android:id="@+id/img_group_icon"  android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_category" />
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/tv_group_name"  android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Chọn nhóm"
                     android:textColor="#AAAAAA"
@@ -132,7 +129,6 @@
                     android:src="@drawable/ic_arrow_forward" />
             </LinearLayout>
 
-            <!-- Dòng: Ghi chú -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -159,7 +155,6 @@
                     android:src="@drawable/ic_arrow_forward" />
             </LinearLayout>
 
-            <!-- Dòng: Ngày -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -189,7 +184,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Thêm chi tiết -->
     <TextView
         android:id="@+id/txt_add_detail"
         android:layout_width="wrap_content"
@@ -202,7 +196,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp" />
 
-    <!-- Nút Lưu -->
     <Button
         android:id="@+id/btn_save"
         android:layout_width="0dp"

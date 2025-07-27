@@ -45,6 +45,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("androidx.core:core:1.12.0")
+    implementation(libs.core)
+    implementation (libs.androidsvg) // Sử dụng phiên bản mới nhất
+
 
 }

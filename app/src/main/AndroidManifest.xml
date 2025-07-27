@@ -28,6 +28,8 @@
         <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".ChooseWalletActivity" android:exported="true" />
         <activity android:name=".WelcomeActivity" android:exported="false" />
+        <activity android:name=".ChooseGroupActivity" android:exported="true" />
+
 
 
 

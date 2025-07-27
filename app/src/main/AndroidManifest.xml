@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,11 +24,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".SignInActivity" android:exported="false"/>
         <activity android:name=".SignUpActivity" android:exported="false"/>
         <activity android:name=".MainActivity" android:exported="false"/>
         <activity android:name=".AccountActivity" />
+        <activity
+            android:name=".account.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.NotificationSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.SecurityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.HelpCenterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".account.LegalActivity"
+            android:exported="false" />
+
 
         <activity android:name=".ChatbotActivity" android:exported="false"/>
 

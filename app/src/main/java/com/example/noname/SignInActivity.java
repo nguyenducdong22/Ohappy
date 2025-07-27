@@ -22,13 +22,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
 import com.example.noname.database.UserDAO;
 import com.example.noname.database.DatabaseHelper;
 import com.example.noname.utils.PasswordHasher;
 
-public class SignInActivity extends AppCompatActivity {
+
+public class SignInActivity extends BaseActivity {
 
     // ... (Khai báo biến giữ nguyên)
     private TextView tvLogoTextSignIn;

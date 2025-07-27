@@ -154,16 +154,22 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
                     return true;
                 } else if (itemId == R.id.navigation_budget) {
+                    // Navigate to Budgets Activity
+                    Intent intent = new Intent(MainActivity.this, BudgetActivity.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.navigation_report) {
                     // This might be a separate screen/activity or a different view in MainActivity
-                    Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Báo cáo", Toast.LENGTH_SHORT).show();
                     return true;
+
                 } else if (itemId == R.id.navigation_account) {
-                    // This might be a separate screen/activity or a different view in MainActivity (e.g., for Logout)
-                    Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
+                            // This might be a separate screen/activity or a different view in MainActivity (e.g., for Logout)
+                            Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
+                    }
         });
 
         // Set up FAB Listener

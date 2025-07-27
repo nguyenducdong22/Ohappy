@@ -22,11 +22,15 @@
         </activity>
 
         <activity android:name=".SignInActivity"
-            android:exported="false"/> <activity android:name=".SignUpActivity"
+            android:exported="false"/>
+        <activity android:name=".SignUpActivity"
         android:exported="false"/>
 
         <activity android:name=".MainActivity"
             android:exported="false"/>
+        <activity android:name=".BudgetActivity"
+            android:exported="false"/>
+
 
     </application>
 

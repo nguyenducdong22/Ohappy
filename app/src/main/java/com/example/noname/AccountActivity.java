@@ -26,6 +26,8 @@ import com.example.noname.account.NotificationSettingsActivity;
 import com.example.noname.account.SecurityActivity;
 import com.example.noname.account.HelpCenterActivity;
 import com.example.noname.account.LegalActivity;
+import android.webkit.CookieManager;
+import android.webkit.WebStorage;
 
 import java.util.Locale; // Import
 
@@ -105,6 +107,14 @@ public class AccountActivity extends BaseActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+        CookieManager.getInstance().removeAllCookies(null);
+        CookieManager.getInstance().flush();
+
+        // Xóa dữ liệu web storage
+        WebStorage webStorage = WebStorage.getInstance();
+        webStorage.deleteAllData();
+
+
     }
 
     /**

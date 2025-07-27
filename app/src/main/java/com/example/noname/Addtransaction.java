@@ -13,27 +13,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log; // Đảm bảo import Log
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
-// Tên lớp được đổi thành Addtransaction để khớp với tên file
 public class Addtransaction extends AppCompatActivity {
 
-    private TextView tvDate, tvWalletName, tvSelectedGroup;
+    private TextView tvDate, tvWalletName, tvSelectedGroup, tvAddDetail; // Đảm bảo khai báo tvAddDetail
     private LinearLayout layoutChooseWallet, layoutSelectGroup, layoutNote, layoutSelectDate;
     private ImageView imgGroupIcon;
     private EditText edtAmount, edtNote;
+    private MaterialButton btnSave; // Đảm bảo khai báo btnSave
 
     private static final int REQUEST_CHOOSE_WALLET = 1001;
     private static final int CHOOSE_GROUP_REQUEST_CODE = 100;
-    private static final int REQUEST_SELECT_DATE = 101;
+    // REQUEST_SELECT_DATE không cần nếu dùng MaterialDatePicker
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -64,6 +70,7 @@ public class Addtransaction extends AppCompatActivity {
         layoutNote = findViewById(R.id.layout_note);
         layoutSelectDate = findViewById(R.id.layout_select_date);
 
+        btnSave = findViewById(R.id.btn_save); // Ánh xạ nút Lưu
 
         // Hiển thị ngày hiện tại
         Calendar calendar = Calendar.getInstance();
@@ -84,35 +91,40 @@ public class Addtransaction extends AppCompatActivity {
             startActivityForResult(intent, CHOOSE_GROUP_REQUEST_CODE);
         });
 
-        // Xử lý sự kiện chọn ngày (ví dụ mở DatePicker)
+        // Xử lý sự kiện chọn ngày (mở DatePicker)
         layoutSelectDate.setOnClickListener(v -> {
-            Toast.makeText(Addtransaction.this, "Mở trình chọn ngày", Toast.LENGTH_SHORT).show();
+            showDatePicker();
         });
 
+        // ===============================================
+        // LOGIC CHO NÚT LƯU (Đặt đúng vị trí trong onCreate)
+        // ===============================================
 
-        // Ẩn icon ❌ ban đầu cho edtAmount
-        edtAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        btnSave.setOnClickListener(v -> {
+            saveTransaction(); // Gọi hàm xử lý lưu giao dịch
+        });
 
-        // Bắt sự kiện hiện icon ❌ khi nhập cho edtAmount
+        // Logic để kích hoạt/vô hiệu hóa nút Lưu
         edtAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    Drawable closeIcon = ContextCompat.getDrawable(Addtransaction.this, R.drawable.ic_clear_text_input);
-                    edtAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
-                } else {
-                    edtAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                }
+                Log.d("SaveButtonDebug", "Amount text changed: " + s.toString());
+                updateSaveButtonState(); // Cập nhật trạng thái nút khi text thay đổi
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // Bắt sự kiện xóa nội dung khi bấm icon ❌ cho edtAmount
+        updateSaveButtonState(); // Gọi updateSaveButtonState() một lần khi khởi tạo để thiết lập trạng thái ban đầu
+
+
+        // ===============================================
+        // CÁC LOGIC KHÁC (giữ nguyên)
+        // ===============================================
+
+        edtAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         edtAmount.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (edtAmount.getCompoundDrawables()[2] != null) {
@@ -126,12 +138,10 @@ public class Addtransaction extends AppCompatActivity {
             return false;
         });
 
-        // Xử lý icon ❌ và TextWatcher cho edtNote
         edtNote.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         edtNote.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -141,11 +151,9 @@ public class Addtransaction extends AppCompatActivity {
                     edtNote.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
         edtNote.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (edtNote.getCompoundDrawables()[2] != null) {
@@ -160,10 +168,86 @@ public class Addtransaction extends AppCompatActivity {
         });
     }
 
-    // Nhận kết quả từ các Activity
+    // Hàm hiển thị DatePicker
+    private void showDatePicker() {
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Chọn Ngày");
+        builder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+
+        final MaterialDatePicker<Long> materialDatePicker = builder.build();
+
+        materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            calendar.setTimeInMillis(selection);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd 'tháng' MM", new Locale("vi"));
+            String selectedDate = sdf.format(calendar.getTime());
+            selectedDate = selectedDate.substring(0, 1).toUpperCase() + selectedDate.substring(1);
+
+            tvDate.setText(selectedDate);
+        });
+
+        materialDatePicker.addOnNegativeButtonClickListener(view -> {
+            Toast.makeText(Addtransaction.this, "Hủy chọn ngày", Toast.LENGTH_SHORT).show();
+        });
+
+        materialDatePicker.addOnCancelListener(dialogInterface -> {
+            Toast.makeText(Addtransaction.this, "Hủy chọn ngày", Toast.LENGTH_SHORT).show();
+        });
+
+        materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+    }
+
+    // Hàm cập nhật trạng thái của nút Lưu
+    private void updateSaveButtonState() {
+        String amountText = edtAmount.getText().toString();
+        boolean isAmountEntered = !amountText.trim().isEmpty();
+
+        btnSave.setEnabled(isAmountEntered);
+
+        Log.d("SaveButtonDebug", "Button Enabled: " + isAmountEntered);
+
+        if (isAmountEntered) {
+            btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.primary_green));
+            btnSave.setTextColor(ContextCompat.getColor(this, R.color.white));
+        } else {
+            btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.primary_green_light));
+            btnSave.setTextColor(ContextCompat.getColor(this, R.color.white));
+        }
+    }
+
+    // Hàm xử lý lưu giao dịch
+    private void saveTransaction() {
+        String amount = edtAmount.getText().toString();
+        String wallet = tvWalletName.getText().toString();
+        String group = tvSelectedGroup.getText().toString();
+        String date = tvDate.getText().toString();
+        String note = edtNote.getText().toString();
+
+        if (amount.trim().isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (group.equals("Chọn nhóm")) {
+            Toast.makeText(this, "Vui lòng chọn nhóm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String transactionDetails = String.format(
+                "Đã lưu: %s VND\nVí: %s\nNhóm: %s\nNgày: %s\nGhi chú: %s",
+                amount, wallet, group, date, note.isEmpty() ? "Không có" : note
+        );
+        Toast.makeText(this, transactionDetails, Toast.LENGTH_LONG).show();
+
+        finish();
+    }
+
+    // Nhận kết quả từ các Activity khác (chọn ví, chọn nhóm)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        updateSaveButtonState(); // Cập nhật trạng thái nút Lưu sau khi nhận kết quả
 
         if (requestCode == REQUEST_CHOOSE_WALLET && resultCode == RESULT_OK && data != null) {
             String selectedWallet = data.getStringExtra("selected_wallet");

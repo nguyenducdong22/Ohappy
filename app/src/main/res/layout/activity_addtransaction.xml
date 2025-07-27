@@ -6,25 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_gray_bg"
-    tools:context=".Addtransaction"> <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/appBarLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/primary_green"
-    android:theme="@style/Theme.NoName.AppBarOverlay"
-    app:elevation="0dp"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
+    tools:context=".Addtransaction">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_add_transaction"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:title="Thêm Giao Dịch"
-        app:titleTextColor="@color/white"
-        app:navigationIcon="@drawable/ic_arrow_back" />
-</com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content"
+        android:background="@color/primary_green"
+        android:theme="@style/Theme.NoName.AppBarOverlay"
+        app:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_add_transaction"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Thêm Giao Dịch"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/ic_arrow_back" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <com.google.android.material.card.MaterialCardView
@@ -234,36 +236,17 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/txt_add_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Thêm chi tiết"
-        android:textColor="@color/primary_green"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/cardView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Lưu"
-        android:enabled="false"
-        android:textColor="@color/white"
+        android:enabled="false" android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="8dp"
-        app:backgroundTint="@color/primary_green_light"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@color/primary_green_light" app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"
-        tools:backgroundTint="@color/primary_green" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        tools:backgroundTint="@color/primary_green" /> </androidx.constraintlayout.widget.ConstraintLayout>

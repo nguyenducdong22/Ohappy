@@ -14,11 +14,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ngân sách Đang ấ..."
-        android:textSize="24sp"
+        android:layout_marginBottom="24dp"
+        android:text="Ngân sách"
         android:textColor="#000000"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
-    private FloatingActionButton fabChatbot; // <<< KHAI BÁO BIẾN MỚI CHO FAB CHATBOT >>>
+    private FloatingActionButton fabChatbot; // Đã khai báo biến mới cho FAB Chatbot
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
+        fabChatbot = findViewById(R.id.fab_chatbot); // Ánh xạ FAB Chatbot
 
         updateHeaderAndContentForOverview();
 
@@ -149,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
                 // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
                 Intent budgetIntent = new Intent(MainActivity.this, BudgetActivity.class);
                 startActivity(budgetIntent);
+                return true;
+            } else if (itemId == R.id.navigation_account) { // Đã tích hợp từ đoạn mã 2
+                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;

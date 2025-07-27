@@ -48,7 +48,9 @@
 
 
         <activity android:name=".ChatbotActivity" android:exported="false"/>
+        <activity android:name=".BudgetActivity" android:exported="false" />
+        <activity android:name=".AddBudgetActivity" android:exported="false" />
+
 
     </application>
-
 </manifest>

@@ -2,8 +2,8 @@ package com.example.noname;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,51 +18,52 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Top Bar elements
+    // Các phần tử thanh trên cùng (Top Bar)
     private LinearLayout headerTitleSection;
     private TextView tvHeaderMainText;
     private LinearLayout subHeaderBalanceDetails;
     private TextView tvSubHeaderText; // "Tổng số dư"
-    private LinearLayout subHeaderReportDots; // Page indicators for report
-    private View dot1, dot2, dot3; // Individual dots for top header
+    private LinearLayout subHeaderReportDots; // Chỉ báo trang cho báo cáo
+    private View dot1, dot2, dot3; // Các chấm riêng lẻ cho tiêu đề trên cùng
     private ImageButton btnSearch;
     private ImageButton btnNotifications;
 
-    // Main Content Cards
+    // Các thẻ nội dung chính (Main Content Cards)
     private CardView walletSummaryCard;
     private CardView reportCardDynamicContent;
     private LinearLayout reportSummaryView; // "Tổng đã chi / Tổng thu"
-    private LinearLayout reportTabView;     // "Tuần / Tháng" tab and chart
+    private LinearLayout reportTabView;     // Tab "Tuần / Tháng" và biểu đồ
     private CardView dealCard;
     private CardView topExpenseCard;
     private CardView recentTransactionsCard;
 
-    // Report Card Dynamic Elements
+    // Các phần tử động của thẻ báo cáo (Report Card Dynamic Elements)
     private TextView tvReportSectionTitle; // "Báo cáo tháng này"
     private TextView tvSeeReportDetails;
-    private TabLayout tabLayoutWeekMonthReport; // For "Tuần" / "Tháng" in report card
+    private TabLayout tabLayoutWeekMonthReport; // Dành cho "Tuần" / "Tháng" trong thẻ báo cáo
     private TextView tvCurrentReportValue;
     private TextView tvTotalSpentPercentage;
     private ImageButton btnReportPrev, btnReportNext;
-    private LinearLayout reportPageIndicators; // Dots for report trend
+    private LinearLayout reportPageIndicators; // Các chấm cho xu hướng báo cáo
 
-    // Bottom Navigation
+    // Thanh điều hướng dưới cùng và FABs
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
-    private FloatingActionButton fabChatbot; // <<< KHAI BÁO BIẾN MỚI CHO FAB CHATBOT >>>
+    private FloatingActionButton fabChatbot;
 
-    private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
+    private int currentReportGraphPage = 0; // 0 cho Tổng đã chi/Tổng thu, 1 cho biểu đồ Tuần/Tháng
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // Đảm bảo đây là R.layout.main cho layout dashboard chính
 
+        // Ẩn ActionBar nếu có
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        // Initialize Top Bar elements
+        // Khởi tạo các phần tử thanh trên cùng
         headerTitleSection = findViewById(R.id.header_title_section);
         tvHeaderMainText = findViewById(R.id.tv_header_main_text);
         subHeaderBalanceDetails = findViewById(R.id.sub_header_balance_details);
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         btnSearch = findViewById(R.id.btn_search);
         btnNotifications = findViewById(R.id.btn_notifications);
 
-        // Initialize Main Content Cards
+        // Khởi tạo các thẻ nội dung chính
         walletSummaryCard = findViewById(R.id.wallet_summary_card);
         reportCardDynamicContent = findViewById(R.id.report_card_dynamic_content);
         reportSummaryView = findViewById(R.id.report_summary_view);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         topExpenseCard = findViewById(R.id.top_expense_card);
         recentTransactionsCard = findViewById(R.id.recent_transactions_card);
 
-        // Initialize Dynamic Report Card elements
+        // Khởi tạo các phần tử động của thẻ báo cáo
         tvReportSectionTitle = findViewById(R.id.tv_report_section_title);
         tvSeeReportDetails = findViewById(R.id.tv_see_report_details);
         tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
@@ -93,94 +94,98 @@ public class MainActivity extends AppCompatActivity {
         btnReportNext = findViewById(R.id.btn_report_next);
         reportPageIndicators = findViewById(R.id.report_page_indicators);
 
-        // Initialize Bottom Navigation and FABs
+        // Khởi tạo thanh điều hướng dưới cùng và FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
+        fabChatbot = findViewById(R.id.fab_chatbot);
 
+        // Cập nhật giao diện cho chế độ tổng quan khi khởi động
         updateHeaderAndContentForOverview();
 
+        // Lắng nghe sự kiện chọn tab trong thẻ báo cáo
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    Toast.makeText(MainActivity.this, "Tuần Selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Tuần được chọn", Toast.LENGTH_SHORT).show();
                     tvCurrentReportValue.setText("500.000 đ");
                     tvTotalSpentPercentage.setText("Tổng đã chi tuần này - 25%");
                 } else {
-                    Toast.makeText(MainActivity.this, "Tháng Selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Tháng được chọn", Toast.LENGTH_SHORT).show();
                     tvCurrentReportValue.setText("1.500.000 đ");
                     tvTotalSpentPercentage.setText("Tổng đã chi tháng này - 15%");
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { /* Do nothing */ }
+            public void onTabUnselected(TabLayout.Tab tab) { /* Không làm gì */ }
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
+            public void onTabReselected(TabLayout.Tab tab) { /* Không làm gì */ }
         });
 
+        // Lắng nghe sự kiện nhấp nút "Trước" trong báo cáo
         btnReportPrev.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
             updateReportGraphView();
         });
 
+        // Lắng nghe sự kiện nhấp nút "Tiếp theo" trong báo cáo
         btnReportNext.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage + 1) % 2;
             updateReportGraphView();
         });
 
-        // Set up Bottom Navigation Listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+        // Thiết lập trình lắng nghe cho thanh điều hướng dưới cùng
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
                 updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
-                // TODO: Chuyển sang màn hình Số giao dịch
+                Toast.makeText(MainActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
+                // TODO: Nếu có TransactionsActivity, hãy bỏ comment dòng dưới
+                // Intent transactionsIntent = new Intent(MainActivity.this, TransactionsActivity.class);
+                // startActivity(transactionsIntent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
-                // TODO: Chuyển sang màn hình Ngân sách
-                return true;
-            } else if (itemId == R.id.navigation_account) {
-                Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show(); // Có thể thay bằng mở AccountActivity
-                // Nếu AccountActivity được tạo:
-                // Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                // startActivity(intent);
+                // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
+                Intent budgetIntent = new Intent(MainActivity.this, BudgetActivity.class);
+                startActivity(budgetIntent);
                 return true;
             }
             return false;
         });
 
+        // Lắng nghe sự kiện nhấp FAB "Thêm giao dịch"
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Add Transaction screen
+            // TODO: Điều hướng đến màn hình Thêm giao dịch
         });
 
-        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
+        // Lắng nghe sự kiện nhấp FAB "Chatbot"
         fabChatbot.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
-            startActivity(intent);
+            // TODO: Nếu có ChatbotActivity, hãy bỏ comment dòng dưới
+            // Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            // startActivity(intent);
         });
     }
 
+    // Cập nhật giao diện header và nội dung cho chế độ tổng quan
     private void updateHeaderAndContentForOverview() {
-        // Top Bar
+        // Thanh trên cùng
         tvHeaderMainText.setText("0.00 đ");
         subHeaderBalanceDetails.setVisibility(View.VISIBLE);
         subHeaderReportDots.setVisibility(View.GONE);
 
-        // Main Content Cards visibility
+        // Hiển thị các thẻ nội dung chính
         walletSummaryCard.setVisibility(View.VISIBLE);
         reportCardDynamicContent.setVisibility(View.VISIBLE);
         dealCard.setVisibility(View.VISIBLE);
         topExpenseCard.setVisibility(View.VISIBLE);
         recentTransactionsCard.setVisibility(View.VISIBLE);
 
-        // Inside reportCardDynamicContent
+        // Bên trong reportCardDynamicContent
         tvReportSectionTitle.setText("Báo cáo tháng này");
         tvSeeReportDetails.setText("Xem báo cáo");
         reportSummaryView.setVisibility(View.VISIBLE);
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         updateReportGraphView();
     }
 
+    // Cập nhật chế độ xem biểu đồ báo cáo
     private void updateReportGraphView() {
         if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);

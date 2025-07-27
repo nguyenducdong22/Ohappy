@@ -1,5 +1,3 @@
-// app/src/main/java/com/example/noname/LauncherActivity.java
-
 package com.example.noname;
 
 import android.content.Context;
@@ -8,16 +6,16 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log; // Import Log để ghi log
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.noname.utils.GeminiApiManager; // Import GeminiApiManager
+import com.example.noname.utils.GeminiApiManager; // Đảm bảo import này đã có
 
 import java.util.Locale;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    private static final String TAG = "LauncherActivity"; // Thêm TAG cho Log
+    private static final String TAG = "LauncherActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +27,10 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // --- GỌI WARM-UP API TẠI ĐÂY ---
-        // Bạn có thể gửi một prompt rất đơn giản hoặc một chuỗi rỗng
+        // Gửi một prompt rất đơn giản hoặc một chuỗi rỗng
         // để "đánh thức" API và thiết lập kết nối.
-        GeminiApiManager.getInstance().generateContent("Ping", new GeminiApiManager.GeminiApiResponseListener() {
+        // Đã sửa lỗi GeminiApiManager.getInstance() thành GeminiApiManager.generateContent()
+        GeminiApiManager.generateContent("Ping", new GeminiApiManager.GeminiApiResponseListener() {
             @Override
             public void onSuccess(String responseText) {
                 // API warm-up thành công
@@ -92,6 +91,8 @@ public class LauncherActivity extends AppCompatActivity {
         Resources resources = getBaseContext().getResources();
         Configuration config = resources.getConfiguration();
         config.setLocale(locale);
+        // Deprecated trong API 25+ nhưng vẫn hoạt động cho các API thấp hơn và là cách đơn giản
+        // Nếu bạn muốn hỗ trợ API 24+ tốt hơn, hãy dùng context.createConfigurationContext(config)
         resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 }

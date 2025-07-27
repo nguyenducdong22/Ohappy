@@ -2,12 +2,7 @@ package com.example.noname.utils;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import androidx.annotation.NonNull;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -17,119 +12,125 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 public class GeminiApiManager {
 
+    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0"; // THAY THẾ BẰNG API KEY CỦA BẠN
+    private static final String GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final String TAG = "GeminiApiManager";
-    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0";
-    private static final String GEMINI_API_ENDPOINT =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    private static GeminiApiManager instance;
-    private final OkHttpClient client;
+    // Khởi tạo OkHttpClient một lần duy nhất để tận dụng connection pooling
+    private static OkHttpClient client = new OkHttpClient();
 
-    // Giao diện phản hồi
     public interface GeminiApiResponseListener {
         void onSuccess(String responseText);
         void onFailure(String errorMessage);
     }
 
-    // Singleton
-    private GeminiApiManager() {
-        client = new OkHttpClient.Builder()
-                .retryOnConnectionFailure(true)
-                .build();
-    }
-
-    public static GeminiApiManager getInstance() {
-        if (instance == null) {
-            instance = new GeminiApiManager();
-        }
-        return instance;
-    }
-
-    public void generateContent(String prompt, GeminiApiResponseListener listener) {
+    // <<< THÊM TỪ KHÓA 'static' TẠI ĐÂY >>>
+    public static void generateContent(final String prompt, final GeminiApiResponseListener listener) {
         try {
-            // Tạo JSON body
-            JSONObject requestBody = new JSONObject();
+            // Tạo JSON body cho request
+            JSONObject requestBodyJson = new JSONObject();
+
+            // (Phần generationConfig bị bỏ comment nếu bạn muốn dùng lại maxOutputTokens)
+            // JSONObject generationConfig = new JSONObject();
+            // generationConfig.put("maxOutputTokens", MAX_OUTPUT_TOKENS);
+            // requestBodyJson.put("generationConfig", generationConfig);
 
             JSONArray contentsArray = new JSONArray();
             JSONObject contentObject = new JSONObject();
             JSONArray partsArray = new JSONArray();
             JSONObject partObject = new JSONObject();
 
-            String modifiedPrompt = "Trả lời ngắn gọn: " + prompt;
+            String modifiedPrompt = "Trả lời ngắn gọn: " + prompt; // Thêm chỉ dẫn vào prompt
             partObject.put("text", modifiedPrompt);
 
             partsArray.put(partObject);
             contentObject.put("parts", partsArray);
             contentsArray.put(contentObject);
-            requestBody.put("contents", contentsArray);
+            requestBodyJson.put("contents", contentsArray);
 
-            // Request
+            RequestBody body = RequestBody.create(requestBodyJson.toString(), JSON);
+
+            // Xây dựng request OkHttp
             Request request = new Request.Builder()
                     .url(GEMINI_API_ENDPOINT + "?key=" + GEMINI_API_KEY)
-                    .addHeader("Content-Type", "application/json")
-                    .post(RequestBody.create(requestBody.toString(), JSON))
+                    .post(body)
                     .build();
 
-            long startTime = System.currentTimeMillis();
-
-            // Gửi request async
+            // Thực hiện cuộc gọi không đồng bộ
             client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "Request failed: " + e.getMessage(), e);
-                    listener.onFailure("Network error: " + e.getMessage());
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.e(TAG, "OkHttp API call failed: " + e.getMessage(), e);
+                    listener.onFailure("Network or API call error: " + e.getMessage());
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    long endTime = System.currentTimeMillis();
-                    Log.d(TAG, "Total request time: " + (endTime - startTime) + "ms");
-
-                    if (!response.isSuccessful()) {
-                        String errorBody = response.body() != null ? response.body().string() : "No error body";
-                        Log.e(TAG, "Unsuccessful response: " + errorBody);
-                        listener.onFailure("HTTP error " + response.code() + ": " + errorBody);
-                        return;
-                    }
-
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     String jsonResponse = response.body().string();
-                    Log.d(TAG, "API response: " + jsonResponse);
+                    Log.d(TAG, "OkHttp Response Code: " + response.code());
+                    Log.d(TAG, "OkHttp Full API Response: " + jsonResponse);
 
-                    try {
-                        JSONObject json = new JSONObject(jsonResponse);
-                        JSONArray candidates = json.optJSONArray("candidates");
-
-                        if (candidates != null && candidates.length() > 0) {
-                            JSONObject content = candidates.getJSONObject(0).optJSONObject("content");
-                            if (content != null) {
-                                JSONArray contentParts = content.optJSONArray("parts");
-                                if (contentParts != null && contentParts.length() > 0) {
-                                    String generatedText = contentParts.getJSONObject(0)
-                                            .optString("text", "Không có nội dung.");
-                                    listener.onSuccess(generatedText);
+                    if (response.isSuccessful()) { // Mã 2xx
+                        try {
+                            JSONObject json = new JSONObject(jsonResponse);
+                            JSONArray candidates = json.optJSONArray("candidates");
+                            if (candidates != null && candidates.length() > 0) {
+                                JSONObject firstCandidate = candidates.getJSONObject(0);
+                                JSONObject content = firstCandidate.optJSONObject("content");
+                                if (content != null) {
+                                    JSONArray contentParts = content.optJSONArray("parts");
+                                    if (contentParts != null && contentParts.length() > 0) {
+                                        String generatedText = contentParts.getJSONObject(0).optString("text", "Không có nội dung.");
+                                        listener.onSuccess(generatedText);
+                                    } else {
+                                        listener.onFailure("No text part found in response.");
+                                    }
                                 } else {
-                                    listener.onFailure("No text part found.");
+                                    listener.onFailure("No content object found in candidate.");
                                 }
                             } else {
-                                listener.onFailure("No content found.");
+                                JSONObject promptFeedback = json.optJSONObject("promptFeedback");
+                                if (promptFeedback != null) {
+                                    JSONArray safetyRatings = promptFeedback.optJSONArray("safetyRatings");
+                                    if (safetyRatings != null) {
+                                        StringBuilder safetyInfo = new StringBuilder("API blocked due to safety reasons: ");
+                                        for (int i = 0; i < safetyRatings.length(); i++) {
+                                            JSONObject rating = safetyRatings.getJSONObject(i);
+                                            safetyInfo.append(rating.optString("category")).append(": ").append(rating.optString("probability")).append("; ");
+                                        }
+                                        listener.onFailure(safetyInfo.toString());
+                                    } else {
+                                        listener.onFailure("No candidates found and no specific safety feedback.");
+                                    }
+                                } else {
+                                    listener.onFailure("No candidates found in response.");
+                                }
                             }
-                        } else {
-                            listener.onFailure("No candidates found.");
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON parsing error: " + e.getMessage(), e);
+                            listener.onFailure("Failed to parse AI response: " + e.getMessage());
                         }
 
-                    } catch (JSONException e) {
-                        Log.e(TAG, "JSON parse error: " + e.getMessage(), e);
-                        listener.onFailure("Parsing error: " + e.getMessage());
+                    } else {
+                        // Xử lý lỗi từ server (mã 4xx, 5xx)
+                        listener.onFailure("API call failed with code " + response.code() + ": " + jsonResponse);
                     }
                 }
             });
 
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON building error: " + e.getMessage(), e);
-            listener.onFailure("JSON creation failed: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to create API request: " + e.getMessage(), e);
+            listener.onFailure("Failed to initiate API call: " + e.getMessage());
         }
     }
 }

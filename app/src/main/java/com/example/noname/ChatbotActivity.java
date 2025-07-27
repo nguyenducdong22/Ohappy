@@ -59,6 +59,7 @@ public class ChatbotActivity extends AppCompatActivity {
                 chatAdapter.addMessage(loadingMessage);
                 recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
+                // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
                 callGeminiApi(message, loadingMessage);
             } else {
                 Toast.makeText(this, "Vui lòng nhập tin nhắn!", Toast.LENGTH_SHORT).show();
@@ -68,23 +69,27 @@ public class ChatbotActivity extends AppCompatActivity {
         chatAdapter.addMessage(new ChatMessage("Chào bạn! Tôi có thể giúp gì cho bạn?", ChatMessage.SENDER_BOT));
         recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
+        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
         performApiPrewarming();
     }
 
     private void callGeminiApi(String prompt, ChatMessage loadingMessage) {
         Log.d("ChatbotActivity", "Calling Gemini API with prompt: " + prompt);
 
-        GeminiApiManager.getInstance().generateContent(prompt, new GeminiApiManager.GeminiApiResponseListener() {
+        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
+        GeminiApiManager.generateContent(prompt, new GeminiApiManager.GeminiApiResponseListener() {
             @Override
             public void onSuccess(String responseText) {
                 runOnUiThread(() -> {
                     Log.d("ChatbotActivity", "Gemini API success: " + responseText);
 
+                    // Xóa tin nhắn "Đang phản hồi..." một cách an toàn
                     int index = chatMessageList.indexOf(loadingMessage);
                     if (index != -1) {
                         chatMessageList.remove(index);
                         chatAdapter.notifyItemRemoved(index);
                     } else {
+                        // Fallback: nếu không tìm thấy, có thể cần notifyDataSetChanged để làm mới toàn bộ
                         chatAdapter.notifyDataSetChanged();
                     }
 
@@ -99,11 +104,13 @@ public class ChatbotActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Log.e("ChatbotActivity", "Gemini API failure: " + errorMessage);
 
+                    // Xóa tin nhắn "Đang phản hồi..." một cách an toàn
                     int index = chatMessageList.indexOf(loadingMessage);
                     if (index != -1) {
                         chatMessageList.remove(index);
                         chatAdapter.notifyItemRemoved(index);
                     } else {
+                        // Fallback nếu không tìm thấy
                         chatAdapter.notifyDataSetChanged();
                     }
 
@@ -118,7 +125,8 @@ public class ChatbotActivity extends AppCompatActivity {
     private void performApiPrewarming() {
         String dummyPrompt = "ping";
 
-        GeminiApiManager.getInstance().generateContent(dummyPrompt, new GeminiApiManager.GeminiApiResponseListener() {
+        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
+        GeminiApiManager.generateContent(dummyPrompt, new GeminiApiManager.GeminiApiResponseListener() {
             @Override
             public void onSuccess(String responseText) {
                 Log.d("ChatbotActivity", "API pre-warming successful.");

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
-    private FloatingActionButton fabChatbot; // <<< KHAI BÁO BIẾN MỚI CHO FAB CHATBOT >>>
+    private FloatingActionButton fabChatbot; // Khai báo biến mới cho FAB Chatbot
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
+        fabChatbot = findViewById(R.id.fab_chatbot); // Ánh xạ FAB Chatbot từ layout
 
         updateHeaderAndContentForOverview();
 
@@ -144,10 +144,9 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: Chuyển sang màn hình Ngân sách
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show(); // Có thể thay bằng mở AccountActivity
-                // Nếu AccountActivity được tạo:
-                // Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                // startActivity(intent);
+                // ĐÃ SỬA: Mở AccountActivity khi nhấn vào mục "Tài khoản"
+                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Navigate to Add Transaction screen
         });
 
-        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
+        // Listener cho FAB Chatbot mới
         fabChatbot.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
@@ -206,5 +205,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

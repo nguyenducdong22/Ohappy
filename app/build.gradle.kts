@@ -49,7 +49,7 @@ dependencies {
     implementation(libs.constraintlayout.v214)
 }
 android {
-    // ... các cấu hình khá
+    // ... các cấu hình khác
     buildFeatures {
         viewBinding = true
     }

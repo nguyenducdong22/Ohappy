@@ -29,6 +29,7 @@
         <activity android:name=".MainActivity"
             android:exported="false"/>
         <activity android:name=".AccountActivity" />
+        <activity android:name=".allwallets.AllWalletsActivity" />
 
     </application>
 

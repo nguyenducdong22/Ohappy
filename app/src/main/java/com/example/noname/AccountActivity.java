@@ -23,6 +23,8 @@ import com.example.noname.account.NotificationSettingsActivity;
 import com.example.noname.account.SecurityActivity;
 import com.example.noname.account.HelpCenterActivity;
 import com.example.noname.account.LegalActivity;
+import android.webkit.CookieManager;
+import android.webkit.WebStorage;
 
 public class AccountActivity extends BaseActivity { // Kế thừa từ BaseActivity
 
@@ -166,6 +168,14 @@ public class AccountActivity extends BaseActivity { // Kế thừa từ BaseActi
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+        CookieManager.getInstance().removeAllCookies(null);
+        CookieManager.getInstance().flush();
+
+        // Xóa dữ liệu web storage
+        WebStorage webStorage = WebStorage.getInstance();
+        webStorage.deleteAllData();
+
+
     }
 
     private void showDeleteAccountConfirmationDialog() {

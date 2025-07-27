@@ -36,9 +36,10 @@ public class UserDAO {
 
     /**
      * Thêm người dùng mới vào database.
-     * @param email Địa chỉ email của người dùng (duy nhất).
-     * @param fullName Tên đầy đủ của người dùng.
-     * @param phoneNumber Số điện thoại của người dùng.
+     *
+     * @param email        Địa chỉ email của người dùng (duy nhất).
+     * @param fullName     Tên đầy đủ của người dùng.
+     * @param phoneNumber  Số điện thoại của người dùng.
      * @param passwordHash Mật khẩu đã được băm (hashed).
      * @return ID của hàng mới được thêm vào, hoặc -1 nếu có lỗi.
      */
@@ -67,6 +68,7 @@ public class UserDAO {
 
     /**
      * Lấy thông tin người dùng theo địa chỉ email. Đây là phương thức chính dùng để đăng nhập.
+     *
      * @param email Địa chỉ email cần tìm.
      * @return Cursor chứa thông tin người dùng, hoặc null nếu không tìm thấy hoặc có lỗi.
      */
@@ -95,6 +97,7 @@ public class UserDAO {
 
     /**
      * Cập nhật thời gian đăng nhập cuối cùng của người dùng.
+     *
      * @param userId ID của người dùng.
      * @return Số hàng bị ảnh hưởng.
      */
@@ -121,6 +124,7 @@ public class UserDAO {
 
     /**
      * Kiểm tra xem một địa chỉ email đã tồn tại trong database chưa.
+     *
      * @param email Địa chỉ email cần kiểm tra.
      * @return true nếu email tồn tại, false nếu không hoặc có lỗi.
      */
@@ -146,6 +150,7 @@ public class UserDAO {
             }
         }
     }
+
     public int deleteUserByEmail(String email) {
         int rowsAffected = 0;
         try {
@@ -161,8 +166,80 @@ public class UserDAO {
         return rowsAffected;
     }
 
-    // ... (các phương thức khác giữ nguyên)
+    public int updatePassword(String email, String newPasswordHash) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_PASSWORD_HASH, newPasswordHash);
+        int rowsAffected = 0;
+        try {
+            rowsAffected = database.update(
+                    DatabaseHelper.TABLE_USERS,
+                    values,
+                    DatabaseHelper.COLUMN_EMAIL + " = ?",
+                    new String[]{email}
+            );
+            Log.d("UserDAO", "Updated password for email: " + email);
+        } catch (Exception e) {
+            Log.e("UserDAO", "Error updating password: " + e.getMessage());
+        }
+        return rowsAffected;
+    }
+
+    /**
+     * Cập nhật địa chỉ email cho người dùng.
+     * LƯU Ý: Việc này cần được xử lý cẩn thận vì email là định danh duy nhất.
+     *
+     * @param oldEmail Email cũ của người dùng.
+     * @param newEmail Email mới của người dùng.
+     * @return Số hàng bị ảnh hưởng.
+     */
+    public int updateUserEmail(String oldEmail, String newEmail) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_EMAIL, newEmail);
+        int rowsAffected = 0;
+        try {
+            // Trước tiên, kiểm tra xem email mới đã tồn tại chưa
+            if (isEmailExists(newEmail)) {
+                Log.e("UserDAO", "New email " + newEmail + " already exists.");
+                return -1; // Trả về -1 để báo hiệu email đã tồn tại
+            }
+            rowsAffected = database.update(
+                    DatabaseHelper.TABLE_USERS,
+                    values,
+                    DatabaseHelper.COLUMN_EMAIL + " = ?",
+                    new String[]{oldEmail}
+            );
+            Log.d("UserDAO", "Updated email from " + oldEmail + " to " + newEmail);
+        } catch (Exception e) {
+            Log.e("UserDAO", "Error updating email: " + e.getMessage());
+        }
+        return rowsAffected;
+    }
+    /**
+     * Cập nhật thông tin hồ sơ của người dùng (tên đầy đủ, số điện thoại).
+     * @param email Email của người dùng cần cập nhật (dùng để xác định).
+     * @param newFullName Tên đầy đủ mới.
+     * @param newPhoneNumber Số điện thoại mới.
+     * @return Số hàng bị ảnh hưởng (thường là 1 nếu thành công).
+     */
+    public int updateUserProfile(String email, String newFullName, String newPhoneNumber) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_FULL_NAME, newFullName);
+        values.put(DatabaseHelper.COLUMN_PHONE_NUMBER, newPhoneNumber);
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = database.update(
+                    DatabaseHelper.TABLE_USERS,
+                    values,
+                    DatabaseHelper.COLUMN_EMAIL + " = ?",
+                    new String[]{email}
+            );
+            Log.d("UserDAO", "Updated profile for email: " + email + ", rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            Log.e("UserDAO", "Error updating user profile: " + e.getMessage());
+        }
+        return rowsAffected;
+    }
 
 
-    // Các phương thức liên quan đến 'username' (getUserByUsername, isUsernameExists) đã bị loại bỏ.
 }

@@ -1,14 +1,50 @@
 <resources>
     <string name="app_name">noName</string>
-        <string name="account_option_edit_profile">Chỉnh sửa thông tin</string>
-        <string name="account_option_security">Bảo mật</string>
-        <string name="account_option_notifications">Cài đặt thông báo</string>
-        <string name="account_option_theme">Giao diện</string>
-        <string name="account_option_language">Ngôn ngữ</string>
-        <string name="action_logout">Đăng xuất</string>
-        <string name="action_delete_account">Xóa tài khoản</string>
-        <string name="account_option_help_center">Trung tâm trợ giúp</string>
-        <string name="account_option_terms">Điều khoản &amp; Chính sách</string>
-        <string name="account_and_settings_header">Tài khoản &amp; Cài đặt</string>
+
+    <string name="select_theme">Chọn giao diện</string>
+    <string name="select_language">Chọn ngôn ngữ</string>
+
+    <string name="total_balance">Tổng số dư</string>
+    <string name="report_this_month">Báo cáo tháng này</string>
+    <string name="see_report">Xem báo cáo</string>
+    <string name="this_month">Tháng này</string>
+    <string name="last_3_months_avg">Trung bình 3 tháng trước</string>
+    <string name="add_new_transaction">Thêm giao dịch mới!</string>
+    <string name="title_overview">Tổng quan</string>
+    <string name="title_transactions">Giao dịch</string>
+    <string name="title_budget">Ngân sách</string>
+    <string name="title_account">Tài khoản</string>
+
+    <string name="account_and_settings_header">Tài khoản &amp; Cài đặt</string>
+    <string name="account_option_edit_profile">Chỉnh sửa thông tin</string>
+    <string name="account_option_security">Bảo mật</string>
+    <string name="account_option_notifications">Cài đặt thông báo</string>
+    <string name="account_option_theme">Giao diện</string>
+    <string name="account_option_language">Ngôn ngữ</string>
+    <string name="action_logout">Đăng xuất</string>
+    <string name="action_delete_account">Xóa tài khoản</string>
+    <string name="account_option_help_center">Trung tâm trợ giúp</string>
+    <string name="account_option_terms">Điều khoản &amp; Chính sách</string>
+
+    <string name="edit_profile_title">Chỉnh sửa hồ sơ</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="full_name_label">Họ và tên</string>
+    <string name="phone_number_label">Số điện thoại</string>
+    <string name="change_email">Thay đổi Email</string>
+    <string name="new_email_label">Email mới</string>
+    <string name="change_password">Thay đổi Mật khẩu</string>
+    <string name="current_password_label">Mật khẩu hiện tại</string>
+    <string name="new_password_label">Mật khẩu mới</string>
+    <string name="confirm_new_password_label">Xác nhận mật khẩu mới</string>
+    <string name="save_changes_button">Lưu thay đổi</string>
+    <string name="change_photo">Thay đổi ảnh</string>
+    <string name="email_label">Email</string>
+
+    <string name="notification_settings_title">Cài đặt thông báo</string>
+    <string name="all_notifications">Tất cả thông báo</string>
+    <string name="transaction_notifications">Thông báo Giao dịch</string>
+    <string name="budget_notifications">Thông báo Ngân sách</string>
+    <string name="deal_notifications">Thông báo Ưu đãi</string>
+    <string name="open_system_notification_settings">Mở cài đặt thông báo của hệ thống</string>
 
 </resources>

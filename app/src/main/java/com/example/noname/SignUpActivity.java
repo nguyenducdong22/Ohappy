@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.example.noname.database.UserDAO; // Import UserDAO
 import com.example.noname.utils.PasswordHasher; // Import lớp PasswordHasher
 
+
 public class SignUpActivity extends AppCompatActivity {
 
     private TextView tvLogoTextSignUp;

@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">noName</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="select_language">Select Language</string>
+
+    <string name="total_balance">Total Balance</string>
+    <string name="report_this_month">This Month\'s Report</string>
+    <string name="see_report">See Report</string>
+    <string name="this_month">This Month</string>
+    <string name="last_3_months_avg">Last 3 Months Avg.</string>
+    <string name="add_new_transaction">Add new transaction!</string>
+    <string name="title_overview">Overview</string>
+    <string name="title_transactions">Transactions</string>
+    <string name="title_budget">Budget</string>
+    <string name="title_account">Account</string>
+
+    <string name="account_and_settings_header">Account &amp; Settings</string>
+    <string name="account_option_edit_profile">Edit Profile</string>
+    <string name="account_option_security">Security</string>
+    <string name="account_option_notifications">Notification Settings</string>
+    <string name="account_option_theme">Theme</string>
+    <string name="account_option_language">Language</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_delete_account">Delete Account</string>
+    <string name="account_option_help_center">Help Center</string>
+    <string name="account_option_terms">Terms &amp; Policy</string>
+
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="full_name_label">Full Name</string>
+    <string name="phone_number_label">Phone Number</string>
+    <string name="change_email">Change Email</string>
+    <string name="new_email_label">New Email</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password_label">Current Password</string>
+    <string name="new_password_label">New Password</string>
+    <string name="confirm_new_password_label">Confirm New Password</string>
+    <string name="save_changes_button">Save Changes</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="email_label">Email</string>
+
+    <string name="notification_settings_title">Notification Settings</string>
+    <string name="all_notifications">All Notifications</string>
+    <string name="transaction_notifications">Transaction Notifications</string>
+    <string name="budget_notifications">Budget Notifications</string>
+    <string name="deal_notifications">Deal Notifications</string>
+    <string name="open_system_notification_settings">Open system notification settings</string>
+
+
+
+</resources>

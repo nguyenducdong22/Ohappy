@@ -1,4 +1,4 @@
-package com.example.noname;
+package com.example.noname; // IMPORTANT: Ensure this package name is correct for your project
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.example.noname.Budget.BudgetActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+
+import com.example.noname.Budget.BudgetOverviewActivity; // Import your BudgetActivity
+import com.example.noname.AccountActivity; // Import your AccountActivity (if it's in a subpackage)
+// import com.example.noname.TransactionsActivity; // Uncomment if you have this Activity
+// import com.example.noname.AddTransactionActivity; // Uncomment if you have this Activity
 
 public class MainActivity extends AppCompatActivity {
 
@@ -138,19 +142,21 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
                 updateHeaderAndContentForOverview();
+                // To avoid re-creating MainActivity if already on it
+                // You might want to use singleTop launch mode or just return true if no state changes are needed
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
                 Toast.makeText(MainActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
-                // TODO: Nếu có TransactionsActivity, hãy bỏ comment dòng dưới
+                // TODO: Uncomment and use your TransactionsActivity here if it exists
                 // Intent transactionsIntent = new Intent(MainActivity.this, TransactionsActivity.class);
                 // startActivity(transactionsIntent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
-                Intent budgetIntent = new Intent(MainActivity.this, BudgetActivity.class);
+                Intent budgetIntent = new Intent(MainActivity.this, BudgetOverviewActivity.class);
                 startActivity(budgetIntent);
                 return true;
-            } else if (itemId == R.id.navigation_account) { // Đã tích hợp từ đoạn mã 2
+            } else if (itemId == R.id.navigation_account) {
                 Intent intent = new Intent(MainActivity.this, AccountActivity.class);
                 startActivity(intent);
                 return true;
@@ -161,7 +167,9 @@ public class MainActivity extends AppCompatActivity {
         // Lắng nghe sự kiện nhấp FAB "Thêm giao dịch"
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-            // TODO: Điều hướng đến màn hình Thêm giao dịch
+            // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
+            // Intent addTransactionIntent = new Intent(MainActivity.this, AddTransactionActivity.class);
+            // startActivity(addTransactionIntent);
         });
 
         // Lắng nghe sự kiện nhấp FAB "Chatbot"
@@ -209,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
             if (tabLayoutWeekMonthReport.getTabCount() > 0) {
-                tabLayoutWeekMonthReport.getTabAt(0).select();
+                tabLayoutWeekMonthReport.getTabAt(0).select(); // Select the first tab (Week)
             }
         }
     }

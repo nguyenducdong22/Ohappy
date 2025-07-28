@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    // Nếu bạn có plugin Kotlin (như org.jetbrains.kotlin.android), hãy giữ nó
+    // alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -15,10 +17,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // === THAY ĐỔI CÁC DÒNG NÀY CHO KOTLIN DSL ===
-        renderscriptTargetApi = 18 // Dấu bằng thay vì khoảng trắng
-        renderscriptSupportModeEnabled = true // Dấu bằng thay vì khoảng trắng
-        // ===========================================
+        renderscriptTargetApi = 18
+        renderscriptSupportModeEnabled = true
     }
 
     buildTypes {
@@ -31,26 +31,42 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // Đảm bảo Java 8 (hoặc cao hơn) để hỗ trợ các tính năng LiveData/ViewModel
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    // <<< VỊ TRÍ CHÍNH XÁC CỦA buildFeatures >>>
+    buildFeatures {
+        viewBinding = true // Đã bật View Binding cho AccountActivity
+    }
+    // <<< KẾT THÚC VỊ TRÍ CHÍNH XÁC >>>
 }
 
 dependencies {
-
+    // Các thư viện AndroidX cơ bản
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation(libs.androidx.constraintlayout)
+
+    // Thư viện kiểm thử
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.circleimageview)
-    implementation(libs.constraintlayout.v214)
-}
-android {
-    // ... các cấu hình khác
-    buildFeatures {
-        viewBinding = true
-    }
+
+    // Thư viện bên thứ ba bạn đã thêm
+    implementation(libs.circleimageview) // Circular ImageView
+    implementation(libs.okhttp)          // OkHttp for networking
+    implementation(libs.annotation)      // AndroidX Annotations (@NonNull)
+
+    // <<< THƯ VIỆN CHO VIEWMODEL VÀ LIVEDATA (MỚI THÊM) >>>
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    // Nếu bạn muốn dùng các tiện ích mở rộng KTX (Java cũng có thể dùng)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Annotation Processor cần thiết cho LiveData/ViewModel
+    annotationProcessor(libs.androidx.lifecycle.compiler)
+    implementation(libs.gson)
+    // <<< KẾT THÚC THÊM >>>
 }

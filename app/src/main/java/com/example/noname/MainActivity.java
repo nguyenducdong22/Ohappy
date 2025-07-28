@@ -2,16 +2,16 @@ package com.example.noname;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.example.noname.Budget.BudgetActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
+    private FloatingActionButton fabChatbot; // Đã khai báo biến mới cho FAB Chatbot
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -92,12 +93,14 @@ public class MainActivity extends AppCompatActivity {
         btnReportNext = findViewById(R.id.btn_report_next);
         reportPageIndicators = findViewById(R.id.report_page_indicators);
 
-        // Initialize Bottom Navigation and FAB
+        // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
+        fabChatbot = findViewById(R.id.fab_chatbot); // Ánh xạ FAB Chatbot
 
         updateHeaderAndContentForOverview();
 
+        // Lắng nghe sự kiện chọn tab trong thẻ báo cáo
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -118,41 +121,54 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
         });
 
+        // Lắng nghe sự kiện nhấp nút "Trước" trong báo cáo
         btnReportPrev.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
             updateReportGraphView();
         });
 
+        // Lắng nghe sự kiện nhấp nút "Tiếp theo" trong báo cáo
         btnReportNext.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage + 1) % 2;
             updateReportGraphView();
         });
 
-        // Set up Bottom Navigation Listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+        // Thiết lập trình lắng nghe cho thanh điều hướng dưới cùng
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
                 updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
+                // TODO: Nếu có TransactionsActivity, hãy bỏ comment dòng dưới
+                // Intent transactionsIntent = new Intent(MainActivity.this, TransactionsActivity.class);
+                // startActivity(transactionsIntent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
+                // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
+                Intent budgetIntent = new Intent(MainActivity.this, BudgetActivity.class);
+                startActivity(budgetIntent);
                 return true;
-            } else if (itemId == R.id.navigation_account) {
-                // <<< PHẦN ĐƯỢC CẬP NHẬT BẮT ĐẦU TỪ ĐÂY >>>
-                // Mở AccountActivity thay vì hiển thị Toast
+            } else if (itemId == R.id.navigation_account) { // Đã tích hợp từ đoạn mã 2
                 Intent intent = new Intent(MainActivity.this, AccountActivity.class);
                 startActivity(intent);
-                // <<< KẾT THÚC PHẦN CẬP NHẬT >>>
                 return true;
             }
             return false;
         });
 
+        // Lắng nghe sự kiện nhấp FAB "Thêm giao dịch"
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
+            // TODO: Điều hướng đến màn hình Thêm giao dịch
+        });
+
+        // Lắng nghe sự kiện nhấp FAB "Chatbot"
+        fabChatbot.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -178,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         updateReportGraphView();
     }
 
+    // Cập nhật chế độ xem biểu đồ báo cáo
     private void updateReportGraphView() {
         if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);

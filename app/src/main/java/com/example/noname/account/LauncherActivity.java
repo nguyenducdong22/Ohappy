@@ -1,4 +1,4 @@
-package com.example.noname;
+package com.example.noname.account;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noname.MainActivity;
+import com.example.noname.WelcomeActivity;
 import com.example.noname.utils.GeminiApiManager; // Đảm bảo import này đã có
 
 import java.util.Locale;

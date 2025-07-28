@@ -1,7 +1,6 @@
 package com.example.noname;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration; // Import
@@ -9,14 +8,13 @@ import android.content.res.Resources;   // Import
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.noname.account.EditProfileActivity;
+import com.example.noname.account.LauncherActivity;
 import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.UserDAO;
 import com.example.noname.databinding.ActivityAccountBinding;

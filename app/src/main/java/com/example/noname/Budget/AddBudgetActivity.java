@@ -1,4 +1,4 @@
-package com.example.noname;
+package com.example.noname.Budget;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -7,6 +7,8 @@ import android.widget.RadioGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.noname.R;
 
 public class AddBudgetActivity extends AppCompatActivity {
 

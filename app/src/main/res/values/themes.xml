@@ -1,9 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.NoName" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Theme.NoName" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/primary_green_light</item>
+        <item name="colorOnPrimaryContainer">@color/primary_green_dark</item>
+
+        <item name="colorSecondary">@color/accent_yellow</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondaryContainer">@color/accent_yellow_light</item>
+        <item name="colorOnSecondaryContainer">@color/accent_yellow_dark</item>
+
+        <item name="colorTertiary">@color/accent_yellow_dark</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/accent_yellow</item>
+        <item name="colorOnTertiaryContainer">@color/black</item>
+
+        <item name="android:colorBackground">@color/light_gray_bg</item>
+        <item name="colorSurface">@color/card_bg_white</item>
+        <item name="colorOnSurface">@color/text_dark</item>
+
+        <item name="colorError">#B00020</item>
+        <item name="colorOnError">@color/white</item>
+
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_green_dark</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/black</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="android:textColorPrimary">@color/text_color_primary</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
+
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+
+        <item name="colorControlHighlight">@color/ripple_green_light</item>
+
     </style>
 
-    <style name="Theme.NoName" parent="Base.Theme.NoName" />
+    <style name="Theme.NoName.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
+    <style name="Theme.NoName.PopupOverlay" parent="ThemeOverlay.Material3.Light" />
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
 </resources>

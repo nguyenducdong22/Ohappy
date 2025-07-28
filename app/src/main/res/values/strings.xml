@@ -73,4 +73,6 @@
     <string name="registration_failed">Đăng ký thất bại. Vui lòng thử lại.</string>
     <string name="error_generic_registration">Đã xảy ra lỗi trong quá trình đăng ký.</string>
 
+    <string name="account_option_recurring_expenses" translatable="false">Recurring Expenses</string>
+
 </resources>

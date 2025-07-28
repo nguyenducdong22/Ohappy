@@ -138,6 +138,14 @@
                     style="@style/AccountOptionItem"
                     app:drawableStartCompat="@drawable/ic_language"
                     android:text="@string/account_option_language" />
+
+                <View style="@style/Divider" />
+
+                <TextView
+                    android:id="@+id/option_recurring_expenses"
+                    style="@style/AccountOptionItem"
+                    app:drawableStartCompat="@drawable/ic_repeat"
+                    android:text="@string/account_option_recurring_expenses" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

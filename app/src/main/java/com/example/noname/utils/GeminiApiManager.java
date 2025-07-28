@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class GeminiApiManager {
 
-    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0"; // THAY THẾ BẰNG API KEY CỦA BẠN
+    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0"; // API Key của bạn
     private static final String GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final String TAG = "GeminiApiManager";
 
@@ -29,30 +29,34 @@ public class GeminiApiManager {
     // Khởi tạo OkHttpClient một lần duy nhất để tận dụng connection pooling
     private static OkHttpClient client = new OkHttpClient();
 
+    // <<< ĐỊNH NGHĨA BỐI CẢNH MỚI CHO CHATBOT TẠI ĐÂY >>>
+    private static final String SYSTEM_CONTEXT =
+            "Bạn là trợ lý ảo trong ứng dụng quản lý tài chính cá nhân. " +
+                    "Nhiệm vụ chính của bạn là cung cấp lời khuyên, thông tin và hỗ trợ về quản lý tiền bạc, ngân sách, tiết kiệm, đầu tư, và chi tiêu cá nhân. " +
+                    "Tôi cũng có thể trả lời các câu hỏi khác một cách bình thường và thân thiện. " +
+                    "Cuối mỗi câu trả lời, hãy thêm một phần 'Câu hỏi gợi ý:' theo sau là 1-2 câu hỏi cùng chủ đề với câu hỏi mà người dùng vừa hỏi nhưng liên quan đến tài chính, cách nhau bằng dấu phẩy. " +
+                    "Ví dụ: 'Câu hỏi gợi ý: Làm sao để lập ngân sách, Mẹo tiết kiệm tiền'. " + // Đã thêm hướng dẫn cụ thể về định dạng gợi ý
+                    "Hãy giữ câu trả lời ngắn gọn (dưới 150 từ nếu có thể) và hữu ích.";
+    // <<< KẾT THÚC ĐỊNH NGHĨA BỐI CẢNH MỚI >>>
+
+
     public interface GeminiApiResponseListener {
         void onSuccess(String responseText);
         void onFailure(String errorMessage);
     }
 
-    // <<< THÊM TỪ KHÓA 'static' TẠI ĐÂY >>>
     public static void generateContent(final String prompt, final GeminiApiResponseListener listener) {
         try {
-            // Tạo JSON body cho request
             JSONObject requestBodyJson = new JSONObject();
 
-            // (Phần generationConfig bị bỏ comment nếu bạn muốn dùng lại maxOutputTokens)
-            // JSONObject generationConfig = new JSONObject();
-            // generationConfig.put("maxOutputTokens", MAX_OUTPUT_TOKENS);
-            // requestBodyJson.put("generationConfig", generationConfig);
+            String combinedPrompt = SYSTEM_CONTEXT + "\n\nCâu hỏi: " + prompt;
 
             JSONArray contentsArray = new JSONArray();
             JSONObject contentObject = new JSONObject();
             JSONArray partsArray = new JSONArray();
             JSONObject partObject = new JSONObject();
 
-            String modifiedPrompt = "Trả lời ngắn gọn: " + prompt; // Thêm chỉ dẫn vào prompt
-            partObject.put("text", modifiedPrompt);
-
+            partObject.put("text", combinedPrompt);
             partsArray.put(partObject);
             contentObject.put("parts", partsArray);
             contentsArray.put(contentObject);
@@ -60,13 +64,11 @@ public class GeminiApiManager {
 
             RequestBody body = RequestBody.create(requestBodyJson.toString(), JSON);
 
-            // Xây dựng request OkHttp
             Request request = new Request.Builder()
                     .url(GEMINI_API_ENDPOINT + "?key=" + GEMINI_API_KEY)
                     .post(body)
                     .build();
 
-            // Thực hiện cuộc gọi không đồng bộ
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -80,7 +82,7 @@ public class GeminiApiManager {
                     Log.d(TAG, "OkHttp Response Code: " + response.code());
                     Log.d(TAG, "OkHttp Full API Response: " + jsonResponse);
 
-                    if (response.isSuccessful()) { // Mã 2xx
+                    if (response.isSuccessful()) {
                         try {
                             JSONObject json = new JSONObject(jsonResponse);
                             JSONArray candidates = json.optJSONArray("candidates");
@@ -122,12 +124,14 @@ public class GeminiApiManager {
                         }
 
                     } else {
-                        // Xử lý lỗi từ server (mã 4xx, 5xx)
                         listener.onFailure("API call failed with code " + response.code() + ": " + jsonResponse);
                     }
                 }
             });
 
+        } catch (JSONException e) {
+            Log.e(TAG, "Error building JSON request: " + e.getMessage(), e);
+            listener.onFailure("Failed to build API request: " + e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Failed to create API request: " + e.getMessage(), e);
             listener.onFailure("Failed to initiate API call: " + e.getMessage());

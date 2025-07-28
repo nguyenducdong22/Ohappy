@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="link_color_dark_blue">#1976D2</color>
     <color name="bicycle_text_color">#FFFFFF</color>
     <color name="shop_text_color">#FF4081</color>
     <color name="get_started_button_color">#FF0033</color>

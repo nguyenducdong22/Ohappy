@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.util.Log;
+import android.content.Context; // <<< THÊM IMPORT NÀY >>>
+import android.view.inputmethod.InputMethodManager; // <<< THÊM IMPORT NÀY >>>
+
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +20,7 @@ import com.example.noname.adapters.ChatMessagesAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatbotActivity extends AppCompatActivity {
+public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAdapter.OnSuggestedQuestionClickListener {
 
     private ImageButton btnBackChatbot;
     private TextInputEditText etChatInput;
@@ -42,7 +45,7 @@ public class ChatbotActivity extends AppCompatActivity {
 
         recyclerViewChat = findViewById(R.id.recycler_view_chat);
         chatMessageList = new ArrayList<>();
-        chatAdapter = new ChatMessagesAdapter(chatMessageList);
+        chatAdapter = new ChatMessagesAdapter(chatMessageList, this, this);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChat.setAdapter(chatAdapter);
 
@@ -51,16 +54,20 @@ public class ChatbotActivity extends AppCompatActivity {
         btnSendChat.setOnClickListener(v -> {
             String message = etChatInput.getText().toString().trim();
             if (!message.isEmpty()) {
-                chatAdapter.addMessage(new ChatMessage(message, ChatMessage.SENDER_USER));
-                recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
-                etChatInput.setText("");
+                // Gọi phương thức gửi và nhận phản hồi
+                sendMessageAndGetReply(message);
 
-                ChatMessage loadingMessage = new ChatMessage("Đang phản hồi...", ChatMessage.SENDER_BOT);
-                chatAdapter.addMessage(loadingMessage);
-                recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
+                // <<< THÊM CÁC DÒNG NÀY ĐỂ XÓA VĂN BẢN VÀ ẨN BÀN PHÍM >>>
+                etChatInput.setText(""); // Xóa văn bản
+                etChatInput.clearFocus(); // Xóa focus khỏi trường nhập liệu
 
-                // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
-                callGeminiApi(message, loadingMessage);
+                // Ẩn bàn phím ảo
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(etChatInput.getWindowToken(), 0);
+                }
+                // <<< KẾT THÚC THÊM >>>
+
             } else {
                 Toast.makeText(this, "Vui lòng nhập tin nhắn!", Toast.LENGTH_SHORT).show();
             }
@@ -69,27 +76,35 @@ public class ChatbotActivity extends AppCompatActivity {
         chatAdapter.addMessage(new ChatMessage("Chào bạn! Tôi có thể giúp gì cho bạn?", ChatMessage.SENDER_BOT));
         recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
-        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
         performApiPrewarming();
     }
+
+    private void sendMessageAndGetReply(String message) {
+        chatAdapter.addMessage(new ChatMessage(message, ChatMessage.SENDER_USER));
+        recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
+
+        ChatMessage loadingMessage = new ChatMessage("Đang phản hồi...", ChatMessage.SENDER_BOT);
+        chatAdapter.addMessage(loadingMessage);
+        recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
+
+        callGeminiApi(message, loadingMessage);
+    }
+
 
     private void callGeminiApi(String prompt, ChatMessage loadingMessage) {
         Log.d("ChatbotActivity", "Calling Gemini API with prompt: " + prompt);
 
-        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
         GeminiApiManager.generateContent(prompt, new GeminiApiManager.GeminiApiResponseListener() {
             @Override
             public void onSuccess(String responseText) {
                 runOnUiThread(() -> {
                     Log.d("ChatbotActivity", "Gemini API success: " + responseText);
 
-                    // Xóa tin nhắn "Đang phản hồi..." một cách an toàn
                     int index = chatMessageList.indexOf(loadingMessage);
                     if (index != -1) {
                         chatMessageList.remove(index);
                         chatAdapter.notifyItemRemoved(index);
                     } else {
-                        // Fallback: nếu không tìm thấy, có thể cần notifyDataSetChanged để làm mới toàn bộ
                         chatAdapter.notifyDataSetChanged();
                     }
 
@@ -104,13 +119,11 @@ public class ChatbotActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Log.e("ChatbotActivity", "Gemini API failure: " + errorMessage);
 
-                    // Xóa tin nhắn "Đang phản hồi..." một cách an toàn
                     int index = chatMessageList.indexOf(loadingMessage);
                     if (index != -1) {
                         chatMessageList.remove(index);
                         chatAdapter.notifyItemRemoved(index);
                     } else {
-                        // Fallback nếu không tìm thấy
                         chatAdapter.notifyDataSetChanged();
                     }
 
@@ -125,7 +138,6 @@ public class ChatbotActivity extends AppCompatActivity {
     private void performApiPrewarming() {
         String dummyPrompt = "ping";
 
-        // SỬA ĐỔI DÒNG NÀY: Bỏ .getInstance()
         GeminiApiManager.generateContent(dummyPrompt, new GeminiApiManager.GeminiApiResponseListener() {
             @Override
             public void onSuccess(String responseText) {
@@ -137,5 +149,18 @@ public class ChatbotActivity extends AppCompatActivity {
                 Log.e("ChatbotActivity", "API pre-warming failed: " + errorMessage);
             }
         });
+    }
+
+    @Override
+    public void onSuggestedQuestionClick(String question) {
+        // Khi một câu hỏi gợi ý được nhấp, gửi nó như một tin nhắn mới
+        sendMessageAndGetReply(question);
+
+        // Optional: Xóa bàn phím và focus sau khi click gợi ý
+        etChatInput.clearFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(etChatInput.getWindowToken(), 0);
+        }
     }
 }

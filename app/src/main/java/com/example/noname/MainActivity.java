@@ -137,8 +137,9 @@ public class MainActivity extends AppCompatActivity {
                 updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
-                // TODO: Chuyển sang màn hình Số giao dịch
+                // Tạo một Intent để mở TransactionHistoryActivity
+                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();

@@ -29,6 +29,8 @@
         <activity android:name=".MainActivity"
             android:exported="false"/>
         <activity android:name=".AccountActivity" />
+        <activity android:name=".TransactionHistoryActivity" />
+        <activity android:name=".MyWalletActivity" />
 
     </application>
 

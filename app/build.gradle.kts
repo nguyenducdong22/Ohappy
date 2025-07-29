@@ -34,23 +34,43 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    // <<< VỊ TRÍ CHÍNH XÁC CỦA buildFeatures >>>
+    buildFeatures {
+        viewBinding = true // Đã bật View Binding cho AccountActivity
+    }
+    // <<< KẾT THÚC VỊ TRÍ CHÍNH XÁC >>>
 }
 
 dependencies {
-
+    // Các thư viện AndroidX cơ bản
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation(libs.androidx.constraintlayout)
+
+    // Thư viện kiểm thử
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.circleimageview)
-    implementation(libs.constraintlayout.v214)
-}
-android {
-    // ... các cấu hình khác
-    buildFeatures {
-        viewBinding = true
-    }
+
+    // Thư viện bên thứ ba bạn đã thêm
+    implementation(libs.circleimageview) // Circular ImageView
+    implementation(libs.okhttp)          // OkHttp for networking
+    implementation(libs.annotation)      // AndroidX Annotations (@NonNull)
+
+    // <<< THƯ VIỆN CHO VIEWMODEL VÀ LIVEDATA (MỚI THÊM) >>>
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    // Nếu bạn muốn dùng các tiện ích mở rộng KTX (Java cũng có thể dùng)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Annotation Processor cần thiết cho LiveData/ViewModel
+    annotationProcessor(libs.androidx.lifecycle.compiler)
+    implementation(libs.gson)
+    // <<< KẾT THÚC THÊM >>>
+    implementation(libs.core)
+    implementation (libs.androidsvg) // Sử dụng phiên bản mới nhất
+
+
+
 }

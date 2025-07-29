@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +16,11 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+
+import com.example.noname.Budget.BudgetOverviewActivity; // Import your BudgetActivity
+import com.example.noname.AccountActivity; // Import your AccountActivity (if it's in a subpackage)
+// import com.example.noname.TransactionsActivity; // Uncomment if you have this Activity
+// import com.example.noname.AddTransactionActivity; // Uncomment if you have this Activity
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
+    private FloatingActionButton fabChatbot; // Đã khai báo biến mới cho FAB Chatbot
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -95,7 +102,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Bottom Navigation and FAB
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
+        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
 
+        // --- Set up initial state of the UI (Default to Overview Screen - image_ba3ced.jpg) ---
         updateHeaderAndContentForOverview();
 
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -128,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             updateReportGraphView();
         });
 
+
         // Set up Bottom Navigation Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -135,17 +145,18 @@ public class MainActivity extends AppCompatActivity {
                 updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Toast.makeText(MainActivity.this, "Số giao dịch", Toast.LENGTH_SHORT).show();
+                // Tạo một Intent để mở TransactionHistoryActivity
+                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                Toast.makeText(MainActivity.this, "Ngân sách", Toast.LENGTH_SHORT).show();
+                // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
+                Intent budgetIntent = new Intent(MainActivity.this, BudgetOverviewActivity.class);
+                startActivity(budgetIntent);
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                // <<< PHẦN ĐƯỢC CẬP NHẬT BẮT ĐẦU TỪ ĐÂY >>>
-                // Mở AccountActivity thay vì hiển thị Toast
                 Intent intent = new Intent(MainActivity.this, AccountActivity.class);
                 startActivity(intent);
-                // <<< KẾT THÚC PHẦN CẬP NHẬT >>>
                 return true;
             }
             return false;
@@ -153,6 +164,16 @@ public class MainActivity extends AppCompatActivity {
 
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
+            // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
+             Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
+             startActivity(addTransactionIntent);
+        });
+
+        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
+        fabChatbot.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -178,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         updateReportGraphView();
     }
 
+    // This method handles switching between report graph views within reportCardDynamicContent
     private void updateReportGraphView() {
         if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);
@@ -192,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
             if (tabLayoutWeekMonthReport.getTabCount() > 0) {
-                tabLayoutWeekMonthReport.getTabAt(0).select();
+                tabLayoutWeekMonthReport.getTabAt(0).select(); // Select the first tab (Week)
             }
         }
     }

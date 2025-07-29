@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,20 +16,40 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".WelcomeActivity"
-            android:exported="true"> <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:name=".account.LauncherActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
-        <activity android:name=".SignInActivity"
-            android:exported="false"/> <activity android:name=".SignUpActivity"
-        android:exported="false"/>
+        <activity android:name=".WelcomeActivity" android:exported="false" />
+        <activity android:name=".SignInActivity" android:exported="false"/>
+        <activity android:name=".SignUpActivity" android:exported="false"/>
+        <activity android:name=".MainActivity" android:exported="false"/>
+        <activity android:name=".AccountActivity" android:exported="false" />
+        <activity android:name=".account.EditProfileActivity" android:exported="false" />
+        <activity android:name=".account.NotificationSettingsActivity" android:exported="false" />
+        <activity android:name=".account.SecurityActivity" android:exported="false" />
+        <activity android:name=".account.HelpCenterActivity" android:exported="false" />
+        <activity android:name=".account.LegalActivity" android:exported="false" />
+        <activity android:name=".ChooseWalletActivity" android:exported="true" />
+        <activity android:name=".Addtransaction" android:exported="false" />
+        <activity android:name=".ChooseGroupActivity" android:exported="true" />
 
-        <activity android:name=".MainActivity"
-            android:exported="false"/>
-        <activity android:name=".AccountActivity" />
+
+        <activity android:name=".RecurringExpensesActivity" android:exported="false" />
+        <activity android:name=".AddEditRecurringExpenseActivity" android:exported="false" />
+        <activity android:name=".ChatbotActivity" android:exported="false"/>
+
+        <activity android:name=".Budget.BudgetOverviewActivity" android:exported="false" />
+        <activity android:name=".Budget.AddBudgetActivity" android:exported="false" />
+        <activity android:name=".Budget.ChooseGroupActivity" android:exported="false" /> <activity android:name=".Forgotpassword.ForgotPasswordRequestActivity" android:exported="false"/>
+        <activity android:name=".Forgotpassword.OtpVerificationActivity" android:exported="false"/>
+        <activity android:name=".TransactionHistoryActivity" />
+        <activity android:name=".MyWalletActivity" />
 
     </application>
 

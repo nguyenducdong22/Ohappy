@@ -39,7 +39,8 @@
                     android:id="@+id/tv_header_main_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00 đ" android:textColor="@color/text_main_header"
+                    android:text="0.00 đ"
+                    android:textColor="@color/text_main_header"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -78,12 +79,13 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
-                    android:visibility="gone"> <View
-                    android:id="@+id/dot1"
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:background="@drawable/dot_active"
-                    android:layout_marginEnd="4dp" />
+                    android:visibility="gone">
+                    <View
+                        android:id="@+id/dot1"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/dot_active"
+                        android:layout_marginEnd="4dp" />
                     <View
                         android:id="@+id/dot2"
                         android:layout_width="6dp"
@@ -293,7 +295,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Tổng thu"
-                                android:textColor="@color/text_secondary_gray"
+                                android:textColor="@color/primary_green"
                                 android:textSize="14sp" />
                             <TextView
                                 android:id="@+id/tv_total_income"
@@ -326,28 +328,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone"> <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/tab_layout_week_month_report"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tabIndicatorHeight="0dp"
-                        app:tabBackground="@drawable/tab_selector_background"
-                        app:tabTextColor="@color/text_main_header"
-                        app:tabSelectedTextColor="@color/white"
-                        app:tabGravity="fill"
-                        app:tabMode="fixed"
-                        app:tabRippleColor="@null"
-                        android:background="@drawable/tab_layout_border"
-                        android:layout_marginBottom="24dp">
-                        <com.google.android.material.tabs.TabItem
-                            android:layout_width="wrap_content"
+                        android:visibility="gone">
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tab_layout_week_month_report"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Tuần" />
-                        <com.google.android.material.tabs.TabItem
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tháng" />
-                    </com.google.android.material.tabs.TabLayout>
+                            app:tabIndicatorHeight="0dp"
+                            app:tabBackground="@drawable/tab_selector_background"
+                            app:tabTextColor="@color/text_main_header"
+                            app:tabSelectedTextColor="@color/white"
+                            app:tabGravity="fill"
+                            app:tabMode="fixed"
+                            app:tabRippleColor="@null"
+                            android:background="@drawable/tab_layout_border"
+                            android:layout_marginBottom="24dp">
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tuần" />
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tháng" />
+                        </com.google.android.material.tabs.TabLayout>
 
                         <TextView
                             android:id="@+id/tv_current_report_value"
@@ -395,12 +398,14 @@
                                 android:text="Tháng trước"
                                 android:textColor="@color/text_secondary_gray" />
                             <View
+                                android:id="@+id/dot_active_chart"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
                                 android:background="@drawable/dot_active"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginEnd="8dp" />
                             <View
+                                android:id="@+id/dot_inactive_chart"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
                                 android:background="@drawable/dot_inactive" />
@@ -481,68 +486,69 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="24dp"
-                android:visibility="visible"> <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/deal_card_gradient_background"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ưu đãi bạn mới"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
-
+                android:visibility="visible">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_timer"
-                        app:tint="@color/white"
-                        android:layout_marginEnd="8dp"
-                        tools:ignore="ContentDescription" />
-                    <TextView
-                        android:id="@+id/tv_countdown_timer"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="06:39:22"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:background="@drawable/deal_card_gradient_background"
+                    android:padding="16dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-50 %"
+                        android:text="Ưu đãi bạn mới"
                         android:textColor="@color/white"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_timer"
+                            app:tint="@color/white"
+                            android:layout_marginEnd="8dp"
+                            tools:ignore="ContentDescription" />
+                        <TextView
+                            android:id="@+id/tv_countdown_timer"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="06:39:22"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-50 %"
+                            android:textColor="@color/white"
+                            android:textSize="40sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_upgrade_now"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nâng cấp ngay"
+                        android:textColor="@color/deal_button_text"
+                        android:textSize="14sp"
+                        android:background="@drawable/deal_button_background"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:stateListAnimator="@null"
+                        android:elevation="0dp" />
                 </LinearLayout>
-                <Button
-                    android:id="@+id/btn_upgrade_now"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nâng cấp ngay"
-                    android:textColor="@color/deal_button_text"
-                    android:textSize="14sp"
-                    android:background="@drawable/deal_button_background"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:stateListAnimator="@null"
-                    android:elevation="0dp" />
-            </LinearLayout>
             </androidx.cardview.widget.CardView>
 
 
@@ -814,6 +820,23 @@
         app:elevation="12dp"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top|center"
+        tools:ignore="ContentDescription" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_chatbot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="120dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:backgroundTint="@color/button_red"
+        app:tint="@color/white"
+        app:fabSize="normal"
+        android:src="@drawable/ic_chatbot"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        android:layout_gravity="end|bottom"
         tools:ignore="ContentDescription" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

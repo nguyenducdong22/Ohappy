@@ -1,16 +1,17 @@
-package com.example.noname; // IMPORTANT: Ensure this package name is correct for your project
+package com.example.noname;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -100,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // Ánh xạ FAB Chatbot
+        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
 
         updateHeaderAndContentForOverview();
 
-        // Lắng nghe sự kiện chọn tab trong thẻ báo cáo
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -125,31 +125,26 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
         });
 
-        // Lắng nghe sự kiện nhấp nút "Trước" trong báo cáo
         btnReportPrev.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
             updateReportGraphView();
         });
 
-        // Lắng nghe sự kiện nhấp nút "Tiếp theo" trong báo cáo
         btnReportNext.setOnClickListener(v -> {
             currentReportGraphPage = (currentReportGraphPage + 1) % 2;
             updateReportGraphView();
         });
 
-        // Thiết lập trình lắng nghe cho thanh điều hướng dưới cùng
-        bottomNavigationView.setOnItemSelectedListener(item -> {
+        // Set up Bottom Navigation Listener
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
                 updateHeaderAndContentForOverview();
-                // To avoid re-creating MainActivity if already on it
-                // You might want to use singleTop launch mode or just return true if no state changes are needed
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Toast.makeText(MainActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
-                // TODO: Uncomment and use your TransactionsActivity here if it exists
-                // Intent transactionsIntent = new Intent(MainActivity.this, TransactionsActivity.class);
-                // startActivity(transactionsIntent);
+                // Tạo một Intent để mở TransactionHistoryActivity
+                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
@@ -164,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        // Lắng nghe sự kiện nhấp FAB "Thêm giao dịch"
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
             // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             // startActivity(addTransactionIntent);
         });
 
-        // Lắng nghe sự kiện nhấp FAB "Chatbot"
+        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
         fabChatbot.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
@@ -202,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
         updateReportGraphView();
     }
 
-    // Cập nhật chế độ xem biểu đồ báo cáo
     private void updateReportGraphView() {
         if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);

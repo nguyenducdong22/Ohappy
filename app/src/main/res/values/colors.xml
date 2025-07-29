@@ -38,20 +38,40 @@
     <color name="button_red">#F44336</color>
     <color name="expense_item_red">@color/button_red</color>
 
-    <color name="bicycle_text_color">@color/white</color>
-    <color name="shop_text_color">@color/accent_yellow</color>
+    <color name="bicycle_text_color">#FFFFFF</color>
+    <color name="shop_text_color">#FF4081</color>
     <color name="background_light_pink">#FFE9E9</color>
     <color name="link_color_dark_blue">#1976D2</color>
     <color name="primary_blue">#1781EB</color>
+
+    <color name="dashboard_background_light">#F5F5F5</color>
+    <color name="text_main_header">#333333</color>
+    <color name="text_secondary_gray">#666666</color>
+    <color name="card_background_white">#FFFFFF</color>
+
+    <color name="dashboard_background_dark">#121212</color>
+    <color name="card_background_dark">#1E1E1E</color>
+    <color name="button_dark_gray">#333333</color>
+    <color name="tooltip_background">#2C2C2E</color>
+
+    <color name="deal_start_color">#FFA07A</color>
+    <color name="deal_end_color">#FF6347</color>
+    <color name="deal_button_bg">#FFEFD5</color>
+    <color name="deal_button_text">#FF6347</color>
+
+    <color name="expense_item_orange">#FF9800</color>
+    <color name="expense_item_yellow">#FFEB3B</color>
+
+    <color name="facebook_blue">#3B5998</color>
     <color name="facebook_icon_bg">#1877F2</color>
     <color name="google_icon_bg">#4285F4</color>
     <color name="apple_icon_bg">#000000</color>
+
     <color name="dark_background_overlay">#80000000</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#D0D0D0</color>
     <color name="hint_text">#A0A0A0</color>
     <color name="input_field_border">#50FFFFFF</color>
-    <color name="facebook_blue">#3B5998</color>
     <color name="facebook_blue_dark">#2C4673</color>
     <color name="gradient_start_purple">#8A2BE2</color>
     <color name="gradient_end_blue">#4169E1</color>
@@ -59,15 +79,7 @@
     <color name="gradient_end_red">#FF6347</color>
     <color name="theme_red_primary">#D32F2F</color>
     <color name="theme_red_light_background">#FFEBEE</color>
-    <color name="dashboard_background_light">#F5F5F5</color>
-    <color name="text_main_header">#333333</color>
-    <color name="text_secondary_gray">#666666</color>
-    <color name="deal_start_color">#FFA07A</color>
-    <color name="deal_end_color">#FF6347</color>
-    <color name="deal_button_bg">#FFEFD5</color>
-    <color name="deal_button_text">#FF6347</color>
-    <color name="expense_item_orange">#FF9800</color>
-    <color name="expense_item_yellow">#FFEB3B</color>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -77,6 +89,4 @@
     <color name="grey_text_link_lighter">#FF000066</color>
     <color name="frosted_glass_bg">#A0FFFFFF</color>
     <color name="frosted_glass_border">#40FFFFFF</color>
-
-
 </resources>

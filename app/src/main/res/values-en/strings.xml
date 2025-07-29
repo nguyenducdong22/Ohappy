@@ -70,7 +70,31 @@
     <string name="error_email_exists">Email already exists. Please sign in or use another email.</string>
     <string name="registration_successful">Registration successful!</string>
     <string name="registration_failed">Registration failed. Please try again.</string>
+
     <string name="error_generic_registration">An error occurred during registration.</string>
+    <string name="my_wallet">My Wallet</string>
+    <string name="view_all">View All</string>
+    <string name="cash">Cash</string>
+    <string name="total_spent">Total Spent</string>
+    <string name="total_income">Total Income</string>
+    <string name="enter_transaction_prompt">Enter a transaction to see the report</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="chart_placeholder">Chart will be displayed here</string>
+    <string name="previous_month">Previous Month</string>
+    <string name="trend_report">Trend Report</string>
+    <string name="deal_new_member">New Member Deal</string>
+    <string name="upgrade_now">Upgrade Now</string>
+    <string name="top_spending">Top Spending</string>
+    <string name="view_details">View Details</string>
+    <string name="category_eating">Eating</string>
+    <string name="category_rent">Rent</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="transactions_will_appear_here">Added transactions will appear here 👋</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="search">Search</string>
+    <string name="notifications">Notifications</string>
 
 
 

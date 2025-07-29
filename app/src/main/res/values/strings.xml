@@ -73,6 +73,31 @@
     <string name="registration_failed">Đăng ký thất bại. Vui lòng thử lại.</string>
     <string name="error_generic_registration">Đã xảy ra lỗi trong quá trình đăng ký.</string>
 
+
     <string name="account_option_recurring_expenses" translatable="false">Recurring Expenses</string>
+    <string name="my_wallet">Ví của tôi</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="cash">Tiền mặt</string>
+    <string name="total_spent">Tổng đã chi</string>
+    <string name="total_income">Tổng thu</string>
+    <string name="enter_transaction_prompt">Nhập giao dịch để xem báo cáo</string>
+    <string name="week">Tuần</string>
+    <string name="month">Tháng</string>
+    <string name="chart_placeholder">Biểu đồ sẽ hiển thị ở đây</string>
+    <string name="previous_month">Tháng trước</string>
+    <string name="trend_report">Báo cáo xu hướng</string>
+    <string name="deal_new_member">Ưu đãi bạn mới</string>
+    <string name="upgrade_now">Nâng cấp ngay</string>
+    <string name="top_spending">Chi tiêu nhiều nhất</string>
+    <string name="view_details">Xem chi tiết</string>
+    <string name="category_eating">Ăn uống</string>
+    <string name="category_rent">Thuê nhà</string>
+    <string name="category_shopping">Mua sắm</string>
+    <string name="recent_transactions">Giao dịch gần đây</string>
+    <string name="transactions_will_appear_here">Giao dịch đã thêm sẽ hiển thị ở đây 👋</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="notifications">Thông báo</string>
+
 
 </resources>

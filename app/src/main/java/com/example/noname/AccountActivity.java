@@ -26,6 +26,7 @@ import com.example.noname.account.NotificationSettingsActivity;
 import com.example.noname.account.SecurityActivity;
 import com.example.noname.account.HelpCenterActivity;
 import com.example.noname.account.LegalActivity;
+import com.example.noname.account.LauncherActivity;
 
 import java.util.Locale; // Import
 

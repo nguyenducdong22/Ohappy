@@ -96,6 +96,11 @@
     <string name="search">Search</string>
     <string name="notifications">Notifications</string>
 
+    <string name="week_selected">Week Selected</string>
+    <string name="month_selected">Month Selected</string>
+    <string name="total_spent_this_week">Total spent this week - %1$s%%</string>
+    <string name="total_spent_this_month_format">Total spent this month - %1$s%%</string>
+
 
 
 </resources>

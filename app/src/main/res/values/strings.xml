@@ -99,5 +99,10 @@
     <string name="search">Tìm kiếm</string>
     <string name="notifications">Thông báo</string>
 
+    <string name="week_selected">Đã chọn Tuần</string>
+    <string name="month_selected">Đã chọn Tháng</string>
+    <string name="total_spent_this_week">Tổng đã chi tuần này - %1$s%%</string>
+    <string name="total_spent_this_month_format">Tổng đã chi tháng này - %1$s%%</string>
+
 
 </resources>

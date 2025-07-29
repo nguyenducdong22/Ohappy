@@ -1,9 +1,8 @@
-package com.example.noname.Budget;
+package com.example.noname.Budget; // Đảm bảo package này đúng
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,37 +10,37 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView; // Import CardView
-import androidx.recyclerview.widget.LinearLayoutManager; // Import LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView; // Import RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken; // Cần thiết để deserialize List
 
 import com.example.noname.MainActivity;
 import com.example.noname.R;
 
-import java.lang.reflect.Type; // Cần thiết cho TypeToken
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+// Đảm bảo các import này đã đúng đường dẫn sau khi refactor
+import com.example.noname.Budget.BudgetDao;
+import com.example.noname.Budget.AppDatabase;
+
 
 public class BudgetOverviewActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ADD_BUDGET = 2;
 
     private ImageView btnBackBudgetOverview;
-    private ImageView iconWorld;
-    private ImageView iconRefresh;
-    private ImageView iconMore;
+    private ImageView iconWorld; // Nếu có trong layout
+    private ImageView iconRefresh; // Nếu có trong layout
+    private ImageView iconMore; // Nếu có trong layout
     private Button btnCreateBudget;
 
     private TextView tvRemainingSpendableAmount;
@@ -57,6 +56,9 @@ public class BudgetOverviewActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
 
+    // Thêm tham chiếu đến BudgetDao của bạn
+    private BudgetDao budgetDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,9 @@ public class BudgetOverviewActivity extends AppCompatActivity {
         tvTotalBudgetAmount = findViewById(R.id.tv_total_budget_amount);
         tvTotalSpentAmount = findViewById(R.id.tv_total_spent_amount);
         tvDaysToEndOfMonth = findViewById(R.id.tv_days_to_end_of_month);
+
+        // Khởi tạo BudgetDao
+        budgetDao = AppDatabase.getDatabase(this).budgetDao();
 
         // Khởi tạo RecyclerView
         recyclerViewBudgets = findViewById(R.id.recycler_view_budgets);
@@ -88,7 +93,6 @@ public class BudgetOverviewActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
         btnCreateBudget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,29 +155,33 @@ public class BudgetOverviewActivity extends AppCompatActivity {
     }
 
     private void loadBudgetsAndDisplay() {
-        SharedPreferences sharedPref = getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPref.getString("all_budgets", null); // Lấy chuỗi JSON của TẤT CẢ ngân sách
-
-        Type type = new TypeToken<ArrayList<Budget>>() {}.getType();
-        List<Budget> loadedBudgets = gson.fromJson(json, type);
+        // TẢI NGÂN SÁCH TỪ ROOM DATABASE
+        List<Budget> loadedBudgets = budgetDao.getAllBudgets(); // Lấy tất cả ngân sách từ DB
 
         if (loadedBudgets != null && !loadedBudgets.isEmpty()) {
             currentBudgetsList.clear();
             currentBudgetsList.addAll(loadedBudgets);
             budgetAdapter.setBudgetList(currentBudgetsList); // Cập nhật dữ liệu cho Adapter
 
-            // Cập nhật phần tổng quan (hiển thị dữ liệu của ngân sách đầu tiên hoặc tổng hợp)
-            // Ví dụ: Hiển thị tổng quan của ngân sách đầu tiên trong danh sách
-            Budget firstBudget = currentBudgetsList.get(0);
+            // Cập nhật phần tổng quan
+            double totalBudgetAmountValue = 0.0;
+            for (Budget budget : loadedBudgets) {
+                totalBudgetAmountValue += budget.getAmount();
+            }
+
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             currencyFormat.setMinimumFractionDigits(0);
             currencyFormat.setMaximumFractionDigits(0);
 
-            tvRemainingSpendableAmount.setText(currencyFormat.format(firstBudget.getAmount())); // Giả sử còn lại bằng tổng
-            tvTotalBudgetAmount.setText(String.format("%,.0f M", firstBudget.getAmount() / 1000000.0));
-            tvTotalSpentAmount.setText(String.format("%,.0f K", 50.0)); // Giá trị mẫu
-            tvDaysToEndOfMonth.setText("3 ngày"); // Giá trị mẫu
+            // TODO: Logic tính toán số tiền đã chi và còn lại thực tế
+            // Bạn sẽ cần một bảng giao dịch và liên kết chúng với các ngân sách để tính toán chính xác
+            double totalSpent = 0.0; // Giá trị ví dụ, bạn cần lấy từ dữ liệu giao dịch
+            double remainingSpendable = totalBudgetAmountValue - totalSpent;
+
+            tvRemainingSpendableAmount.setText(currencyFormat.format(remainingSpendable));
+            tvTotalBudgetAmount.setText(String.format("%,.0f Đ", totalBudgetAmountValue)); // Hiển thị số tiền đầy đủ
+            tvTotalSpentAmount.setText(String.format("%,.0f Đ", totalSpent)); // Giá trị ví dụ
+            tvDaysToEndOfMonth.setText("3 ngày"); // Giá trị ví dụ, bạn cần tính toán ngày thực tế
 
             // Nút "Tạo Ngân sách" luôn hiển thị
             btnCreateBudget.setVisibility(View.VISIBLE);
@@ -183,9 +191,9 @@ public class BudgetOverviewActivity extends AppCompatActivity {
             currentBudgetsList.clear();
             budgetAdapter.setBudgetList(currentBudgetsList); // Xóa dữ liệu cũ trên RecyclerView
 
-            tvRemainingSpendableAmount.setText("0.00 đ");
-            tvTotalBudgetAmount.setText("0 M");
-            tvTotalSpentAmount.setText("0 K");
+            tvRemainingSpendableAmount.setText("0 đ");
+            tvTotalBudgetAmount.setText("0 đ");
+            tvTotalSpentAmount.setText("0 đ");
             tvDaysToEndOfMonth.setText("0 ngày");
 
             // Nút "Tạo Ngân sách" luôn hiển thị
@@ -196,6 +204,6 @@ public class BudgetOverviewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadBudgetsAndDisplay();
+        loadBudgetsAndDisplay(); // Tải lại dữ liệu khi quay lại Activity này để cập nhật trạng thái
     }
 }

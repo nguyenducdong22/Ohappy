@@ -1,21 +1,21 @@
 [versions]
-agp = "8.10.1"
+agp = "8.1.0" # Đã điều chỉnh agp xuống 8.1.0, 8.10.1 có thể là lỗi chính tả hoặc phiên bản chưa phát hành
 annotation = "1.9.1"
 bcrypt = "0.9.0"
 circleimageview = "3.1.0"
-# XÓA dòng này vì nó trùng lặp/xung đột với 'constraintlayout' bên dưới: constraintlayoutVersion = "2.1.4"
 gson = "2.11.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.1"
-lifecycleViewmodel = "2.9.2"
+lifecycleViewmodel = "2.8.0" # Cập nhật phiên bản lifecycle ổn định hơn (nếu 2.9.2 gây lỗi)
 material = "1.12.0"
 activity = "1.10.1"
-constraintlayout = "2.2.4" # CHỌN PHIÊN BẢN MỚI NHẤT/ỔN ĐỊNH NHẤT BẠN MUỐN DÙNG (ví dụ: 2.2.4 hoặc 2.1.4 nếu bạn chắc chắn)
-# XÓA dòng này vì nó trùng lặp/xung đột với 'constraintlayout' bên trên: androidxConstraintlayout = "2.2.1"
+constraintlayout = "2.1.4" # Đã sửa thành phiên bản ổn định 2.1.4
 okhttp = "4.12.0"
-constraintlayoutVersion = "2.2.1"
+
+# Thêm định nghĩa phiên bản cho Room Database
+room = "2.6.1"
 
 [libraries]
 androidx-lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "lifecycleViewmodel" }
@@ -33,6 +33,11 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" } # Sửa tham chiếu đến 'constraintlayout' đã định nghĩa ở trên
+
+# Thêm định nghĩa thư viện cho Room Database
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

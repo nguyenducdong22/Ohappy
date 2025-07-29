@@ -1,4 +1,4 @@
-package com.example.noname.Budget;
+package com.example.noname.Budget; // Đảm bảo package này đúng
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,13 +75,17 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
             tvBudgetTotal.setText(currencyFormat.format(budget.getAmount()));
 
             // TODO: Logic tính toán số tiền đã chi và còn lại thực tế
-            // Hiện tại dùng giá trị mẫu, bạn cần thay thế bằng dữ liệu giao dịch thực tế
+            // Hiện tại dùng giá trị mẫu, bạn cần thay thế bằng dữ liệu giao dịch thực tế từ DB của bạn
             double amountSpent = 50000.0; // Đây là giá trị ví dụ, bạn cần lấy từ dữ liệu giao dịch
             double remainingAmount = budget.getAmount() - amountSpent;
             tvBudgetRemaining.setText(String.format("Còn lại %s", currencyFormat.format(remainingAmount)));
 
             // Cập nhật ProgressBar
-            int progressPercentage = (int) ((amountSpent / budget.getAmount()) * 100);
+            // Đảm bảo budget.getAmount() không phải là 0 để tránh chia cho 0
+            int progressPercentage = 0;
+            if (budget.getAmount() > 0) {
+                progressPercentage = (int) ((amountSpent / budget.getAmount()) * 100);
+            }
             if (progressPercentage > 100) progressPercentage = 100;
             if (progressPercentage < 0) progressPercentage = 0;
             progressBar.setProgress(progressPercentage);

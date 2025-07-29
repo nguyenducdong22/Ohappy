@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     // Nếu bạn có plugin Kotlin (như org.jetbrains.kotlin.android), hãy giữ nó
     // alias(libs.plugins.kotlin.android)
+    // Nếu bạn dùng Kotlin và cần kapt, hãy thêm plugin KSP hoặc Kotlin Kapt plugin ở đây
+    // id 'kotlin-kapt' // Hoặc id("com.google.devtools.ksp") nếu bạn dùng KSP
 }
 
 android {
@@ -40,7 +42,7 @@ android {
     buildFeatures {
         viewBinding = true // Đã bật View Binding cho AccountActivity
     }
-    // <<< KẾT THÚC VỊ TRÍ CHÍNH XÁC >>>
+    // <<< KẾT THÚC VỊ TRÍ CHÍNH XÁ >>>
 }
 
 dependencies {
@@ -60,7 +62,7 @@ dependencies {
     implementation(libs.okhttp)          // OkHttp for networking
     implementation(libs.annotation)      // AndroidX Annotations (@NonNull)
 
-    // <<< THƯ VIỆN CHO VIEWMODEL VÀ LIVEDATA (MỚI THÊM) >>>
+    // <<< THƯ VIỆN CHO VIEWMODEL VÀ LIVEDATA >>>
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
     // Nếu bạn muốn dùng các tiện ích mở rộng KTX (Java cũng có thể dùng)
@@ -68,5 +70,13 @@ dependencies {
     // Annotation Processor cần thiết cho LiveData/ViewModel
     annotationProcessor(libs.androidx.lifecycle.compiler)
     implementation(libs.gson)
+    // <<< KẾT THÚC THÊM >>>
+
+
+    // <<< THƯ VIỆN CHO ROOM DATABASE >>>
+    implementation(libs.androidx.room.runtime)
+    // Chọn một trong hai dòng dưới đây tùy thuộc vào việc bạn dùng Java hay Kotlin
+    annotationProcessor(libs.androidx.room.compiler) // Dành cho dự án Java
+    // kapt(libs.androidx.room.compiler) // Dành cho dự án Kotlin (nếu đã thêm plugin 'kotlin-kapt')
     // <<< KẾT THÚC THÊM >>>
 }

@@ -1,9 +1,8 @@
-package com.example.noname.Budget;
+package com.example.noname.Budget; // Đảm bảo package này đúng
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,14 +16,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken; // <-- CẦN IMPORT NÀY
 
 import com.example.noname.R;
 
-import java.lang.reflect.Type; // <-- CẦN IMPORT NÀY
-import java.util.ArrayList; // <-- CẦN IMPORT NÀY
-import java.util.List; // <-- CẦN IMPORT NÀY
+import java.util.ArrayList;
+import java.util.List;
+
+// Đảm bảo các dòng import này đã đúng đường dẫn sau khi refactor
+import com.example.noname.Budget.BudgetDao;
+import com.example.noname.Budget.AppDatabase;
 
 public class AddBudgetActivity extends AppCompatActivity {
 
@@ -37,8 +37,10 @@ public class AddBudgetActivity extends AppCompatActivity {
     private SwitchMaterial switchRepeatBudget;
 
     private String selectedGroupName = "Chọn nhóm";
-    private int selectedGroupIconResId = R.drawable.ic_circle; // Đảm bảo ic_circle tồn tại
+    private int selectedGroupIconResId = R.drawable.ic_circle;
     private String selectedDateRange = "Tháng này (01/07 - 31/07)";
+
+    private BudgetDao budgetDao; // Khai báo đối tượng DAO
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,9 @@ public class AddBudgetActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar_add_budget);
         setSupportActionBar(toolbar);
+
+        // Khởi tạo BudgetDao từ AppDatabase
+        budgetDao = AppDatabase.getDatabase(this).budgetDao();
 
         tvGroupName = findViewById(R.id.tv_group_name);
         ivGroupIcon = findViewById(R.id.iv_group_icon);
@@ -64,7 +69,7 @@ public class AddBudgetActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(Activity.RESULT_CANCELED); // Đặt kết quả là hủy
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
@@ -87,14 +92,12 @@ public class AddBudgetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(AddBudgetActivity.this, "Mở Date Picker (chưa triển khai)", Toast.LENGTH_SHORT).show();
-                // TODO: Hiển thị DatePickerDialog hoặc điều hướng đến màn hình chọn khoảng thời gian
-                // Khi chọn xong, cập nhật selectedDateRange và tvDateRange.setText()
             }
         });
 
         // Xử lý layout_total (nếu có và cần click)
         LinearLayout layoutTotal = findViewById(R.id.layout_total);
-        if (layoutTotal != null) { // Kiểm tra null nếu layoutTotal không luôn tồn tại
+        if (layoutTotal != null) {
             layoutTotal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,18 +132,16 @@ public class AddBudgetActivity extends AppCompatActivity {
                 boolean repeatBudget = switchRepeatBudget.isChecked();
 
                 // Tạo đối tượng Budget mới
-                // Đảm bảo constructor của Budget Class có 5 tham số:
-                // public Budget(String groupName, int groupIconResId, double amount, String dateRange, boolean repeat)
                 Budget newBudget = new Budget(selectedGroupName, selectedGroupIconResId, amount, selectedDateRange, repeatBudget);
 
-                // LƯU DANH SÁCH NGÂN SÁCH VÀO SharedPreferences
-                saveBudgetToSharedPreferences(newBudget);
+                // LƯU DANH SÁCH NGÂN SÁCH VÀO ROOM DATABASE BẰNG DAO
+                budgetDao.insert(newBudget);
 
                 Toast.makeText(AddBudgetActivity.this, "Đã lưu ngân sách cho: " + selectedGroupName, Toast.LENGTH_LONG).show();
 
                 // Trả về RESULT_OK cho BudgetOverviewActivity
                 setResult(Activity.RESULT_OK);
-                finish(); // Đóng Activity
+                finish();
             }
         });
     }
@@ -152,7 +153,7 @@ public class AddBudgetActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_SELECT_GROUP) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedGroupName = data.getStringExtra("selected_group_name");
-                selectedGroupIconResId = data.getIntExtra("selected_group_icon_res_id", R.drawable.ic_circle); // Default icon nếu không tìm thấy
+                selectedGroupIconResId = data.getIntExtra("selected_group_icon_res_id", R.drawable.ic_circle);
 
                 tvGroupName.setText(selectedGroupName);
                 ivGroupIcon.setImageResource(selectedGroupIconResId);
@@ -163,36 +164,5 @@ public class AddBudgetActivity extends AppCompatActivity {
         }
     }
 
-    // PHƯƠNG THỨC NÀY ĐÃ ĐƯỢC THAY ĐỔI ĐỂ LƯU DANH SÁCH NGÂN SÁCH
-    private void saveBudgetToSharedPreferences(Budget newBudget) {
-        SharedPreferences sharedPref = getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-
-        // 1. Lấy chuỗi JSON của TẤT CẢ các ngân sách hiện có
-        String json = sharedPref.getString("all_budgets", null);
-
-        List<Budget> existingBudgets;
-        if (json == null) {
-            // Nếu chưa có ngân sách nào, tạo một danh sách rỗng mới
-            existingBudgets = new ArrayList<>();
-        } else {
-            // Nếu đã có, chuyển đổi chuỗi JSON thành List<Budget>
-            Type type = new TypeToken<ArrayList<Budget>>() {}.getType();
-            existingBudgets = gson.fromJson(json, type);
-            if (existingBudgets == null) { // Phòng trường hợp deserialize lỗi
-                existingBudgets = new ArrayList<>();
-            }
-        }
-
-        // 2. Thêm ngân sách mới vào danh sách
-        existingBudgets.add(newBudget);
-
-        // 3. Chuyển đổi toàn bộ danh sách thành chuỗi JSON
-        String updatedJson = gson.toJson(existingBudgets);
-
-        // 4. Lưu chuỗi JSON của danh sách đã cập nhật vào SharedPreferences
-        editor.putString("all_budgets", updatedJson); // Sử dụng key "all_budgets"
-        editor.apply(); // Áp dụng thay đổi
-    }
+    // Phần saveBudgetToSharedPreferences đã được loại bỏ như đã thống nhất
 }

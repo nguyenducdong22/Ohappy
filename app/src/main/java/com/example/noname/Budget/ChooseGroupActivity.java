@@ -1,4 +1,4 @@
-package com.example.noname.Budget; // IMPORTANT: Replace with your actual package name
+package com.example.noname.Budget; // Đảm bảo package này đúng
 
 import android.app.Activity;
 import android.content.Intent;

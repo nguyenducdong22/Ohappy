@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -98,11 +99,12 @@ public class MainActivity extends AppCompatActivity {
         btnReportNext = findViewById(R.id.btn_report_next);
         reportPageIndicators = findViewById(R.id.report_page_indicators);
 
-        // Initialize Bottom Navigation and FABs
+        // Initialize Bottom Navigation and FAB
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
         fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
 
+        // --- Set up initial state of the UI (Default to Overview Screen - image_ba3ced.jpg) ---
         updateHeaderAndContentForOverview();
 
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             updateReportGraphView();
         });
 
+
         // Set up Bottom Navigation Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -162,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
             // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
-            // Intent addTransactionIntent = new Intent(MainActivity.this, AddTransactionActivity.class);
-            // startActivity(addTransactionIntent);
+             Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
+             startActivity(addTransactionIntent);
         });
 
         // <<< LISTENER CHO FAB CHATBOT MỚI >>>
@@ -196,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         updateReportGraphView();
     }
 
+    // This method handles switching between report graph views within reportCardDynamicContent
     private void updateReportGraphView() {
         if (currentReportGraphPage == 0) {
             reportSummaryView.setVisibility(View.VISIBLE);

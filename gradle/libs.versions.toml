@@ -5,6 +5,8 @@ bcrypt = "0.9.0"
 circleimageview = "3.1.0"
 # XÓA dòng này vì nó trùng lặp/xung đột với 'constraintlayout' bên dưới: constraintlayoutVersion = "2.1.4"
 gson = "2.11.0"
+androidsvg = "1.4"
+core = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -26,6 +28,8 @@ annotation = { module = "androidx.annotation:annotation", version.ref = "annotat
 bcrypt = { group = "at.favre.lib", name = "bcrypt", version.ref = "bcrypt" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+androidsvg = { group = "com.caverock", name = "androidsvg", version.ref = "androidsvg" }
+core = { module = "androidx.core:core", version.ref = "core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

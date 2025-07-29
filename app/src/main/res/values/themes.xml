@@ -12,6 +12,7 @@
         <item name="colorSecondaryContainer">@color/accent_yellow_light</item>
         <item name="colorOnSecondaryContainer">@color/accent_yellow_dark</item>
 
+        <!-- Added from Branch 1 -->
         <item name="colorTertiary">@color/accent_yellow_dark</item>
         <item name="colorOnTertiary">@color/white</item>
         <item name="colorTertiaryContainer">@color/accent_yellow</item>

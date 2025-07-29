@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    // Nếu bạn có plugin Kotlin (như org.jetbrains.kotlin.android), hãy giữ nó
-    // alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -17,8 +15,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        renderscriptTargetApi = 18
-        renderscriptSupportModeEnabled = true
+        // === THAY ĐỔI CÁC DÒNG NÀY CHO KOTLIN DSL ===
+        renderscriptTargetApi = 18 // Dấu bằng thay vì khoảng trắng
+        renderscriptSupportModeEnabled = true // Dấu bằng thay vì khoảng trắng
+        // ===========================================
     }
 
     buildTypes {
@@ -31,9 +31,8 @@ android {
         }
     }
     compileOptions {
-        // Đảm bảo Java 8 (hoặc cao hơn) để hỗ trợ các tính năng LiveData/ViewModel
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     // <<< VỊ TRÍ CHÍNH XÁC CỦA buildFeatures >>>
@@ -69,4 +68,9 @@ dependencies {
     annotationProcessor(libs.androidx.lifecycle.compiler)
     implementation(libs.gson)
     // <<< KẾT THÚC THÊM >>>
+    implementation(libs.core)
+    implementation (libs.androidsvg) // Sử dụng phiên bản mới nhất
+
+
+
 }

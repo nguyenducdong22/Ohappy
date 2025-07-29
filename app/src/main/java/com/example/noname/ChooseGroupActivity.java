@@ -1,4 +1,4 @@
-package com.example.noname.Budget; // Đảm bảo đúng package của bạn
+package com.example.noname; // Đảm bảo đúng package của bạn
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-
-import com.example.noname.R;
 
 public class ChooseGroupActivity extends AppCompatActivity {
 
@@ -26,7 +24,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // Xử lý nút back của hệ thống (nút vật lý hoặc cử chỉ)
+        // Xử lý nút back của hệ thống
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -35,13 +33,13 @@ public class ChooseGroupActivity extends AppCompatActivity {
             }
         });
 
-        // Xử lý nút back trên Toolbar (navigation icon)
+        // Xử lý nút back trên Toolbar
         toolbar.setNavigationOnClickListener(v -> {
             setResult(RESULT_CANCELED); // Gửi kết quả hủy nếu người dùng nhấn nút back trên toolbar
             finish();
         });
 
-        // --- Thiết lập các mục nhóm chi tiêu theo cấu trúc XML mới ---
+        // --- Thiết lập các mục nhóm chi tiêu ---
 
         // Nhu Cầu Thiết Yếu
         setupCategoryItem(R.id.item_an_uong, R.drawable.ic_restaurant, "Ăn Uống", R.color.primary_green);
@@ -67,7 +65,6 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
         // Chi Phí Khác
         setupCategoryItem(R.id.item_dau_tu, R.drawable.ic_invest, "Đầu Tư", R.color.primary_green);
-        setupCategoryItem(R.id.item_tiet_kiem, R.drawable.ic_saving, "Tiết Kiệm", R.color.accent_yellow);
         setupCategoryItem(R.id.item_quy_khan_cap, R.drawable.ic_emergency_fund, "Quỹ Khẩn Cấp", R.color.primary_green);
         setupCategoryItem(R.id.item_khac, R.drawable.ic_other, "Khác", R.color.accent_yellow);
         setupCategoryItem(R.id.item_add_more_category, R.drawable.ic_add_circle, "Thêm", R.color.accent_yellow);
@@ -75,7 +72,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
     /**
      * Phương thức trợ giúp để thiết lập các mục danh mục.
-     * Nó tìm kiếm View cha (MaterialCardView chứa include layout), sau đó tìm ImageView và TextView
+     * Nó tìm kiếm View cha (LinearLayout/MaterialCardView), sau đó tìm ImageView và TextView
      * bên trong nó để thiết lập icon, màu sắc và tên.
      *
      * @param viewId ID của View cha (ví dụ: R.id.item_an_uong)
@@ -109,8 +106,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
                 finish(); // Đóng Activity hiện tại
             });
         }
-        // Nếu itemView là null, có nghĩa là ID không tồn tại trong layout.
-        // Trong môi trường phát triển, bạn có thể thêm Log.e() để debug.
-        // Ví dụ: Log.e("ChooseGroupActivity", "View with ID " + getResources().getResourceEntryName(viewId) + " not found.");
+        // Không cần Toast.makeText hoặc Log.e ở đây trong môi trường production
+        // nếu bạn chắc chắn rằng tất cả các ID trong XML đều có View tương ứng.
     }
 }

@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Main Content Cards
     private CardView walletSummaryCard;
+    private TextView tvSeeAllWallets;
     private CardView reportCardDynamicContent;
     private LinearLayout reportSummaryView; // "Tổng đã chi / Tổng thu"
     private LinearLayout reportTabView;     // "Tuần / Tháng" tab and chart
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
-    private FloatingActionButton fabChatbot; // <<< KHAI BÁO BIẾN MỚI CHO FAB CHATBOT >>>
+    private FloatingActionButton fabChatbot;
 
     private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Main Content Cards
         walletSummaryCard = findViewById(R.id.wallet_summary_card);
+        tvSeeAllWallets = findViewById(R.id.tv_see_all_wallets);
         reportCardDynamicContent = findViewById(R.id.report_card_dynamic_content);
         reportSummaryView = findViewById(R.id.report_summary_view);
         reportTabView = findViewById(R.id.report_tab_view);
@@ -96,9 +98,24 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Bottom Navigation and FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
+        fabChatbot = findViewById(R.id.fab_chatbot);
 
         updateHeaderAndContentForOverview();
+
+        // --- CÀI ĐẶT CÁC SỰ KIỆN CLICK ---
+
+        // Listener cho "Xem tất cả" ví
+        tvSeeAllWallets.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MyWalletActivity.class);
+            startActivity(intent);
+        });
+
+        // <<< CODE ĐƯỢC CẬP NHẬT TẠI ĐÂY >>>
+        // Listener cho "Xem báo cáo" để mở ReportDetailsActivity
+        tvSeeReportDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ReportDetailsActivity.class);
+            startActivity(intent);
+        });
 
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -137,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
                 updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                // Tạo một Intent để mở TransactionHistoryActivity
                 Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
                 startActivity(intent);
                 return true;
@@ -146,10 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: Chuyển sang màn hình Ngân sách
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show(); // Có thể thay bằng mở AccountActivity
-                // Nếu AccountActivity được tạo:
-                // Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                // startActivity(intent);
+                Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
+                // TODO: Chuyển sang màn hình Tài khoản
                 return true;
             }
             return false;
@@ -160,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Navigate to Add Transaction screen
         });
 
-        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
         fabChatbot.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);

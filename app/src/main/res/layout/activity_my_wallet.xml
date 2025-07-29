@@ -61,6 +61,7 @@
             android:padding="16dp">
 
             <LinearLayout
+                android:id="@+id/wallet_total_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/card_background_dark_rounded"
@@ -97,6 +98,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/iv_total_checkmark"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_checkmark_circle_green"/>
@@ -113,6 +115,7 @@
                 android:layout_marginBottom="8dp"/>
 
             <LinearLayout
+                android:id="@+id/wallet_cash_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/card_background_dark_rounded"
@@ -123,8 +126,9 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_wallet_filled"
-                    android:layout_marginEnd="16dp"/>
+                    android:src="@drawable/ic_wallet"
+                    android:layout_marginEnd="16dp"
+                    app:tint="@android:color/white" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -147,6 +151,14 @@
                         android:textSize="18sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_cash_checkmark"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_checkmark_circle_green"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
             </LinearLayout>
 
             <LinearLayout

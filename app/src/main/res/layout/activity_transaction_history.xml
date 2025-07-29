@@ -61,6 +61,7 @@
                     android:paddingVertical="6dp">
 
                     <ImageView
+                        android:id="@+id/iv_wallet_icon"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_wallet"
@@ -116,6 +117,7 @@
             app:tabGravity="fill"/>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

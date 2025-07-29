@@ -31,6 +31,7 @@
         <activity android:name=".AccountActivity" />
         <activity android:name=".TransactionHistoryActivity" />
         <activity android:name=".MyWalletActivity" />
+        <activity android:name=".ReportDetailsActivity" />
 
     </application>
 

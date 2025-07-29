@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,10 +8,13 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -19,120 +23,99 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 public class TransactionHistoryActivity extends AppCompatActivity {
+    // Các biến view
     private CardView onboardingCard;
     private ImageButton btnCloseOnboarding;
-    // Onboarding and Tooltip Views
     private Button btnOnboardingAdd, btnOnboardingCreate;
     private TextView tooltipAddTransaction, tooltipCreateBudget;
-
-    // Wallet selector
     private LinearLayout walletButton;
-
-    // Tabs
+    private TextView tvWalletName;
+    private ImageView ivWalletIcon; // Biến cho icon ví
     private TabLayout tabLayoutMonths;
-
-    // Bottom Navigation
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fabAddTransaction;
-
-    // Handler for hiding tooltips
     private final Handler tooltipHandler = new Handler(Looper.getMainLooper());
     private Runnable hideTooltipRunnable;
+
+    // Trình khởi chạy để nhận kết quả từ MyWalletActivity
+    private final ActivityResultLauncher<Intent> walletSelectorLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.hasExtra("SELECTED_WALLET_NAME")) {
+                        String selectedWallet = data.getStringExtra("SELECTED_WALLET_NAME");
+                        updateWalletSelectorUI(selectedWallet);
+                        Toast.makeText(this, "Đã chọn ví: " + selectedWallet, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history);
 
-        // Hide the default action bar if it exists
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        // Initialize Views
         initializeViews();
-
-        // Setup Tabs
         setupTabs();
-
-        // Setup Listeners
         setupClickListeners();
+
+        // Cập nhật giao diện ví lần đầu khi activity mở ra
+        updateWalletSelectorUI(tvWalletName.getText().toString());
     }
 
     private void initializeViews() {
-        // Onboarding and Tooltips
+        onboardingCard = findViewById(R.id.onboarding_card);
+        btnCloseOnboarding = findViewById(R.id.btn_close_onboarding);
         btnOnboardingAdd = findViewById(R.id.btn_onboarding_add);
         btnOnboardingCreate = findViewById(R.id.btn_onboarding_create);
         tooltipAddTransaction = findViewById(R.id.tooltip_add_transaction);
         tooltipCreateBudget = findViewById(R.id.tooltip_create_budget);
 
-        onboardingCard = findViewById(R.id.onboarding_card);
-        btnCloseOnboarding = findViewById(R.id.btn_close_onboarding);
-
-        // Wallet Button from Top Bar
         walletButton = findViewById(R.id.wallet_button);
+        tvWalletName = findViewById(R.id.tv_wallet_name);
+        ivWalletIcon = findViewById(R.id.iv_wallet_icon); // Khởi tạo ImageView
 
-        // Tabs
         tabLayoutMonths = findViewById(R.id.tab_layout_months);
-
-        // Bottom Navigation and FAB
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
     }
 
-    private void setupTabs() {
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG TRƯỚC"));
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG NÀY"), true); // Select "This Month"
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("TƯƠNG LAI"));
-    }
-
     private void setupClickListeners() {
-        // Wallet button to navigate to MyWalletActivity
+        // Sự kiện quan trọng: Mở màn hình chọn ví
         walletButton.setOnClickListener(v -> {
             Intent intent = new Intent(TransactionHistoryActivity.this, MyWalletActivity.class);
-            startActivity(intent);
+
+            // Lấy tên ví hiện tại từ TextView
+            String currentWallet = tvWalletName.getText().toString();
+
+            // **Gửi tên ví này sang MyWalletActivity để nó biết cần hiển thị dấu tích ở đâu**
+            intent.putExtra("CURRENT_WALLET_NAME", currentWallet);
+
+            // Khởi chạy activity để chờ kết quả
+            walletSelectorLauncher.launch(intent);
         });
 
-        // Onboarding close button
-        btnCloseOnboarding.setOnClickListener(v -> {
-            onboardingCard.setVisibility(View.GONE);
-        });
-
-        // Onboarding "Thêm" (Add) button
-        btnOnboardingAdd.setOnClickListener(v -> {
-            showTooltip(tooltipAddTransaction);
-        });
-
-        // Onboarding "Tạo" (Create) button
-        btnOnboardingCreate.setOnClickListener(v -> {
-            showTooltip(tooltipCreateBudget);
-        });
-
-        // FAB to add a transaction
-        fabAddTransaction.setOnClickListener(v -> {
-            // TODO: Navigate to the actual "Add Transaction" screen
-            Toast.makeText(this, "Mở màn hình Thêm Giao Dịch", Toast.LENGTH_SHORT).show();
-        });
-
-        // Bottom Navigation
-        bottomNavigationView.setSelectedItemId(R.id.navigation_transactions); // Highlight the correct item
+        // Các listeners khác
+        btnCloseOnboarding.setOnClickListener(v -> onboardingCard.setVisibility(View.GONE));
+        btnOnboardingAdd.setOnClickListener(v -> showTooltip(tooltipAddTransaction));
+        btnOnboardingCreate.setOnClickListener(v -> showTooltip(tooltipCreateBudget));
+        fabAddTransaction.setOnClickListener(v -> Toast.makeText(this, "Mở màn hình Thêm Giao Dịch", Toast.LENGTH_SHORT).show());
+        bottomNavigationView.setSelectedItemId(R.id.navigation_transactions);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
-                // TODO: Navigate back to MainActivity
-                Toast.makeText(this, "Chuyển về Tổng quan", Toast.LENGTH_SHORT).show();
-                finish(); // Example: close this activity to go back
+                finish();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                // Already here
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                // TODO: Navigate to Budget screen
-                Toast.makeText(this, "Chuyển đến Ngân sách", Toast.LENGTH_SHORT).show();
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                // TODO: Navigate to Account screen
-                Toast.makeText(this, "Chuyển đến Tài khoản", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;
@@ -140,26 +123,34 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows a tooltip view and schedules it to be hidden after a delay.
-     * @param tooltipView The tooltip view (TextView) to display.
+     * Cập nhật giao diện của bộ chọn ví (cả icon và text).
+     * @param walletName Tên của ví được chọn.
      */
+    private void updateWalletSelectorUI(String walletName) {
+        tvWalletName.setText(walletName);
+        if ("Tổng cộng".equals(walletName)) {
+            ivWalletIcon.setImageResource(R.drawable.ic_globe);
+        } else {
+            // Mặc định là icon ví tiền cho các trường hợp khác
+            ivWalletIcon.setImageResource(R.drawable.ic_wallet);
+        }
+    }
+
+    private void setupTabs() {
+        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG TRƯỚC"));
+        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG NÀY"), true);
+        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("TƯƠNG LAI"));
+    }
+
     private void showTooltip(View tooltipView) {
-        // Cancel any pending hide command to prevent it from hiding the new tooltip
         if (hideTooltipRunnable != null) {
             tooltipHandler.removeCallbacks(hideTooltipRunnable);
         }
-
-        // Ensure all tooltips are hidden before showing the new one
         tooltipAddTransaction.setVisibility(View.GONE);
         tooltipCreateBudget.setVisibility(View.GONE);
-
-        // Make the selected tooltip visible
         tooltipView.setVisibility(View.VISIBLE);
         tooltipView.setAlpha(0.0f);
         tooltipView.animate().alpha(1.0f).setDuration(300).start();
-
-
-        // Define the action to hide the tooltip
         hideTooltipRunnable = () -> {
             tooltipView.animate()
                     .alpha(0.0f)
@@ -167,8 +158,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     .withEndAction(() -> tooltipView.setVisibility(View.GONE))
                     .start();
         };
-
-        // Post the hide action with a 4-second delay
         tooltipHandler.postDelayed(hideTooltipRunnable, 4000);
     }
 }

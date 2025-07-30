@@ -148,7 +148,13 @@ public class AccountActivity extends BaseActivity {
         binding.optionTerms.setOnClickListener(v -> {
             startActivity(new Intent(AccountActivity.this, LegalActivity.class));
         });
+        binding.optionRecurringExpenses.setOnClickListener(v -> {
+
+            Intent intent = new Intent(AccountActivity.this, RecurringExpensesActivity.class);
+            startActivity(intent);
+        });
         // ...
+
     }
 
     private void setupActionListeners() {

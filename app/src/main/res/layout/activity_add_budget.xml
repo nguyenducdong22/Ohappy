@@ -6,36 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/dashboard_background_light"
-    tools:context=".Budget.AddBudgetActivity"> <com.google.android.material.appbar.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:elevation="0dp"
-    app:elevation="0dp">
+    android:background="?android:colorBackground"
+    tools:context=".Budget.AddBudgetActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_add_budget"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:title="Thêm ngân sách"
-        app:titleTextColor="@color/black">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="0dp"
+        app:elevation="0dp">
 
-        <TextView
-            android:id="@+id/btn_cancel_add_budget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hủy"
-            android:textColor="@color/primary_green"
-            android:textSize="16sp"
-            android:layout_gravity="start"
-            android:paddingStart="0dp"
-            android:paddingEnd="16dp"
-            android:clickable="true"
-            android:focusable="true"/>
-    </androidx.appcompat.widget.Toolbar>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_add_budget"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/add_budget_title"
+            app:titleTextColor="@color/black">
 
-</com.google.android.material.appbar.AppBarLayout>
+            <TextView
+                android:id="@+id/btn_cancel_add_budget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                android:textColor="@color/primary_green"
+                android:textSize="16sp"
+                android:layout_gravity="start"
+                android:paddingStart="0dp"
+                android:paddingEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,8 +52,9 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            android:backgroundTint="@color/white"
+            app:cardBackgroundColor="@color/white"
             android:layout_marginBottom="16dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,14 +76,15 @@
                         android:id="@+id/iv_group_icon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_circle" android:layout_marginEnd="16dp"
-                        tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_circle"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@null" />
                     <TextView
                         android:id="@+id/tv_group_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Chọn nhóm"
+                        android:text="@string/select_group"
                         android:textColor="@color/text_dark"
                         android:textSize="18sp" />
                     <ImageView
@@ -87,7 +92,7 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/text_secondary_gray"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@null" />
                 </LinearLayout>
 
                 <View
@@ -149,21 +154,22 @@
                         android:src="@drawable/ic_calendar_recurring"
                         app:tint="@color/text_main_header"
                         android:layout_marginEnd="16dp"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@null" />
                     <TextView
                         android:id="@+id/tv_date_range"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Tháng này (01/07 - 31/07)"
+                        android:text="@string/this_month"
                         android:textColor="@color/text_dark"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:text="Tháng này (01/07 - 31/07)"/>
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/text_secondary_gray"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@null" />
                 </LinearLayout>
 
                 <View
@@ -190,12 +196,12 @@
                         android:src="@drawable/ic_globe"
                         app:tint="@color/text_main_header"
                         android:layout_marginEnd="16dp"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@null" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Tổng cộng"
+                        android:text="@string/total"
                         android:textColor="@color/text_dark"
                         android:textSize="18sp" />
                     <ImageView
@@ -203,9 +209,8 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/text_secondary_gray"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@null" />
                 </LinearLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -222,7 +227,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Lặp lại ngân sách này"
+                android:text="@string/repeat_this_budget"
                 android:textColor="@color/text_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -237,20 +242,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ngân sách được tự động lặp lại ở kỳ hạn tiếp theo."
+            android:text="@string/repeat_budget_description"
             android:textColor="@color/text_secondary_gray"
             android:textSize="14sp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_marginTop="4dp" />
-
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_save_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lưu"
+        android:text="@string/save"
         android:textColor="@color/white"
         android:backgroundTint="@color/primary_green"
         android:layout_marginStart="16dp"

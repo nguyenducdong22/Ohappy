@@ -16,7 +16,7 @@
             android:id="@+id/toolbar_edit_profile"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/theme_red_primary"
+            android:background="@color/primary_green"
             app:title="@string/edit_profile_title"
             app:titleTextColor="@color/white"
             app:navigationIcon="?attr/homeAsUpIndicator"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/personal_information"
-                android:textColor="@color/theme_red_primary"
+                android:textColor="@color/primary_green"
                 android:layout_marginBottom="8dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/change_email"
-                android:textColor="@color/theme_red_primary"
+                android:textColor="@color/primary_green"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/change_password"
-                android:textColor="@color/theme_red_primary"
+                android:textColor="@color/primary_green"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -145,7 +145,7 @@
                 android:layout_marginTop="32dp"
                 android:padding="14dp"
                 android:text="@string/save_changes_button"
-                android:backgroundTint="@color/theme_red_primary"
+                android:backgroundTint="@color/primary_green"
                 android:textColor="@color/white" />
 
         </LinearLayout>

@@ -104,5 +104,14 @@
     <string name="total_spent_this_week">Tổng đã chi tuần này - %1$s%%</string>
     <string name="total_spent_this_month_format">Tổng đã chi tháng này - %1$s%%</string>
 
+    <string name="add_budget_title">Thêm ngân sách</string>
+    <string name="cancel">Hủy</string>
+    <string name="select_group">Chọn nhóm</string>
+    <string name="total">Tổng cộng</string>
+    <string name="repeat_this_budget">Lặp lại ngân sách này</string>
+    <string name="repeat_budget_description">Ngân sách được tự động lặp lại ở kỳ hạn tiếp theo.</string>
+    <string name="save">Lưu</string>
+
+
 
 </resources>

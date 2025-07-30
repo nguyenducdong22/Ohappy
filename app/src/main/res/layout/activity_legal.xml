@@ -15,7 +15,7 @@
             android:id="@+id/toolbar_legal"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/theme_red_primary"
+            android:background="@color/primary_green"
             app:title="@string/terms_and_policy_title"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="?attr/homeAsUpIndicator"

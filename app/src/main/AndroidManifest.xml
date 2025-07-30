@@ -49,7 +49,6 @@
         <activity android:name=".Budget.ChooseGroupActivity" android:exported="false" /> <activity android:name=".Forgotpassword.ForgotPasswordRequestActivity" android:exported="false"/>
         <activity android:name=".Forgotpassword.OtpVerificationActivity" android:exported="false"/>
         <activity android:name=".TransactionHistoryActivity" />
-        <activity android:name=".MyWalletActivity" />
 
     </application>
 

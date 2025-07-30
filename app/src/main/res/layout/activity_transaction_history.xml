@@ -61,9 +61,10 @@
                     android:paddingVertical="6dp">
 
                     <ImageView
+                        android:id="@+id/iv_wallet_icon"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_wallet"
+                        android:src="@drawable/ic_wallet_cash"
                         android:layout_marginEnd="8dp"
                         app:tint="@color/white"
                         tools:ignore="ContentDescription" />

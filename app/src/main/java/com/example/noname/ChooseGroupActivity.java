@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-public class ChooseGroupActivity extends AppCompatActivity {
+import com.example.noname.account.BaseActivity;
+
+public class ChooseGroupActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

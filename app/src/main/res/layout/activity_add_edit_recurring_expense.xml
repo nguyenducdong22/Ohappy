@@ -21,7 +21,7 @@
             android:id="@+id/toolbar_add_edit_recurring"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Thêm Chi Tiêu Định Kỳ"
+            app:title="@string/add_recurring_expense_title"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -54,7 +54,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tên khoản chi"
+                        android:hint="@string/expense_name_hint"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_recurring_name"
@@ -68,7 +68,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Số tiền"
+                        android:hint="@string/amount_hint"
                         android:layout_marginTop="16dp"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
@@ -82,7 +82,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tên nhóm (ví dụ: Ăn Uống, Học phí)"
+                        android:hint="@string/group_name_hint"
                         android:layout_marginTop="16dp"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
@@ -113,7 +113,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tần suất"
+                        android:text="@string/frequency_label"
                         android:textSize="14sp"
                         android:textColor="@color/text_dark"
                         android:textStyle="bold"
@@ -129,7 +129,7 @@
                             android:id="@+id/radio_monthly"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hàng tháng"
+                            android:text="@string/frequency_monthly"
                             android:textColor="@color/text_dark"
                             app:buttonTint="@color/primary_green" />
 
@@ -137,7 +137,7 @@
                             android:id="@+id/radio_weekly"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hàng tuần"
+                            android:text="@string/frequency_weekly"
                             android:textColor="@color/text_dark"
                             app:buttonTint="@color/primary_green" />
 
@@ -145,7 +145,7 @@
                             android:id="@+id/radio_yearly"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hàng năm"
+                            android:text="@string/frequency_yearly"
                             android:textColor="@color/text_dark"
                             app:buttonTint="@color/primary_green" />
 
@@ -172,7 +172,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ngày tiếp theo"
+                            android:text="@string/next_date_label"
                             android:textColor="@color/text_dark"
                             android:textSize="16sp"
                             android:layout_marginStart="16dp" />
@@ -202,7 +202,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trạng thái"
+                        android:text="@string/status_label"
                         android:textSize="14sp"
                         android:textColor="@color/text_dark"
                         android:textStyle="bold"
@@ -212,7 +212,7 @@
                         android:id="@+id/switch_recurring_status"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Kích hoạt chi tiêu định kỳ"
+                        android:text="@string/activate_recurring_expense_label"
                         android:checked="true"
                         android:textColor="@color/text_dark"
                         app:thumbTint="@color/primary_green"
@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
-                android:text="Xóa khoản chi tiêu này"
+                android:text="@string/delete_this_expense_button"
                 android:textColor="@color/button_red"
                 android:visibility="gone" />
 
@@ -239,7 +239,7 @@
         android:id="@+id/btn_save_recurring_expense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lưu"
+        android:text="@string/save"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"

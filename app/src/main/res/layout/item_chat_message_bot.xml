@@ -16,5 +16,5 @@
         android:padding="12dp"
         android:textColor="@color/text_dark"
         android:textSize="16sp"
-        android:text="Chatbot: Đây là phản hồi của chatbot." />
+        android:text="@string/chatbot_response_placeholder" />
 </LinearLayout>

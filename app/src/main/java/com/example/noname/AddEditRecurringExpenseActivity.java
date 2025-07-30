@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.radiobutton.MaterialRadioButton;
@@ -27,7 +28,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AddEditRecurringExpenseActivity extends AppCompatActivity {
+
+public class AddEditRecurringExpenseActivity extends BaseActivity {
 
     // Khai báo các View từ layout
     private Toolbar toolbar;

@@ -32,13 +32,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:clickable="true"
                 android:focusable="true"
-                tools:ignore="ContentDescription" />
+                android:contentDescription="@string/back_button" />
 
             <TextView
                 android:id="@+id/tv_screen_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ngân sách Đang áp dụng"
+                android:text="@string/budget_overview_title"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -67,7 +67,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tháng này" />
+                android:text="@string/this_month" />
         </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -100,7 +100,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Số tiền bạn có thể chi"
+                        android:text="@string/amount_you_can_spend"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"/>
@@ -109,7 +109,7 @@
                         android:id="@+id/tv_remaining_spendable_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.00 đ"
+                        tools:text="0.00 đ"
                         android:textColor="@color/text_main_header"
                         android:textSize="36sp"
                         android:textStyle="bold"
@@ -132,14 +132,14 @@
                                 android:id="@+id/tv_total_budget_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 M"
+                                tools:text="0 M"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng ngân sách"
+                                android:text="@string/total_budget"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -161,14 +161,14 @@
                                 android:id="@+id/tv_total_spent_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 K"
+                                tools:text="0 K"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng đã chi"
+                                android:text="@string/total_spent"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -189,14 +189,14 @@
                                 android:id="@+id/tv_days_to_end_of_month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 ngày"
+                                tools:text="0 ngày"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Đến cuối tháng"
+                                android:text="@string/days_until_month_end"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -206,7 +206,7 @@
                         android:id="@+id/btn_create_budget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tạo Ngân sách"
+                        android:text="@string/create_budget"
                         android:textColor="@color/white"
                         android:backgroundTint="@color/primary_green"
                         android:paddingStart="32dp"
@@ -224,7 +224,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Các ngân sách của bạn"
+                android:text="@string/your_budgets"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"
@@ -268,6 +268,6 @@
         app:elevation="12dp"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top|center"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@string/add_new_transaction" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

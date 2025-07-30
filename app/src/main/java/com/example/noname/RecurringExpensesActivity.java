@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView; // Đảm bảo có import nà
 import androidx.core.content.ContextCompat; // Đảm bảo có import này
 import androidx.recyclerview.widget.ItemTouchHelper; // Đảm bảo có import này
 
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AlertDialog; // Đảm bảo có import này
 
@@ -29,7 +30,7 @@ import java.util.ArrayList; // Đảm bảo có import này
 import java.util.List; // Đảm bảo có import này
 import java.util.Locale; // Đảm bảo có import này
 
-public class RecurringExpensesActivity extends AppCompatActivity {
+public class RecurringExpensesActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private RecurringExpenseAdapter adapter;

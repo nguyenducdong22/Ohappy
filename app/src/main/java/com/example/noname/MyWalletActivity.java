@@ -7,7 +7,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MyWalletActivity extends AppCompatActivity {
+import com.example.noname.account.BaseActivity;
+
+public class MyWalletActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

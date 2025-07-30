@@ -14,14 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noname.R;
+import com.example.noname.account.BaseActivity;
 import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.UserDAO;
 
 import java.util.Locale;
 import java.util.Random;
 import android.database.Cursor;
+import com.example.noname.database.LocaleHelper;
 
-public class ForgotPasswordRequestActivity extends AppCompatActivity {
+public class ForgotPasswordRequestActivity extends BaseActivity {
 
     private EditText etEmailOrPhone;
     private Button btnSendOtpForReset;

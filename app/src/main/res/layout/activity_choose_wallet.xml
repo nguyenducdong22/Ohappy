@@ -23,7 +23,7 @@
             android:id="@+id/toolbar_choose_wallet"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Chọn Ví"
+            app:title="@string/choose_wallet_title"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,7 +32,7 @@
         android:id="@+id/tv_wallet_type_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Loại ví"
+        android:text="@string/wallet_type_label"
         android:textSize="14sp"
         android:textColor="@color/text_medium"
         android:layout_marginStart="24dp"
@@ -77,7 +77,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tiền mặt"
+                    android:text="@string/cash"
                     android:textSize="16sp"
                     android:textColor="@color/text_dark"
                     android:layout_marginStart="16dp"
@@ -108,7 +108,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ví Momo"
+                    android:text="@string/wallet_momo"
                     android:textSize="16sp"
                     android:textColor="@color/text_dark"
                     android:layout_marginStart="16dp"
@@ -139,15 +139,13 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ngân hàng"
+                    android:text="@string/wallet_bank"
                     android:textSize="16sp"
                     android:textColor="@color/text_dark"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1" />
 
             </LinearLayout>
-
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

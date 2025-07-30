@@ -23,8 +23,11 @@
             android:id="@+id/img_recurring_expense_category_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_category" app:tint="@color/primary_green_dark"
-            android:background="@drawable/circle_bg_light_green" android:padding="8dp" />
+            android:src="@drawable/ic_category"
+            app:tint="@color/primary_green_dark"
+            android:background="@drawable/circle_bg_light_green"
+            android:padding="8dp"
+            android:contentDescription="@string/recurring_expense_icon_desc"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,7 +40,7 @@
                 android:id="@+id/tv_recurring_expense_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiền thuê nhà"
+                android:text="@string/recurring_expense_name_placeholder"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"
@@ -54,13 +57,14 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_calendar_recurring" app:tint="@color/text_medium" />
+                    android:src="@drawable/ic_calendar_recurring"
+                    app:tint="@color/text_medium" />
 
                 <TextView
                     android:id="@+id/tv_recurring_expense_frequency_next_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hàng tháng (Ngày 15)"
+                    tools:text="@string/recurring_expense_frequency_placeholder"
                     android:textSize="13sp"
                     android:textColor="@color/text_medium"
                     android:layout_marginStart="4dp" />
@@ -72,7 +76,7 @@
             android:id="@+id/tv_recurring_expense_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5.000.000 VND"
+            tools:text="5.000.000 VND"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/button_red" />

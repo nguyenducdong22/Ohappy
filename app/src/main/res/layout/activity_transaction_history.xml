@@ -5,15 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dashboard_background_dark"
+    android:background="@color/dashboard_background_light"
     tools:context=".TransactionHistoryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dashboard_background_dark"
+        android:background="@color/white"
         app:elevation="0dp">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số dư"
+                    android:text="@string/balance"
                     android:textColor="@color/text_secondary_gray"
                     android:textSize="14sp" />
 
@@ -44,8 +45,8 @@
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00 đ"
-                    android:textColor="@color/white"
+                    tools:text="0.00 đ"
+                    android:textColor="@color/text_dark"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -54,7 +55,7 @@
                     android:id="@+id/wallet_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/wallet_selector_background"
+                    android:background="@drawable/wallet_selector_background_light"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="12dp"
@@ -65,15 +66,15 @@
                         android:layout_height="16dp"
                         android:src="@drawable/ic_wallet"
                         android:layout_marginEnd="8dp"
-                        app:tint="@color/white"
-                        tools:ignore="ContentDescription" />
+                        app:tint="@color/primary_green"
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:id="@+id/tv_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tiền mặt"
-                        android:textColor="@color/white"
+                        android:text="@string/cash"
+                        android:textColor="@color/primary_green"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -85,10 +86,10 @@
                 android:src="@drawable/ic_search"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                app:tint="@color/white"
+                app:tint="@color/text_dark"
                 app:layout_constraintEnd_toStartOf="@id/btn_more_options"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
+                android:contentDescription="@string/search" />
 
             <ImageButton
                 android:id="@+id/btn_more_options"
@@ -97,10 +98,10 @@
                 android:src="@drawable/ic_more_vert"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                app:tint="@color/white"
+                app:tint="@color/text_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
+                android:contentDescription="@string/more_options" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,14 +109,15 @@
             android:id="@+id/tab_layout_months"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dashboard_background_dark"
+            android:background="@color/white"
             app:tabIndicatorColor="@color/primary_green"
             app:tabTextColor="@color/text_secondary_gray"
-            app:tabSelectedTextColor="@color/white"
+            app:tabSelectedTextColor="@color/primary_green"
             app:tabMode="fixed"
             app:tabGravity="fill"/>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -131,7 +133,7 @@
                 android:id="@+id/onboarding_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/card_background_dark"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -149,14 +151,14 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:contentDescription="Đóng hướng dẫn"/>
+                        android:contentDescription="@string/onboarding_close_button"/>
 
                     <TextView
                         android:id="@+id/tv_onboarding_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Bạn vẫn còn băn khoăn chưa biết bắt đầu từ đâu? Chúng mình sẽ giúp bạn!"
-                        android:textColor="@color/white"
+                        android:text="@string/onboarding_title"
+                        android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -177,7 +179,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Đầu tiên, hãy tạo ví"
+                        android:text="@string/onboarding_step1"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/iv_step1_icon"
@@ -203,8 +205,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Thêm một giao dịch"
-                        android:textColor="@color/white"
+                        android:text="@string/onboarding_step2"
+                        android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step2_icon"
                         app:layout_constraintEnd_toStartOf="@id/btn_onboarding_add"
@@ -216,7 +218,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:backgroundTint="@color/primary_green"
-                        android:text="Thêm"
+                        android:text="@string/add_button"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         app:rippleColor="#4DFFFFFF"
@@ -241,8 +243,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Tạo ngân sách đầu tiên"
-                        android:textColor="@color/white"
+                        android:text="@string/onboarding_step3"
+                        android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step3_icon"
                         app:layout_constraintEnd_toStartOf="@id/btn_onboarding_create"
@@ -254,43 +256,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:backgroundTint="@color/primary_green"
-                        android:text="Tạo"
+                        android:text="@string/create_button"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         app:rippleColor="#4DFFFFFF"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tv_step3_icon"
                         app:layout_constraintBottom_toBottomOf="@id/tv_step3_icon" />
-                    <View
-                        android:id="@+id/line1"
-                        android:layout_width="2dp"
-                        android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
-                        app:layout_constraintTop_toBottomOf="@id/iv_step1_icon"
-                        app:layout_constraintBottom_toTopOf="@id/tv_step2_icon"
-                        app:layout_constraintStart_toStartOf="@id/iv_step1_icon"
-                        app:layout_constraintEnd_toEndOf="@id/iv_step1_icon" />
-
-                    <View
-                        android:id="@+id/line2"
-                        android:layout_width="2dp"
-                        android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
-                        app:layout_constraintTop_toBottomOf="@id/tv_step2_icon"
-                        app:layout_constraintBottom_toTopOf="@id/tv_step3_icon"
-                        app:layout_constraintStart_toStartOf="@id/tv_step2_icon"
-                        app:layout_constraintEnd_toEndOf="@id/tv_step2_icon" />
-
-                    <View
-                        android:id="@+id/line3"
-                        android:layout_width="2dp"
-                        android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
-                        app:layout_constraintTop_toBottomOf="@id/tv_step3_icon"
-                        app:layout_constraintStart_toStartOf="@id/tv_step3_icon"
-                        app:layout_constraintEnd_toEndOf="@id/tv_step3_icon" />
-
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -310,7 +282,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Không có giao dịch"
+                    android:text="@string/no_transactions"
                     android:textColor="@color/text_secondary_gray"
                     android:textSize="18sp"/>
             </LinearLayout>
@@ -330,10 +302,11 @@
         android:paddingTop="10dp"
         android:paddingEnd="16dp"
         android:paddingBottom="22dp"
-        android:text="💲 Ấn vào đây để thêm giao dịch"
+        android:text="@string/tooltip_add_transaction"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone" />
+
     <TextView
         android:id="@+id/tooltip_create_budget"
         android:layout_width="wrap_content"
@@ -349,10 +322,11 @@
         android:paddingTop="10dp"
         android:paddingEnd="16dp"
         android:paddingBottom="22dp"
-        android:text="🎯\nĐặt giới hạn cho khoản chi tiêu của bạn bằng tính năng Ngân sách."
+        android:text="@string/tooltip_create_budget"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -364,6 +338,7 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:elevation="8dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_transaction"
         android:layout_width="wrap_content"
@@ -379,6 +354,6 @@
         app:elevation="12dp"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top|center"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@string/add_new_transaction" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

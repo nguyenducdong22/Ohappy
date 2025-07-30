@@ -23,5 +23,8 @@
         <item name="android:background">@color/input_border_light</item>
         <item name="android:layout_marginStart">56dp</item>
     </style>
+    <style name="Base.Theme.NoName" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 
 </resources>

@@ -8,7 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddtransactionActivity extends AppCompatActivity {
+import com.example.noname.account.BaseActivity;
+
+public class AddtransactionActivity extends BaseActivity {
 
     private static final int CHOOSE_GROUP_REQUEST_CODE = 1; // Một mã yêu cầu duy nhất
     private TextView tvSelectedGroup; // Biến để giữ tham chiếu đến TextView hiển thị nhóm

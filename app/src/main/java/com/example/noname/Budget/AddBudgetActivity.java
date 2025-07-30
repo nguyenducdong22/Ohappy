@@ -14,19 +14,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken; // <-- CẦN IMPORT NÀY
+import com.google.gson.reflect.TypeToken;
 
 import com.example.noname.R;
+import com.example.noname.account.BaseActivity; // QUAN TRỌNG: Kế thừa từ BaseActivity
 
-import java.lang.reflect.Type; // <-- CẦN IMPORT NÀY
-import java.util.ArrayList; // <-- CẦN IMPORT NÀY
-import java.util.List; // <-- CẦN IMPORT NÀY
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AddBudgetActivity extends AppCompatActivity {
+public class AddBudgetActivity extends BaseActivity { // Kế thừa từ BaseActivity
 
     private static final int REQUEST_CODE_SELECT_GROUP = 1;
 
@@ -36,9 +36,9 @@ public class AddBudgetActivity extends AppCompatActivity {
     private TextView tvDateRange;
     private SwitchMaterial switchRepeatBudget;
 
-    private String selectedGroupName = "Chọn nhóm";
-    private int selectedGroupIconResId = R.drawable.ic_circle; // Đảm bảo ic_circle tồn tại
-    private String selectedDateRange = "Tháng này (01/07 - 31/07)";
+    private String selectedGroupName;
+    private int selectedGroupIconResId = R.drawable.ic_circle;
+    private String selectedDateRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,151 +48,105 @@ public class AddBudgetActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_add_budget);
         setSupportActionBar(toolbar);
 
+        initializeViews();
+        setupInitialValues();
+        setupListeners();
+    }
+
+    private void initializeViews() {
         tvGroupName = findViewById(R.id.tv_group_name);
         ivGroupIcon = findViewById(R.id.iv_group_icon);
         etAmount = findViewById(R.id.et_amount);
         tvDateRange = findViewById(R.id.tv_date_range);
         switchRepeatBudget = findViewById(R.id.switch_repeat_budget);
+    }
 
-        // Hiển thị giá trị ban đầu
+    private void setupInitialValues(){
+        // Thiết lập giá trị ban đầu từ string resources
+        selectedGroupName = getString(R.string.select_group);
+        selectedDateRange = getString(R.string.this_month); // Ví dụ, bạn có thể thay đổi logic này
+
         tvGroupName.setText(selectedGroupName);
         ivGroupIcon.setImageResource(selectedGroupIconResId);
         tvDateRange.setText(selectedDateRange);
+    }
 
-        // Xử lý nút "Hủy"
+    private void setupListeners() {
         TextView btnCancel = findViewById(R.id.btn_cancel_add_budget);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(Activity.RESULT_CANCELED); // Đặt kết quả là hủy
-                finish();
-            }
+        btnCancel.setOnClickListener(v -> {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
         });
 
-        // Xử lý click vào "Chọn nhóm"
         LinearLayout layoutChooseGroup = findViewById(R.id.layout_choose_group);
-        layoutChooseGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddBudgetActivity.this, ChooseGroupActivity.class);
-                intent.putExtra("current_selected_group_name", selectedGroupName);
-                intent.putExtra("current_selected_group_icon_res_id", selectedGroupIconResId);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_GROUP);
-            }
+        layoutChooseGroup.setOnClickListener(v -> {
+            Intent intent = new Intent(AddBudgetActivity.this, ChooseGroupActivity.class);
+            // ... (truyền dữ liệu nếu cần)
+            startActivityForResult(intent, REQUEST_CODE_SELECT_GROUP);
         });
 
-        // Xử lý layout_date_range
-        LinearLayout layoutDateRangeClick = findViewById(R.id.layout_date_range);
-        layoutDateRangeClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(AddBudgetActivity.this, "Mở Date Picker (chưa triển khai)", Toast.LENGTH_SHORT).show();
-                // TODO: Hiển thị DatePickerDialog hoặc điều hướng đến màn hình chọn khoảng thời gian
-                // Khi chọn xong, cập nhật selectedDateRange và tvDateRange.setText()
-            }
-        });
+        Button btnSaveBudget = findViewById(R.id.btn_save_budget);
+        btnSaveBudget.setOnClickListener(v -> saveBudget());
+    }
 
-        // Xử lý layout_total (nếu có và cần click)
-        LinearLayout layoutTotal = findViewById(R.id.layout_total);
-        if (layoutTotal != null) { // Kiểm tra null nếu layoutTotal không luôn tồn tại
-            layoutTotal.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(AddBudgetActivity.this, "Mở thiết lập Tổng cộng (chưa triển khai)", Toast.LENGTH_SHORT).show();
-                }
-            });
+    private void saveBudget() {
+        String amountString = etAmount.getText().toString().trim();
+        double amount;
+
+        if (amountString.isEmpty() || amountString.equals("0")) {
+            Toast.makeText(this, getString(R.string.error_please_enter_amount), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            amount = Double.parseDouble(amountString);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, getString(R.string.error_invalid_amount), Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // Xử lý nút "Lưu"
-        Button btnSaveBudget = findViewById(R.id.btn_save_budget);
-        btnSaveBudget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amountString = etAmount.getText().toString().trim();
-                double amount = 0.0;
-                if (amountString.isEmpty() || amountString.equals("0")) {
-                    Toast.makeText(AddBudgetActivity.this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                try {
-                    amount = Double.parseDouble(amountString);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(AddBudgetActivity.this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        if (selectedGroupName.equals(getString(R.string.select_group))) {
+            Toast.makeText(this, getString(R.string.error_please_select_group), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                if (selectedGroupName.equals("Chọn nhóm")) {
-                    Toast.makeText(AddBudgetActivity.this, "Vui lòng chọn một nhóm", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        boolean repeatBudget = switchRepeatBudget.isChecked();
+        Budget newBudget = new Budget(selectedGroupName, selectedGroupIconResId, amount, selectedDateRange, repeatBudget);
+        saveBudgetToSharedPreferences(newBudget);
 
-                boolean repeatBudget = switchRepeatBudget.isChecked();
+        Toast.makeText(this, getString(R.string.budget_saved_for, selectedGroupName), Toast.LENGTH_LONG).show();
 
-                // Tạo đối tượng Budget mới
-                // Đảm bảo constructor của Budget Class có 5 tham số:
-                // public Budget(String groupName, int groupIconResId, double amount, String dateRange, boolean repeat)
-                Budget newBudget = new Budget(selectedGroupName, selectedGroupIconResId, amount, selectedDateRange, repeatBudget);
-
-                // LƯU DANH SÁCH NGÂN SÁCH VÀO SharedPreferences
-                saveBudgetToSharedPreferences(newBudget);
-
-                Toast.makeText(AddBudgetActivity.this, "Đã lưu ngân sách cho: " + selectedGroupName, Toast.LENGTH_LONG).show();
-
-                // Trả về RESULT_OK cho BudgetOverviewActivity
-                setResult(Activity.RESULT_OK);
-                finish(); // Đóng Activity
-            }
-        });
+        setResult(Activity.RESULT_OK);
+        finish();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_SELECT_GROUP) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                selectedGroupName = data.getStringExtra("selected_group_name");
-                selectedGroupIconResId = data.getIntExtra("selected_group_icon_res_id", R.drawable.ic_circle); // Default icon nếu không tìm thấy
-
-                tvGroupName.setText(selectedGroupName);
-                ivGroupIcon.setImageResource(selectedGroupIconResId);
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // Người dùng đã hủy chọn nhóm, không thay đổi giá trị hiện tại
-            }
+        if (requestCode == REQUEST_CODE_SELECT_GROUP && resultCode == Activity.RESULT_OK && data != null) {
+            selectedGroupName = data.getStringExtra("selected_group_name");
+            selectedGroupIconResId = data.getIntExtra("selected_group_icon_res_id", R.drawable.ic_circle);
+            tvGroupName.setText(selectedGroupName);
+            ivGroupIcon.setImageResource(selectedGroupIconResId);
         }
     }
 
-    // PHƯƠNG THỨC NÀY ĐÃ ĐƯỢC THAY ĐỔI ĐỂ LƯU DANH SÁCH NGÂN SÁCH
     private void saveBudgetToSharedPreferences(Budget newBudget) {
         SharedPreferences sharedPref = getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
         Gson gson = new Gson();
-
-        // 1. Lấy chuỗi JSON của TẤT CẢ các ngân sách hiện có
         String json = sharedPref.getString("all_budgets", null);
-
         List<Budget> existingBudgets;
+
         if (json == null) {
-            // Nếu chưa có ngân sách nào, tạo một danh sách rỗng mới
             existingBudgets = new ArrayList<>();
         } else {
-            // Nếu đã có, chuyển đổi chuỗi JSON thành List<Budget>
             Type type = new TypeToken<ArrayList<Budget>>() {}.getType();
             existingBudgets = gson.fromJson(json, type);
-            if (existingBudgets == null) { // Phòng trường hợp deserialize lỗi
-                existingBudgets = new ArrayList<>();
-            }
         }
 
-        // 2. Thêm ngân sách mới vào danh sách
         existingBudgets.add(newBudget);
-
-        // 3. Chuyển đổi toàn bộ danh sách thành chuỗi JSON
         String updatedJson = gson.toJson(existingBudgets);
-
-        // 4. Lưu chuỗi JSON của danh sách đã cập nhật vào SharedPreferences
-        editor.putString("all_budgets", updatedJson); // Sử dụng key "all_budgets"
-        editor.apply(); // Áp dụng thay đổi
+        sharedPref.edit().putString("all_budgets", updatedJson).apply();
     }
 }

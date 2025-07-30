@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.example.noname.utils.GeminiApiManager;
 import com.example.noname.models.ChatMessage;
@@ -20,7 +21,7 @@ import com.example.noname.adapters.ChatMessagesAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAdapter.OnSuggestedQuestionClickListener {
+public class ChatbotActivity extends BaseActivity implements ChatMessagesAdapter.OnSuggestedQuestionClickListener {
 
     private ImageButton btnBackChatbot;
     private TextInputEditText etChatInput;

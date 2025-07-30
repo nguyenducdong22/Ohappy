@@ -108,6 +108,135 @@
     <string name="repeat_this_budget">Repeat this budget</string>
     <string name="repeat_budget_description">The budget is automatically repeated for the next period.</string>
     <string name="save">Save</string>
+    <string name="error_please_enter_amount">Please enter an amount</string>
+    <string name="error_invalid_amount">Invalid amount</string>
+    <string name="error_please_select_group">Please select a group</string>
+    <string name="budget_saved_for">Budget saved for: %s</string>
+
+
+    <string name="add_recurring_expense_title">Add Recurring Expense</string>
+    <string name="expense_name_hint">Expense Name</string>
+    <string name="amount_hint">Amount</string>
+    <string name="group_name_hint">Group Name (e.g., Dining, Tuition)</string>
+    <string name="frequency_label">Frequency</string>
+    <string name="frequency_monthly">Monthly</string>
+    <string name="frequency_weekly">Weekly</string>
+    <string name="frequency_yearly">Yearly</string>
+    <string name="next_date_label">Next Date</string>
+    <string name="status_label">Status</string>
+    <string name="activate_recurring_expense_label">Activate recurring expense</string>
+    <string name="delete_this_expense_button">Delete This Expense</string>
+
+    <string name="add_transaction_title">Add Transaction</string>
+    <string name="wallet_cash">Cash</string>
+    <string name="amount_hint_zero">0</string>
+
+    <string name="note_hint">Note</string>
+    <string name="today_date_placeholder">Sunday, July 27</string>
+
+    <string name="budget_overview_title">Active Budgets</string>
+    <string name="amount_you_can_spend">Amount you can spend</string>
+    <string name="total_budget">Total Budget</string>
+    <string name="days_until_month_end">Until month-end</string>
+    <string name="create_budget">Create Budget</string>
+    <string name="your_budgets">Your Budgets</string>
+    <string name="days_unit">days</string>
+
+    <string name="back_button">Back Button</string>
+    <string name="type_a_message_hint">Type a message...</string>
+    <string name="send_button">Send Button</string>
+    <string name="chatbot_ai_title">Chatbot AI</string>
+
+    <string name="choose_spending_group_title">Choose Spending Group</string>
+    <string name="category_header_essential">Essential Needs</string>
+    <string name="category_header_entertainment">Entertainment, Personal</string>
+    <string name="category_header_learning">Learning, Development</string>
+    <string name="category_header_other">Other Expenses</string>
+
+    <string name="choose_wallet_title">Choose Wallet</string>
+    <string name="wallet_type_label">Wallet Type</string>
+    <string name="wallet_momo">Momo Wallet</string>
+    <string name="wallet_bank">Bank</string>
+
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="forgot_password_instructions">Please enter your registered email or phone number so we can verify your identity.</string>
+    <string name="enter_email_hint">Enter Email</string>
+    <string name="send_verification_code_button">Send Verification Code</string>
+    <string name="your_demo_otp_code">Your DEMO OTP Code:</string>
+    <string name="otp_instructions_demo">In a real app, this code would be sent via Email/SMS. Please enter this code on the next screen.</string>
+
+    <string name="close">Close</string>
+    <string name="my_wallet_title">My Wallet</string>
+    <string name="edit">Edit</string>
+    <string name="included_in_total">INCLUDED IN TOTAL</string>
+    <string name="add_wallet">Add Wallet</string>
+    <string name="link_service">Link Service</string>
+
+    <string name="otp_verification_title">OTP Verification</string>
+    <string name="otp_enter_code_and_new_password">Enter Code, New Password</string>
+    <string name="otp_instructions">A verification code (OTP) was displayed on the previous screen. Please enter the code and your new password.</string>
+    <string name="otp_code_hint">Verification Code (OTP)</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="confirm_new_password_hint">Confirm New Password</string>
+
+    <string name="recurring_expenses_title">Recurring Expenses</string>
+    <string name="empty_state_recurring_expenses">You don\'t have any recurring expenses yet.\nPress the \'+\' button to add one!</string>
+
+    <string name="sign_in_welcome">Welcome!</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password_link">Forgot Password?</string>
+    <string name="or_divider">or</string>
+    <string name="no_account_prompt">Don\'t have an account?</string>
+    <string name="sign_up_link">Sign Up</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="expending_money_logo">Expending money</string>
+
+    <string name="sign_up_title">Sign Up</string>
+    <string name="full_name_hint">Full Name</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="agree_to_terms">I agree to all the Terms &amp; Conditions</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <string name="balance">Balance</string>
+    <string name="onboarding_close_button">Close tutorial</string>
+    <string name="onboarding_title">Still wondering where to start? We will help you!</string>
+    <string name="onboarding_step1">First, create a wallet</string>
+    <string name="onboarding_step2">Add a transaction</string>
+    <string name="onboarding_step3">Create your first budget</string>
+    <string name="add_button">Add</string>
+    <string name="create_button">Create</string>
+    <string name="no_transactions">No transactions</string>
+    <string name="tooltip_add_transaction">💲 Tap here to add a transaction</string>
+    <string name="tooltip_create_budget">🎯\nSet a limit for your spending with the Budget feature.</string>
+
+    <string name="more_options">More options</string>
+    <string name="add_more">Add More</string>
+
+    <string name="budget_name_placeholder">Budget Name</string>
+    <string name="budget_remaining">Remaining %s</string>
+
+    <string name="budget_category_icon_desc">Budget category icon</string>
+
+    <string name="chatbot_response_placeholder">Chatbot: This is the chatbot\'s response.</string>
+
+    <string name="user_message_placeholder">You: This is my message.</string>
+
+    <string name="category_name_placeholder">Group Name</string>
+
+    <string name="recurring_expense_name_placeholder">House Rent</string>
+    <string name="recurring_expense_frequency_placeholder">Monthly (Day 15)</string>
+    <string name="recurring_expense_icon_desc">Recurring expense icon</string>
+
+    <string name="account_option_recurring_expenses">Recurring Expenses</string>
+
+
+
+
+
+
 
 
 

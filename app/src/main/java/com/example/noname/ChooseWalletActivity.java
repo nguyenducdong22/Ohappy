@@ -9,7 +9,9 @@ import androidx.activity.OnBackPressedCallback; // Import này
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar; // Import này
 
-public class ChooseWalletActivity extends AppCompatActivity {
+import com.example.noname.account.BaseActivity;
+
+public class ChooseWalletActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

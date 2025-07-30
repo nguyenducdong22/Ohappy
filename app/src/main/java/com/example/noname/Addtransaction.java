@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -30,7 +31,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 // Giữ nguyên tên lớp là Addtransaction
-public class Addtransaction extends AppCompatActivity {
+public class Addtransaction extends BaseActivity {
 
     // Khai báo các View
     private TextView tvDate, tvWalletName, tvSelectedGroup, tvAddDetail;

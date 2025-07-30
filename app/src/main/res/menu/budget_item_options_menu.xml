@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_edit_budget"
+        android:title="Sửa Ngân sách" />
+    <item
+        android:id="@+id/action_delete_budget"
+        android:title="Xóa Ngân sách" />
+</menu>

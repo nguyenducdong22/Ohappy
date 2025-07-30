@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.noname.Budget.Budget; // Import the Budget model class
-import com.example.noname.R; // Import R to access drawable resources
+import com.example.noname.Budget.Budget; // Import lớp mô hình Budget.
+import com.example.noname.R; // Import R để truy cập tài nguyên (ví dụ: ic_circle).
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,29 +16,31 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * BudgetDAO (Data Access Object) provides methods to interact with the 'budgets' table
- * in the SQLite database. It encapsulates the database operations related to budgets,
- * separating them from the UI and other business logic.
+ * BudgetDAO (Data Access Object) cung cấp các phương thức để tương tác với bảng 'budgets'
+ * trong cơ sở dữ liệu SQLite. Nó đóng gói các thao tác database liên quan đến ngân sách,
+ * tách biệt chúng khỏi UI và logic nghiệp vụ.
  */
 public class BudgetDAO {
-    private SQLiteDatabase database; // The database instance used for operations.
-    private DatabaseHelper dbHelper; // Helper to get database instance.
-    private Context context; // Context to access resources (e.g., for icon lookup).
+    private SQLiteDatabase database; // Thể hiện của database được sử dụng cho các thao tác.
+    private DatabaseHelper dbHelper; // Helper để có được thể hiện database.
+    private Context context; // Context để truy cập tài nguyên (ví dụ: cho việc tra cứu icon).
 
     private static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    private static final SimpleDateFormat DATE_FORMAT_DB = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // Định dạng ngày tháng chuẩn cho DB
 
     /**
-     * Constructor for BudgetDAO.
-     * @param context The application context, used to initialize DatabaseHelper.
+     * Constructor cho BudgetDAO.
+     * @param context Context của ứng dụng, được dùng để khởi tạo DatabaseHelper.
      */
     public BudgetDAO(Context context) {
-        this.context = context; // Store context for resource access.
-        dbHelper = new DatabaseHelper(context); // Initialize the DatabaseHelper.
+        this.context = context; // Lưu trữ context.
+        dbHelper = new DatabaseHelper(context); // Khởi tạo DatabaseHelper.
+        Log.d("BudgetDAO", "BudgetDAO instance created.");
     }
 
     /**
-     * Opens the database connection in writable mode.
-     * Call this before performing any write operations (insert, update, delete).
+     * Mở kết nối database ở chế độ ghi.
+     * Phải gọi trước khi thực hiện bất kỳ thao tác ghi nào (insert, update, delete).
      */
     public void open() {
         try {
@@ -46,71 +48,125 @@ public class BudgetDAO {
             Log.d("BudgetDAO", "Database opened for writing.");
         } catch (Exception e) {
             Log.e("BudgetDAO", "Error opening database for writing: " + e.getMessage());
-            // It's good practice to handle this error, e.g., by rethrowing a custom exception
-            // or notifying the user that the database is unavailable.
+            // Có thể thêm xử lý lỗi mạnh mẽ hơn ở đây.
         }
     }
 
     /**
-     * Closes the database connection.
-     * Call this after completing database operations to release resources.
+     * Đóng kết nối database.
+     * Nên gọi sau khi hoàn tất các thao tác database để giải phóng tài nguyên.
      */
     public void close() {
-        dbHelper.close();
+        dbHelper.close(); // DatabaseHelper sẽ quản lý việc đóng SQLiteDatabase.
         Log.d("BudgetDAO", "Database closed.");
     }
 
     /**
-     * Adds a new budget record to the 'budgets' table.
-     *
-     * @param userId The ID of the user creating the budget.
-     * @param categoryId The ID of the category this budget applies to.
-     * @param amount The budgeted amount.
-     * @param startDate The start date of the budget period (YYYY-MM-DD format).
-     * @param endDate The end date of the budget period (YYYY-MM-DD format).
-     * @param isRecurring Whether the budget is recurring (true/false).
-     * @return true if the budget was added successfully, false otherwise.
+     * Thêm một bản ghi ngân sách mới vào bảng 'budgets'.
+     * @param userId ID của người dùng tạo ngân sách.
+     * @param categoryId ID của danh mục ngân sách này.
+     * @param amount Số tiền ngân sách.
+     * @param startDate Ngày bắt đầu (YYYY-MM-DD).
+     * @param endDate Ngày kết thúc (YYYY-MM-DD).
+     * @param isRecurring Ngân sách có lặp lại (true/false).
+     * @return true nếu thêm thành công, false nếu lỗi.
      */
     public boolean addBudget(long userId, long categoryId, double amount, String startDate, String endDate, boolean isRecurring) {
         ContentValues values = new ContentValues();
 
-        // Populate ContentValues with the budget details.
         values.put(DatabaseHelper.COLUMN_USER_ID_FK, userId);
         values.put(DatabaseHelper.COLUMN_CATEGORY_ID_FK, categoryId);
         values.put(DatabaseHelper.COLUMN_BUDGET_AMOUNT, amount);
         values.put(DatabaseHelper.COLUMN_START_DATE, startDate);
         values.put(DatabaseHelper.COLUMN_END_DATE, endDate);
-        values.put(DatabaseHelper.COLUMN_IS_RECURRING, isRecurring ? 1 : 0); // Convert boolean to int (1 or 0).
-        values.put(DatabaseHelper.COLUMN_CREATED_AT, getDateTime()); // Record the creation timestamp.
+        values.put(DatabaseHelper.COLUMN_IS_RECURRING, isRecurring ? 1 : 0);
+        values.put(DatabaseHelper.COLUMN_CREATED_AT, getDateTime()); // Thời gian tạo.
 
-        // Perform the insert operation.
         long insertId = -1;
         try {
             insertId = database.insert(DatabaseHelper.TABLE_BUDGETS, null, values);
             if (insertId != -1) {
-                Log.d("BudgetDAO", "Budget added successfully with ID: " + insertId + " for categoryId: " + categoryId);
-                return true; // Indicate success.
+                Log.d("BudgetDAO", "Budget added successfully with ID: " + insertId);
+                return true;
             } else {
-                Log.e("BudgetDAO", "Failed to add budget for categoryId: " + categoryId);
-                return false; // Indicate failure.
+                Log.e("BudgetDAO", "Failed to add budget: insert returned -1.");
+                return false;
             }
         } catch (Exception e) {
             Log.e("BudgetDAO", "Error adding budget: " + e.getMessage());
-            return false; // Indicate failure due to an exception.
+            return false;
         }
     }
 
     /**
-     * Retrieves all budget records from the database, including related category information.
-     * This method performs a JOIN operation between the 'budgets' and 'categories' tables
-     * to fetch the category name and icon name.
-     *
-     * @return A List of Budget objects. Returns an empty list if no budgets are found.
+     * Cập nhật một bản ghi ngân sách hiện có trong bảng 'budgets'.
+     * @param budget Đối tượng Budget chứa thông tin đã cập nhật. ID của nó phải hợp lệ.
+     * @return true nếu cập nhật thành công, false nếu lỗi.
+     */
+    public boolean updateBudget(Budget budget) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_USER_ID_FK, budget.getUserId());
+        values.put(DatabaseHelper.COLUMN_CATEGORY_ID_FK, budget.getCategoryId());
+        values.put(DatabaseHelper.COLUMN_BUDGET_AMOUNT, budget.getAmount());
+        values.put(DatabaseHelper.COLUMN_START_DATE, budget.getStartDate());
+        values.put(DatabaseHelper.COLUMN_END_DATE, budget.getEndDate());
+        values.put(DatabaseHelper.COLUMN_IS_RECURRING, budget.isRepeat() ? 1 : 0);
+        // Có thể thêm COLUMN_UPDATED_AT nếu bạn theo dõi thời gian cập nhật.
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = database.update(
+                    DatabaseHelper.TABLE_BUDGETS,
+                    values,
+                    DatabaseHelper.COLUMN_ID + " = ?", // Điều kiện WHERE để tìm bản ghi cần cập nhật.
+                    new String[]{String.valueOf(budget.getId())} // Đối số cho điều kiện WHERE.
+            );
+            if (rowsAffected > 0) {
+                Log.d("BudgetDAO", "Budget updated successfully for ID: " + budget.getId());
+                return true;
+            } else {
+                Log.e("BudgetDAO", "Failed to update budget: no rows affected for ID: " + budget.getId());
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e("BudgetDAO", "Error updating budget: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Xóa một bản ghi ngân sách khỏi bảng 'budgets' dựa trên ID của nó.
+     * @param budgetId ID của ngân sách cần xóa.
+     * @return true nếu xóa thành công, false nếu lỗi.
+     */
+    public boolean deleteBudget(long budgetId) {
+        int rowsAffected = 0;
+        try {
+            rowsAffected = database.delete(
+                    DatabaseHelper.TABLE_BUDGETS,
+                    DatabaseHelper.COLUMN_ID + " = ?", // Điều kiện WHERE để tìm bản ghi cần xóa.
+                    new String[]{String.valueOf(budgetId)} // Đối số cho điều kiện WHERE.
+            );
+            if (rowsAffected > 0) {
+                Log.d("BudgetDAO", "Budget deleted successfully for ID: " + budgetId);
+                return true;
+            } else {
+                Log.e("BudgetDAO", "Failed to delete budget: no rows affected for ID: " + budgetId);
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e("BudgetDAO", "Error deleting budget: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Truy xuất tất cả các bản ghi ngân sách từ database, bao gồm thông tin danh mục.
+     * Thực hiện INNER JOIN với bảng 'categories' để lấy tên danh mục và tên icon.
+     * @return Một List các đối tượng Budget. Trả về danh sách rỗng nếu không tìm thấy.
      */
     public List<Budget> getAllBudgets() {
         List<Budget> budgetList = new ArrayList<>();
-        // Define the SQL SELECT query.
-        // We select columns from the BUDGETS table (B) and the category name, icon name columns from the CATEGORIES table (C).
         String selectQuery = "SELECT " +
                 "B." + DatabaseHelper.COLUMN_ID + ", " +
                 "B." + DatabaseHelper.COLUMN_USER_ID_FK + ", " +
@@ -120,78 +176,103 @@ public class BudgetDAO {
                 "B." + DatabaseHelper.COLUMN_END_DATE + ", " +
                 "B." + DatabaseHelper.COLUMN_IS_RECURRING + ", " +
                 "B." + DatabaseHelper.COLUMN_CREATED_AT + ", " +
-                "C." + DatabaseHelper.COLUMN_CATEGORY_NAME + ", " + // Get category name from Categories table.
-                "C." + DatabaseHelper.COLUMN_ICON_NAME + " " +      // Get icon name from Categories table.
+                "C." + DatabaseHelper.COLUMN_CATEGORY_NAME + ", " +
+                "C." + DatabaseHelper.COLUMN_ICON_NAME + " " +
                 "FROM " + DatabaseHelper.TABLE_BUDGETS + " B " +
                 "INNER JOIN " + DatabaseHelper.TABLE_CATEGORIES + " C ON B." + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = C." + DatabaseHelper.COLUMN_ID +
-                " ORDER BY B." + DatabaseHelper.COLUMN_CREATED_AT + " DESC"; // Order by creation date, newest first.
+                " ORDER BY B." + DatabaseHelper.COLUMN_CREATED_AT + " DESC";
 
-        // Get a readable database instance.
         Cursor cursor = null;
-
         try {
-            // Execute the rawQuery statement and receive a Cursor.
             cursor = database.rawQuery(selectQuery, null);
 
-            // Iterate through all rows in the Cursor.
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    // Get the index of each column. Use getColumnIndexOrThrow to ensure the column exists.
-                    int idIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID);
-                    int userIdIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ID_FK);
-                    int categoryIdIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_ID_FK);
-                    int amountIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BUDGET_AMOUNT);
-                    int startIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_START_DATE);
-                    int endIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_END_DATE);
-                    int isRecurringIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IS_RECURRING);
-                    int categoryNameIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME);
-                    int iconNameIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ICON_NAME);
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
+                    long userId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ID_FK));
+                    long categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_ID_FK));
+                    double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BUDGET_AMOUNT));
+                    String startDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_START_DATE));
+                    String endDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_END_DATE));
+                    boolean isRecurring = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IS_RECURRING)) == 1;
+                    String categoryName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME));
+                    String iconName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ICON_NAME));
 
-                    // Retrieve values from the Cursor by column index.
-                    long id = cursor.getLong(idIndex);
-                    long userId = cursor.getLong(userIdIndex);
-                    long categoryId = cursor.getLong(categoryIdIndex);
-                    double amount = cursor.getDouble(amountIndex);
-                    String startDate = cursor.getString(startIndex);
-                    String endDate = cursor.getString(endIndex);
-                    boolean isRecurring = cursor.getInt(isRecurringIndex) == 1; // Convert int (0/1) to boolean.
-                    String categoryName = cursor.getString(categoryNameIndex);
-                    String iconName = cursor.getString(iconNameIndex);
-
-                    // Convert the icon resource name string to an actual resource ID.
-                    // This requires the application context.
                     int iconResId = context.getResources().getIdentifier(iconName, "drawable", context.getPackageName());
                     if (iconResId == 0) {
-                        // If the icon is not found, use a default icon.
-                        iconResId = R.drawable.ic_circle; // Ensure 'ic_circle' exists in your drawables.
+                        iconResId = R.drawable.ic_circle;
                         Log.w("BudgetDAO", "Icon resource not found for: " + iconName + ". Using default.");
                     }
 
-                    // Create a new Budget object and add it to the list.
                     Budget budget = new Budget(id, userId, categoryId, categoryName, iconResId, amount, startDate, endDate, isRecurring);
                     budgetList.add(budget);
 
-                } while (cursor.moveToNext()); // Move to the next row.
+                } while (cursor.moveToNext());
             }
         } catch (Exception e) {
             Log.e("BudgetDAO", "Error getting all budgets: " + e.getMessage());
+            budgetList.clear();
         } finally {
-            // Ensure the Cursor is closed after use to prevent resource leaks.
             if (cursor != null) {
                 cursor.close();
             }
-            // Database connection is managed by open() and close() in DAO, so no db.close() here.
         }
         return budgetList;
     }
 
-    // You can add more CRUD (Update, Delete) and query methods here as needed,
-    // for example: getBudgetById, updateBudget, deleteBudget, etc.
+    /**
+     * Tính tổng số tiền đã chi tiêu cho một danh mục cụ thể trong một khoảng thời gian nhất định.
+     * Phương thức này truy vấn bảng TRANSACTIONS.
+     * @param categoryId ID của danh mục.
+     * @param startDate Ngày bắt đầu của kỳ (YYYY-MM-DD).
+     * @param endDate Ngày kết thúc của kỳ (YYYY-MM-DD).
+     * @param userId ID của người dùng.
+     * @return Tổng số tiền đã chi tiêu. Trả về 0.0 nếu không tìm thấy giao dịch hoặc có lỗi.
+     */
+    public double getTotalSpentForBudgetCategory(long categoryId, String startDate, String endDate, long userId) {
+        double totalSpent = 0.0;
+        // Kiểm tra xem database đã mở chưa. Phương thức này nên được gọi trong một khối open()/close().
+        if (database == null || !database.isOpen()) {
+            Log.e("BudgetDAO", "Database is not open when trying to get total spent for budget. Cannot query transactions.");
+            return 0.0;
+        }
+
+        // Câu lệnh SQL để tính tổng số tiền giao dịch loại "Expense"
+        // cho một người dùng và danh mục cụ thể trong khoảng thời gian.
+        String selectQuery = "SELECT SUM(" + DatabaseHelper.COLUMN_AMOUNT + ") " +
+                "FROM " + DatabaseHelper.TABLE_TRANSACTIONS + " " +
+                "WHERE " + DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " +
+                DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = ? AND " +
+                DatabaseHelper.COLUMN_TRANSACTION_DATE + " BETWEEN ? AND ? AND " +
+                DatabaseHelper.COLUMN_TRANSACTION_TYPE + " = 'Expense'";
+
+        Cursor cursor = null;
+        try {
+            cursor = database.rawQuery(selectQuery, new String[]{
+                    String.valueOf(userId),
+                    String.valueOf(categoryId),
+                    startDate,
+                    endDate
+            });
+
+            if (cursor != null && cursor.moveToFirst()) {
+                totalSpent = cursor.getDouble(0); // Hàm SUM luôn trả về một hàng, cột đầu tiên.
+            }
+            Log.d("BudgetDAO", "Total spent for category " + categoryId + " between " + startDate + " and " + endDate + " by user " + userId + ": " + totalSpent);
+        } catch (Exception e) {
+            Log.e("BudgetDAO", "Error getting total spent for budget category: " + e.getMessage());
+            totalSpent = 0.0; // Trả về 0 nếu có lỗi.
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return totalSpent;
+    }
 
     /**
-     * Utility method to get the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
-     * Commonly used for 'created_at' and 'updated_at' columns.
-     * @return Formatted current timestamp string.
+     * Phương thức tiện ích để lấy dấu thời gian hiện tại theo định dạng "yyyy-MM-dd HH:mm:ss".
+     * @return Chuỗi dấu thời gian đã định dạng.
      */
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());

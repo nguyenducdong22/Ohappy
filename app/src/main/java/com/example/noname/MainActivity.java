@@ -137,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
             updateReportGraphView();
         });
 
+        // <<< THÊM MỚI: SỰ KIỆN CLICK CHO "XEM BÁO CÁO" >>>
+        tvSeeReportDetails.setOnClickListener(v -> {
+            // Tạo Intent để mở ReportDetailsActivity
+            Intent intent = new Intent(MainActivity.this, ReportDetailsActivity.class);
+            startActivity(intent);
+        });
 
         // Set up Bottom Navigation Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -165,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
         fabAddTransaction.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
             // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
-             Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
-             startActivity(addTransactionIntent);
+            Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
+            startActivity(addTransactionIntent);
         });
 
         // <<< LISTENER CHO FAB CHATBOT MỚI >>>

@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import androidx.activity.OnBackPressedCallback; // Import này
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar; // Import này
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.noname.account.BaseActivity;
 
@@ -18,47 +17,52 @@ public class ChooseWalletActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_wallet);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_choose_wallet); // Ánh xạ toolbar
+        setupToolbar();
+        setupListeners();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar_choose_wallet);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Bật nút back
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        // Xử lý nút back trên toolbar
         toolbar.setNavigationOnClickListener(v -> {
-            setResult(Activity.RESULT_CANCELED); // Trả về kết quả hủy
+            setResult(Activity.RESULT_CANCELED);
             finish();
         });
 
-        // Xử lý nút back của thiết bị
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setResult(Activity.RESULT_CANCELED); // Trả về kết quả hủy
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
+    }
 
-
+    private void setupListeners() {
         LinearLayout walletCash = findViewById(R.id.wallet_cash);
         LinearLayout walletMomo = findViewById(R.id.wallet_momo);
         LinearLayout walletBank = findViewById(R.id.wallet_bank);
 
-        View.OnClickListener selectWalletListener = v -> { // Sử dụng lambda cho gọn
+        View.OnClickListener selectWalletListener = v -> {
             String selectedWallet = "";
+            int viewId = v.getId();
 
-            if (v.getId() == R.id.wallet_cash) {
-                selectedWallet = "Tiền mặt";
-            } else if (v.getId() == R.id.wallet_momo) {
-                selectedWallet = "Ví Momo";
-            } else if (v.getId() == R.id.wallet_bank) {
-                selectedWallet = "Ngân hàng";
+            if (viewId == R.id.wallet_cash) {
+                selectedWallet = getString(R.string.cash);
+            } else if (viewId == R.id.wallet_momo) {
+                selectedWallet = getString(R.string.wallet_momo);
+            } else if (viewId == R.id.wallet_bank) {
+                selectedWallet = getString(R.string.wallet_bank);
             }
 
             Intent resultIntent = new Intent();
             resultIntent.putExtra("selected_wallet", selectedWallet);
             setResult(Activity.RESULT_OK, resultIntent);
-            finish(); // Quay lại AddtransactionActivity
+            finish();
         };
 
         walletCash.setOnClickListener(selectWalletListener);

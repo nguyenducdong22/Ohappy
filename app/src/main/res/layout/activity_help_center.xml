@@ -16,7 +16,7 @@
             android:id="@+id/toolbar_help_center"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/expense_item_red"
+            android:background="@color/primary_green"
             app:title="@string/help_center_title"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="?attr/homeAsUpIndicator"

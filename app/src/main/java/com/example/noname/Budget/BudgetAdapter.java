@@ -1,5 +1,6 @@
 package com.example.noname.Budget;
 
+import android.content.Context; // THÊM IMPORT NÀY
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.noname.R; // Đảm bảo import đúng R class của bạn
+import com.example.noname.R;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -20,25 +21,26 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
 
     private List<Budget> budgetList;
     private NumberFormat currencyFormat;
+    private Context context; // Thêm biến Context
 
     public BudgetAdapter(List<Budget> budgetList) {
         this.budgetList = budgetList;
-        // Khởi tạo NumberFormat ở đây để tránh tạo lại nhiều lần
         currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         currencyFormat.setMinimumFractionDigits(0);
         currencyFormat.setMaximumFractionDigits(0);
     }
 
-    // Phương thức để cập nhật dữ liệu cho Adapter
     public void setBudgetList(List<Budget> newBudgetList) {
         this.budgetList = newBudgetList;
-        notifyDataSetChanged(); // Thông báo cho RecyclerView rằng dữ liệu đã thay đổi
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public BudgetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_budget, parent, false);
+        // Lưu lại context
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_budget, parent, false);
         return new BudgetViewHolder(view);
     }
 
@@ -74,18 +76,16 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
             tvBudgetCategory.setText(budget.getGroupName());
             tvBudgetTotal.setText(currencyFormat.format(budget.getAmount()));
 
-            // TODO: Logic tính toán số tiền đã chi và còn lại thực tế
-            // Hiện tại dùng giá trị mẫu, bạn cần thay thế bằng dữ liệu giao dịch thực tế
-            double amountSpent = 50000.0; // Đây là giá trị ví dụ, bạn cần lấy từ dữ liệu giao dịch
+            double amountSpent = 50000.0;
             double remainingAmount = budget.getAmount() - amountSpent;
-            tvBudgetRemaining.setText(String.format("Còn lại %s", currencyFormat.format(remainingAmount)));
 
-            // Cập nhật ProgressBar
+            // SỬ DỤNG TÀI NGUYÊN CHUỖI
+            tvBudgetRemaining.setText(context.getString(R.string.budget_remaining_format, currencyFormat.format(remainingAmount)));
+
             int progressPercentage = (int) ((amountSpent / budget.getAmount()) * 100);
             if (progressPercentage > 100) progressPercentage = 100;
             if (progressPercentage < 0) progressPercentage = 0;
             progressBar.setProgress(progressPercentage);
-            // Bạn có thể thay đổi màu của ProgressBar dựa trên tiến độ nếu muốn
         }
     }
 }

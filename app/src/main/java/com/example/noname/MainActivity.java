@@ -2,26 +2,19 @@ package com.example.noname;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
-// QUAN TRỌNG: Đảm bảo bạn đang import đúng BaseActivity
+import com.example.noname.Budget.BudgetOverviewActivity;
 import com.example.noname.account.BaseActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-
-// Import các Activity khác
-import com.example.noname.Budget.BudgetOverviewActivity;
-import com.example.noname.account.EditProfileActivity;
 
 
 // QUAN TRỌNG: Kế thừa từ BaseActivity
@@ -207,4 +200,5 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
 }

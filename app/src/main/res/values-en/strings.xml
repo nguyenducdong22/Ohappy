@@ -232,6 +232,129 @@
 
     <string name="account_option_recurring_expenses">Recurring Expenses</string>
 
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
+
+    <string name="error_cannot_identify_user">Could not identify user!</string>
+    <string name="error_user_not_found">Error: User information not found.</string>
+    <string name="logout_successful">Logout successful!</string>
+    <string name="delete_account_confirm_title">Confirm Account Deletion</string>
+    <string name="delete_account_confirm_message">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+
+    <string name="error_cannot_identify_account">Error: Cannot identify account.</string>
+    <string name="account_deleted_successfully">Account has been deleted.</string>
+    <string name="account_delete_failed">Failed to delete account. Please try again.</string>
+    <string name="error_occurred_during_deletion">An error occurred during deletion.</string>
+    <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="language_english">English</string>
+
+    <string name="edit_recurring_expense_title">Edit Recurring Expense</string>
+    <string name="update">Update</string>
+    <string name="select_next_date_title">Select Next Date</string>
+    <string name="toast_add_new_success">Added new: %1$s - %2$s - Group: %3$s</string>
+    <string name="toast_update_success">Updated: ID %1$d - %2$s - Group: %3$s</string>
+    <string name="delete_confirmation_title">Confirm Deletion</string>
+    <string name="delete_confirmation_message">Are you sure you want to delete this recurring expense?</string>
+    <string name="toast_deleted_demo">Deleted (demo) ID: %1$d</string>
+
+    <string name="date_format_long">EEEE, MMMM dd</string>
+    <string name="select_date_title">Select Date</string>
+    <string name="date_selection_cancelled">Date selection cancelled</string>
+    <string name="error_group_not_selected">Please select a group</string>
+    <string name="toast_transaction_saved_details">Saved: %1$s VND\nWallet: %2$s\nGroup: %3$s\nDate: %4$s\nNote: %5$s</string>
+    <string name="no_note">None</string>
+
+
+    <string name="group_selected">Group selected: %s</string>
+
+    <string name="error_please_enter_message">Please enter a message!</string>
+    <string name="chatbot_welcome_message">Hello! How can I help you?</string>
+    <string name="chatbot_responding">Responding...</string>
+    <string name="chatbot_response_received">Received response from AI!</string>
+    <string name="chatbot_error_prefix">Error: %s</string>
+    <string name="chatbot_connection_error">AI connection error: %s</string>
+
+    <string name="category_dining">Dining</string>
+    <string name="category_home_utilities">Home &amp; Utilities</string>
+    <string name="category_transportation">Transportation</string>
+    <string name="category_shopping_items">Shopping</string>
+    <string name="category_health">Health</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_beauty">Beauty</string>
+    <string name="category_gifts">Gifts</string>
+    <string name="category_travel">Travel</string>
+    <string name="category_friends">Friends</string>
+    <string name="category_education">Education</string>
+    <string name="category_books">Books</string>
+    <string name="category_courses">Courses</string>
+    <string name="category_study_tools">Study Tools</string>
+    <string name="category_investment">Investment</string>
+    <string name="category_savings">Savings</string>
+    <string name="category_emergency_fund">Emergency Fund</string>
+    <string name="category_other">Other</string>
+
+    <string name="open_edit_wallet_screen">Open edit wallet screen</string>
+    <string name="open_add_new_wallet_screen">Open add new wallet screen</string>
+    <string name="open_link_service_screen">Open link service screen</string>
+
+    <string name="recurring_expense_updated_deleted_toast">Recurring expense has been updated/deleted (demo)</string>
+    <string name="new_item_placeholder">New Item (demo)</string>
+    <string name="next_date_placeholder">Date ?</string>
+    <string name="data_refreshed_no_db">Data refreshed (no DB yet)</string>
+
+    <string name="tab_previous_month">LAST MONTH</string>
+    <string name="tab_this_month">THIS MONTH</string>
+    <string name="tab_future">FUTURE</string>
+    <string name="open_add_transaction_screen">Open Add Transaction screen</string>
+    <string name="switch_to_overview">Switching to Overview</string>
+    <string name="switch_to_budget">Switching to Budget</string>
+    <string name="switch_to_account">Switching to Account</string>
+
+    <string name="error_email_not_found">Error: Email not found. Please try again.</string>
+    <string name="error_otp_required">Please enter the OTP code.</string>
+    <string name="error_new_password_required">Please enter a new password.</string>
+    <string name="error_confirm_password_required">Please confirm the new password.</string>
+    <string name="error_password_too_short">Password must be at least 6 characters long.</string>
+    <string name="password_reset_success">Password has been reset successfully!</string>
+    <string name="error_otp_invalid_or_expired">Invalid or expired OTP, or an error occurred.</string>
+
+    <string name="error_enter_email_or_phone">Please enter an email or phone number.</string>
+    <string name="error_invalid_email_format">Please enter a valid email format.</string>
+    <string name="your_demo_otp_code_title">Your DEMO OTP Code</string>
+    <string name="your_demo_otp_code_message">This is the OTP code for demo purposes. In a real app, this code would be sent via Email/SMS.\n\nOTP Code: %1$s\n\n(This code will expire in 5 minutes)</string>
+    <string name="ok">OK</string>
+    <string name="otp_created_demo">OTP code has been generated and displayed (DEMO).</string>
+    <string name="error_cannot_create_otp">Could not create OTP. Please try again.</string>
+    <string name="error_email_phone_not_exist">Email or phone number does not exist in the system.</string>
+
+    <string name="open_transactions_screen">Open transactions screen!</string>
+    <string name="open_account_screen">Open account screen!</string>
+    <string name="add_transaction_from_budget_screen">Add new transaction from Budget screen!</string>
+    <string name="new_budget_created">New budget has been created!</string>
+    <string name="create_budget_cancelled">Budget creation was cancelled.</string>
+    <string name="days_unit_format">%d days</string>
+
+    <string name="budget_remaining_format">Remaining %s</string>
+
+    <string name="error_loading_user_info">Could not load user information</string>
+    <string name="no_changes_to_save">No changes to save</string>
+    <string name="error_fill_all_password_fields">Please fill all password fields</string>
+    <string name="error_new_passwords_do_not_match">New passwords do not match</string>
+    <string name="error_current_password_incorrect">Current password is incorrect</string>
+    <string name="error_email_already_used">This email is already in use</string>
+    <string name="update_successful">Update successful!</string>
+    <string name="update_failed">Update failed. Please try again.</string>
+    <string name="error_full_name_empty">Name cannot be empty</string>
+
+
+
+
+
+
 
 
 

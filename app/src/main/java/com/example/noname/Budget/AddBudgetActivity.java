@@ -5,28 +5,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+
+import com.example.noname.R;
+import com.example.noname.account.BaseActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import com.example.noname.R;
-import com.example.noname.account.BaseActivity; // QUAN TRỌNG: Kế thừa từ BaseActivity
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddBudgetActivity extends BaseActivity { // Kế thừa từ BaseActivity
+public class AddBudgetActivity extends BaseActivity {
 
     private static final int REQUEST_CODE_SELECT_GROUP = 1;
 
@@ -62,9 +61,8 @@ public class AddBudgetActivity extends BaseActivity { // Kế thừa từ BaseAc
     }
 
     private void setupInitialValues(){
-        // Thiết lập giá trị ban đầu từ string resources
         selectedGroupName = getString(R.string.select_group);
-        selectedDateRange = getString(R.string.this_month); // Ví dụ, bạn có thể thay đổi logic này
+        selectedDateRange = getString(R.string.this_month);
 
         tvGroupName.setText(selectedGroupName);
         ivGroupIcon.setImageResource(selectedGroupIconResId);
@@ -81,7 +79,6 @@ public class AddBudgetActivity extends BaseActivity { // Kế thừa từ BaseAc
         LinearLayout layoutChooseGroup = findViewById(R.id.layout_choose_group);
         layoutChooseGroup.setOnClickListener(v -> {
             Intent intent = new Intent(AddBudgetActivity.this, ChooseGroupActivity.class);
-            // ... (truyền dữ liệu nếu cần)
             startActivityForResult(intent, REQUEST_CODE_SELECT_GROUP);
         });
 
@@ -118,7 +115,6 @@ public class AddBudgetActivity extends BaseActivity { // Kế thừa từ BaseAc
         setResult(Activity.RESULT_OK);
         finish();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

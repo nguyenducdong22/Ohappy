@@ -1,33 +1,38 @@
 package com.example.noname;
 
-import android.content.Context; // Đảm bảo có import này
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences; // Đảm bảo có import này
+import android.content.SharedPreferences; // Để lấy User ID
 import android.os.Bundle;
-import android.view.LayoutInflater; // Đảm bảo có import này
+import android.util.Log; // Thêm import Log
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup; // Đảm bảo có import này
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-// import android.widget.Toolbar; // XÓA DÒNG NÀY (Android widget Toolbar)
 
-import androidx.annotation.NonNull; // Đảm bảo có import này
-import androidx.annotation.Nullable; // Đảm bảo có import này
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar; // THAY THẾ BẰNG DÒNG NÀY (AndroidX Toolbar)
-import androidx.recyclerview.widget.LinearLayoutManager; // Đảm bảo có import này
-import androidx.recyclerview.widget.RecyclerView; // Đảm bảo có import này
-import androidx.core.content.ContextCompat; // Đảm bảo có import này
-import androidx.recyclerview.widget.ItemTouchHelper; // Đảm bảo có import này
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AlertDialog; // Đảm bảo có import này
 
-import java.text.NumberFormat; // Đảm bảo có import này
-import java.util.ArrayList; // Đảm bảo có import này
-import java.util.List; // Đảm bảo có import này
-import java.util.Locale; // Đảm bảo có import này
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+// IMPORT CÁC LỚP TỪ DATABASE VÀ MODELS
+import com.example.noname.database.RecurringExpensesDao;
+import com.example.noname.models.RecurringExpense;
+
 
 public class RecurringExpensesActivity extends AppCompatActivity {
 
@@ -35,6 +40,9 @@ public class RecurringExpensesActivity extends AppCompatActivity {
     private RecurringExpenseAdapter adapter;
     private List<RecurringExpense> recurringExpenseList;
     private TextView tvEmptyStateMessage;
+
+    private RecurringExpensesDao recurringExpensesDao; // Khai báo DAO
+    private long currentUserId; // ID người dùng hiện tại
 
     private static final int ADD_RECURRING_EXPENSE_REQUEST = 1;
     private static final int EDIT_RECURRING_EXPENSE_REQUEST = 2;
@@ -44,8 +52,30 @@ public class RecurringExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recurring_expenses);
 
+        // Khởi tạo DAO
+        recurringExpensesDao = new RecurringExpensesDao(this);
+
+        // LẤY USER ID HIỆN TẠI TỪ SHARED PREFERENCES
+        // Đảm bảo bạn đã lưu USER_ID khi người dùng đăng nhập thành công.
+        SharedPreferences preferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE); // Thay "LoginPrefs" bằng tên SharedPreferences của bạn
+        currentUserId = preferences.getLong("USER_ID", -1); // "USER_ID" là key, -1 là giá trị mặc định nếu không tìm thấy
+        Log.d("RecurringExpensesActivity", "Current User ID from SharedPreferences: " + currentUserId); // Log ID người dùng
+
+        if (currentUserId == -1) {
+            // TẠM THỜI gán một USER_ID cứng để không bị crash khi phát triển
+            // TRONG ỨNG DỤNG THẬT, bạn phải Đảm bảo USER_ID được thiết lập hợp lệ từ màn hình đăng nhập!
+            currentUserId = 1;
+            Log.w("RecurringExpensesActivity", "USER_ID not found in SharedPreferences, using temporary ID: " + currentUserId);
+            Toast.makeText(this, "DEBUG: Sử dụng ID người dùng tạm thời (ID: 1).", Toast.LENGTH_LONG).show();
+            // Nếu bạn muốn ép người dùng đăng nhập:
+            // Toast.makeText(this, "Lỗi: Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+            // finish();
+            // return;
+        }
+
+
         Toolbar toolbar = findViewById(R.id.toolbar_recurring_expenses);
-        setSupportActionBar(toolbar); // Hàm này giờ sẽ đúng với androidx.appcompat.widget.Toolbar
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Chi Tiêu Định Kỳ");
@@ -55,6 +85,8 @@ public class RecurringExpensesActivity extends AppCompatActivity {
         FloatingActionButton fabAdd = findViewById(R.id.fab_add_recurring_expense);
         fabAdd.setOnClickListener(v -> {
             Intent intent = new Intent(RecurringExpensesActivity.this, AddEditRecurringExpenseActivity.class);
+            // Có thể truyền USER_ID đến AddEditRecurringExpenseActivity nếu bạn cần nó ở đó
+            intent.putExtra("CURRENT_USER_ID", currentUserId);
             startActivityForResult(intent, ADD_RECURRING_EXPENSE_REQUEST);
         });
 
@@ -62,63 +94,154 @@ public class RecurringExpensesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         tvEmptyStateMessage = findViewById(R.id.tv_empty_state_message);
 
-        // Khởi tạo danh sách (sẽ được tải từ database sau)
         recurringExpenseList = new ArrayList<>();
-        // Dữ liệu mẫu (chỉ để xem trước giao diện, sẽ bị xóa khi dùng database)
-        // Đảm bảo các ID icon và màu sắc ở đây là đúng và tồn tại trong res/drawable và res/values/colors.xml
-        recurringExpenseList.add(new RecurringExpense(1, "Tiền thuê nhà", 5000000, "Hàng tháng", "Ngày 15", R.drawable.ic_home_and_utility, R.color.primary_green_dark, "active"));
-        recurringExpenseList.add(new RecurringExpense(2, "Tiền điện", 500000, "Hàng tháng", "Ngày cuối", R.drawable.ic_lightbulb, R.color.accent_yellow_dark, "active"));
-        recurringExpenseList.add(new RecurringExpense(3, "Tiền internet", 200000, "Hàng tháng", "Ngày 1", R.drawable.ic_wifi, R.color.primary_green_dark, "active"));
-        recurringExpenseList.add(new RecurringExpense(4, "Học phí", 15000000, "Hàng năm", "Ngày 10/9", R.drawable.ic_learning, R.color.accent_yellow_dark, "active"));
-        recurringExpenseList.add(new RecurringExpense(5, "Đóng quỹ lớp", 50000, "Hàng tháng", "Ngày 5", R.drawable.ic_people, R.color.primary_green_dark, "active"));
-
         adapter = new RecurringExpenseAdapter(recurringExpenseList);
         recyclerView.setAdapter(adapter);
 
+        // Tải dữ liệu từ database khi Activity được tạo
+        loadRecurringExpenses();
+
         // Cập nhật trạng thái rỗng ban đầu
         updateEmptyState();
+
+        // Thiết lập ItemTouchHelper để xử lý vuốt xóa
+        setupSwipeToDelete();
+    }
+
+    /**
+     * Tải tất cả các khoản chi tiêu định kỳ cho người dùng hiện tại từ database
+     * và cập nhật RecyclerView.
+     */
+    private void loadRecurringExpenses() {
+        recurringExpenseList.clear();
+        recurringExpenseList.addAll(recurringExpensesDao.getAllRecurringExpenses(currentUserId));
+        adapter.notifyDataSetChanged(); // Rất quan trọng để adapter cập nhật UI
+        updateEmptyState();
+        Log.d("RecurringExpensesActivity", "Loaded " + recurringExpenseList.size() + " recurring expenses for user " + currentUserId);
     }
 
     // Phương thức này sẽ được gọi khi AddEditRecurringExpenseActivity trả về kết quả
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(this, "Dữ liệu được làm mới (chưa có DB)", Toast.LENGTH_SHORT).show();
+        if (resultCode == RESULT_OK && data != null) {
+            // Kiểm tra nếu là hành động xóa được gửi từ AddEditRecurringExpenseActivity
+            boolean isDeleteAction = data.getBooleanExtra("ACTION_DELETE", false);
+            long expenseIdFromIntent = data.getLongExtra("RECURRING_EXPENSE_ID", -1);
 
-            if (requestCode == ADD_RECURRING_EXPENSE_REQUEST) {
-                // Thêm một item mẫu mới vào đầu danh sách (để demo)
-                String name = (data != null && data.hasExtra("RECURRING_EXPENSE_NAME_DEMO")) ? data.getStringExtra("RECURRING_EXPENSE_NAME_DEMO") : "Khoản mới (mẫu)";
-                double amount = (data != null && data.hasExtra("RECURRING_EXPENSE_AMOUNT_DEMO")) ? data.getDoubleExtra("RECURRING_EXPENSE_AMOUNT_DEMO", 0.0) : 123456;
-                String nextDate = (data != null && data.hasExtra("RECURRING_EXPENSE_NEXT_DATE_DEMO")) ? data.getStringExtra("RECURRING_EXPENSE_NEXT_DATE_DEMO") : "Ngày ?";
-                String frequency = (data != null && data.hasExtra("RECURRING_EXPENSE_FREQUENCY_DEMO")) ? data.getStringExtra("RECURRING_EXPENSE_FREQUENCY_DEMO") : "Hàng tháng";
-                int iconResId = (data != null && data.hasExtra("RECURRING_EXPENSE_ICON_RES_ID_DEMO")) ? data.getIntExtra("RECURRING_EXPENSE_ICON_RES_ID_DEMO", R.drawable.ic_category) : R.drawable.ic_category;
-                int iconTintColorResId = (data != null && data.hasExtra("RECURRING_EXPENSE_ICON_TINT_COLOR_RES_ID_DEMO")) ? data.getIntExtra("RECURRING_EXPENSE_ICON_TINT_COLOR_RES_ID_DEMO", R.color.accent_yellow) : R.color.accent_yellow;
-                String status = (data != null && data.hasExtra("RECURRING_EXPENSE_STATUS_DEMO")) ? data.getStringExtra("RECURRING_EXPENSE_STATUS_DEMO") : "active";
+            if (isDeleteAction && expenseIdFromIntent != -1) {
+                // Đây là yêu cầu xóa từ AddEditRecurringExpenseActivity
+                // Hiển thị hộp thoại xác nhận xóa (hoặc xóa ngay nếu đã xác nhận trong AddEdit)
+                new AlertDialog.Builder(this)
+                        .setTitle("Xác nhận xóa")
+                        .setMessage("Bạn có chắc chắn muốn xóa khoản chi tiêu định kỳ này không?")
+                        .setPositiveButton("Xóa", (dialog, which) -> {
+                            int rowsAffected = recurringExpensesDao.deleteRecurringExpense(expenseIdFromIntent);
+                            if (rowsAffected > 0) {
+                                loadRecurringExpenses(); // Tải lại danh sách sau khi xóa
+                                Toast.makeText(RecurringExpensesActivity.this, "Đã xóa khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RecurringExpensesActivity.this, "Không thể xóa khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Hủy", null) // Không làm gì nếu hủy
+                        .show();
 
-                recurringExpenseList.add(0, new RecurringExpense(
-                        System.currentTimeMillis(), // ID tạm
-                        name, amount, frequency, nextDate, iconResId, iconTintColorResId, status
-                ));
-                adapter.notifyItemInserted(0);
-                recyclerView.scrollToPosition(0);
-            } else if (requestCode == EDIT_RECURRING_EXPENSE_REQUEST) {
-                // Để demo, bạn có thể tải lại toàn bộ danh sách (đơn giản nhất khi không có DB)
-                Toast.makeText(this, "Khoản chi định kỳ đã được cập nhật/xóa (mẫu)", Toast.LENGTH_SHORT).show();
-                // Để demo việc làm mới sau sửa/xóa, chúng ta sẽ xóa hết và thêm lại dữ liệu mẫu
-                // Trong thực tế, bạn sẽ tải lại từ database
-                recurringExpenseList.clear();
-                recurringExpenseList.add(new RecurringExpense(1, "Tiền thuê nhà (mẫu cập nhật)", 5100000, "Hàng tháng", "Ngày 15", R.drawable.ic_home_and_utility, R.color.primary_green_dark, "active"));
-                recurringExpenseList.add(new RecurringExpense(2, "Tiền điện (mẫu cập nhật)", 550000, "Hàng tháng", "Ngày cuối", R.drawable.ic_lightbulb, R.color.accent_yellow_dark, "active"));
-                // ... thêm lại các mục khác nếu muốn
-                adapter.notifyDataSetChanged();
+            } else {
+                // Đây là hành động Thêm Mới hoặc Cập Nhật từ AddEditRecurringExpenseActivity
+                // Lấy dữ liệu từ Intent
+                long expenseId = data.getLongExtra("RECURRING_EXPENSE_ID", -1); // ID sẽ là -1 nếu là thêm mới
+                String name = data.getStringExtra("RECURRING_EXPENSE_NAME_DEMO");
+                double amount = data.getDoubleExtra("RECURRING_EXPENSE_AMOUNT_DEMO", 0.0);
+                String frequency = data.getStringExtra("RECURRING_EXPENSE_FREQUENCY_DEMO");
+                String nextDate = data.getStringExtra("RECURRING_EXPENSE_NEXT_DATE_DEMO");
+                int iconResId = data.getIntExtra("RECURRING_EXPENSE_ICON_RES_ID_DEMO", 0);
+                int iconTintColorResId = data.getIntExtra("RECURRING_EXPENSE_ICON_TINT_COLOR_RES_ID_DEMO", 0);
+                String status = data.getStringExtra("RECURRING_EXPENSE_STATUS_DEMO");
+                String type = data.getStringExtra("RECURRING_EXPENSE_TYPE_DEMO");
+
+                if (type == null || type.isEmpty()) {
+                    type = "Expense"; // Mặc định là "Expense" nếu không được truyền
+                }
+
+                RecurringExpense receivedExpense = new RecurringExpense(
+                        expenseId, name, amount, type, frequency, nextDate, iconResId, iconTintColorResId, status
+                );
+
+                if (expenseId == -1) { // Là thêm mới
+                    long newId = recurringExpensesDao.addRecurringExpense(receivedExpense, currentUserId, null, null);
+                    if (newId != -1) {
+                        Log.d("RecurringExpensesActivity", "New expense added to DB with ID: " + newId);
+                        Toast.makeText(this, "Đã thêm khoản chi định kỳ mới!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("RecurringExpensesActivity", "Failed to add new expense to DB.");
+                        Toast.makeText(this, "Lỗi khi thêm khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                    }
+                } else { // Là cập nhật
+                    int rowsAffected = recurringExpensesDao.updateRecurringExpense(receivedExpense);
+                    if (rowsAffected > 0) {
+                        Log.d("RecurringExpensesActivity", "Expense updated in DB: " + expenseId);
+                        Toast.makeText(this, "Đã cập nhật khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("RecurringExpensesActivity", "Failed to update expense in DB: " + expenseId);
+                        Toast.makeText(this, "Không thể cập nhật khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                // Sau khi thêm hoặc cập nhật, tải lại toàn bộ danh sách để hiển thị thay đổi
+                loadRecurringExpenses();
             }
-            updateEmptyState();
         }
+        // Nếu resultCode là RESULT_CANCELED, không làm gì cả
+    }
+
+    /**
+     * Cấu hình vuốt để xóa (swipe-to-delete) cho RecyclerView.
+     */
+    private void setupSwipeToDelete() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false; // Không hỗ trợ kéo thả để sắp xếp lại
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                final RecurringExpense expenseToDelete = recurringExpenseList.get(position);
+
+                // Hiển thị hộp thoại xác nhận trước khi xóa
+                new AlertDialog.Builder(RecurringExpensesActivity.this)
+                        .setTitle("Xóa khoản chi định kỳ")
+                        .setMessage("Bạn có chắc chắn muốn xóa '" + expenseToDelete.getName() + "' không?")
+                        .setPositiveButton("Xóa", (dialog, which) -> {
+                            // Thực hiện xóa khỏi database
+                            int rowsAffected = recurringExpensesDao.deleteRecurringExpense(expenseToDelete.getId());
+                            if (rowsAffected > 0) {
+                                loadRecurringExpenses(); // Tải lại danh sách sau khi xóa
+                                Toast.makeText(RecurringExpensesActivity.this, "Đã xóa: " + expenseToDelete.getName(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RecurringExpensesActivity.this, "Không thể xóa khoản chi định kỳ.", Toast.LENGTH_SHORT).show();
+                                adapter.notifyItemChanged(position); // Đặt lại item nếu không xóa được
+                            }
+                        })
+                        .setNegativeButton("Hủy", (dialog, which) -> {
+                            // Nếu hủy, đặt lại item về vị trí cũ
+                            adapter.notifyItemChanged(position);
+                            dialog.dismiss();
+                        })
+                        .setOnCancelListener(dialog -> {
+                            // Nếu hộp thoại bị hủy (chạm ra ngoài), đặt lại item
+                            adapter.notifyItemChanged(position);
+                        })
+                        .show();
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
 
-    // Phương thức để cập nhật trạng thái rỗng
+    /**
+     * Cập nhật trạng thái TextView hiển thị thông báo rỗng (Empty State Message).
+     */
     private void updateEmptyState() {
         if (recurringExpenseList.isEmpty()) {
             tvEmptyStateMessage.setVisibility(View.VISIBLE);
@@ -129,40 +252,7 @@ public class RecurringExpensesActivity extends AppCompatActivity {
         }
     }
 
-    // Lớp dữ liệu cho Chi tiêu định kỳ (Đã cập nhật để có ID và Status)
-    public static class RecurringExpense {
-        private long id;
-        private String name;
-        private double amount;
-        private String frequency;
-        private String nextDate;
-        private int iconResId;
-        private int iconTintColorResId;
-        private String status;
-
-        public RecurringExpense(long id, String name, double amount, String frequency, String nextDate, int iconResId, int iconTintColorResId, String status) {
-            this.id = id;
-            this.name = name;
-            this.amount = amount;
-            this.frequency = frequency;
-            this.nextDate = nextDate;
-            this.iconResId = iconResId;
-            this.iconTintColorResId = iconTintColorResId;
-            this.status = status;
-        }
-
-        // --- Getters (cần thiết cho Adapter) ---
-        public long getId() { return id; }
-        public String getName() { return name; }
-        public double getAmount() { return amount; }
-        public String getFrequency() { return frequency; }
-        public String getNextDate() { return nextDate; }
-        public int getIconResId() { return iconResId; }
-        public int getIconTintColorResId() { return iconTintColorResId; }
-        public String getStatus() { return status; }
-    }
-
-    // Adapter cho RecyclerView
+    // Lớp Adapter cho RecyclerView
     public class RecurringExpenseAdapter extends RecyclerView.Adapter<RecurringExpenseAdapter.ViewHolder> {
 
         private List<RecurringExpense> expenses;
@@ -188,9 +278,25 @@ public class RecurringExpensesActivity extends AppCompatActivity {
             String formattedAmount = formatter.format(expense.getAmount());
             holder.amountTextView.setText(String.format("%s VND", formattedAmount));
 
-            holder.iconImageView.setImageResource(expense.getIconResId());
-            holder.iconImageView.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), expense.getIconTintColorResId()));
-            holder.amountTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.button_red));
+            // Đảm bảo các Resource ID là hợp lệ trước khi sử dụng
+            if (expense.getIconResId() != 0) { // Kiểm tra nếu ID không phải 0 (ID hợp lệ)
+                holder.iconImageView.setImageResource(expense.getIconResId());
+            } else {
+                holder.iconImageView.setImageResource(R.drawable.ic_category); // Icon mặc định nếu không tìm thấy
+            }
+
+            if (expense.getIconTintColorResId() != 0) { // Kiểm tra nếu ID màu không phải 0
+                holder.iconImageView.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), expense.getIconTintColorResId()));
+            } else {
+                holder.iconImageView.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_medium)); // Màu mặc định
+            }
+
+            // Đặt màu số tiền dựa trên loại giao dịch
+            if (expense.getType() != null && expense.getType().equals("Income")) {
+                holder.amountTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primary_green_dark));
+            } else { // Mặc định là Expense
+                holder.amountTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.button_red));
+            }
         }
 
         @Override
@@ -215,7 +321,6 @@ public class RecurringExpensesActivity extends AppCompatActivity {
                     if (position != RecyclerView.NO_POSITION) {
                         RecurringExpense clickedExpense = expenses.get(position);
 
-                        // Mở màn hình Thêm/Sửa để chỉnh sửa
                         Intent intent = new Intent(v.getContext(), AddEditRecurringExpenseActivity.class);
                         // Truyền tất cả dữ liệu của khoản chi tiêu sang màn hình sửa
                         intent.putExtra("RECURRING_EXPENSE_ID", clickedExpense.getId());
@@ -226,8 +331,8 @@ public class RecurringExpensesActivity extends AppCompatActivity {
                         intent.putExtra("RECURRING_EXPENSE_ICON_RES_ID_DEMO", clickedExpense.getIconResId());
                         intent.putExtra("RECURRING_EXPENSE_ICON_TINT_COLOR_RES_ID_DEMO", clickedExpense.getIconTintColorResId());
                         intent.putExtra("RECURRING_EXPENSE_STATUS_DEMO", clickedExpense.getStatus());
+                        intent.putExtra("RECURRING_EXPENSE_TYPE_DEMO", clickedExpense.getType()); // Truyền thêm type
 
-                        // Dùng startActivityForResult từ context của Activity cha
                         ((AppCompatActivity) v.getContext()).startActivityForResult(intent, EDIT_RECURRING_EXPENSE_REQUEST);
                     }
                 });

@@ -40,6 +40,8 @@
         <activity android:name=".ChooseGroupActivity" android:exported="true" />
 
 
+
+
         <activity android:name=".RecurringExpensesActivity" android:exported="false" />
         <activity android:name=".AddEditRecurringExpenseActivity" android:exported="false" />
         <activity android:name=".ChatbotActivity" android:exported="false"/>
@@ -50,6 +52,8 @@
         <activity android:name=".Forgotpassword.OtpVerificationActivity" android:exported="false"/>
         <activity android:name=".TransactionHistoryActivity" />
         <activity android:name=".MyWalletActivity" />
+
+
 
     </application>
 

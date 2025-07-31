@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.room.runtime.android)
+
 
     // Thư viện kiểm thử
     testImplementation(libs.junit)

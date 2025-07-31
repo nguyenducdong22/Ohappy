@@ -29,13 +29,10 @@ import java.util.TimeZone;
 
 public class AddEditRecurringExpenseActivity extends AppCompatActivity {
 
-    // Khai báo các View từ layout
     private Toolbar toolbar;
     private EditText edtRecurringName;
     private EditText edtRecurringAmount;
-    // Đã bỏ LinearLayout layoutSelectRecurringCategory;
-    // Đã bỏ ImageView imgRecurringCategoryIcon;
-    private EditText edtRecurringCategoryName; // Bây giờ là EditText để nhập tên nhóm
+    private EditText edtRecurringCategoryName; // EditText để nhập tên nhóm
 
     private RadioGroup radioGroupFrequency;
     private MaterialRadioButton radioMonthly, radioWeekly, radioYearly;
@@ -46,12 +43,6 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
     private MaterialButton btnSaveRecurringExpense;
 
     private long currentExpenseId = -1; // -1 nếu là thêm mới, ID nếu là chỉnh sửa
-    // Không cần lưu selectedCategoryIconResId và selectedCategoryTintColorResId nữa
-    // private int selectedCategoryIconResId = R.drawable.ic_category;
-    // private int selectedCategoryTintColorResId = R.color.primary_green_dark;
-
-    // Request code cho việc chọn nhóm (Không cần nữa vì không có Activity chọn nhóm)
-    // private static final int SELECT_RECURRING_CATEGORY_REQUEST_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +53,6 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar_add_edit_recurring);
         edtRecurringName = findViewById(R.id.edt_recurring_name);
         edtRecurringAmount = findViewById(R.id.edt_recurring_amount);
-        // Ánh xạ EditText tên nhóm
         edtRecurringCategoryName = findViewById(R.id.edt_recurring_category_name);
 
         radioGroupFrequency = findViewById(R.id.radio_group_frequency);
@@ -81,19 +71,22 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbar.setNavigationOnClickListener(v -> {
-            setResult(Activity.RESULT_CANCELED);
+            setResult(Activity.RESULT_CANCELED); // Nếu người dùng nhấn nút quay lại, hủy bỏ
             finish();
         });
 
-        // Kiểm tra nếu là chế độ chỉnh sửa
+        // Kiểm tra nếu là chế độ chỉnh sửa (EDIT)
+        // Lấy dữ liệu từ Intent đã truyền từ RecurringExpensesActivity
         if (getIntent().hasExtra("RECURRING_EXPENSE_ID")) {
             currentExpenseId = getIntent().getLongExtra("RECURRING_EXPENSE_ID", -1);
             toolbar.setTitle("Sửa Chi Tiêu Định Kỳ");
             btnSaveRecurringExpense.setText("Cập nhật");
             btnDeleteRecurringExpense.setVisibility(View.VISIBLE);
-            // Đổ dữ liệu mẫu vào các trường khi ở chế độ chỉnh sửa
+
+            // Đổ dữ liệu từ Intent vào các trường chỉnh sửa
             edtRecurringName.setText(getIntent().getStringExtra("RECURRING_EXPENSE_NAME_DEMO"));
             edtRecurringAmount.setText(String.valueOf(getIntent().getDoubleExtra("RECURRING_EXPENSE_AMOUNT_DEMO", 0.0)));
+            // Lấy tên nhóm từ intent (đã được truyền từ RecurringExpensesActivity)
             edtRecurringCategoryName.setText(getIntent().getStringExtra("RECURRING_EXPENSE_CATEGORY_NAME_DEMO"));
             tvRecurringNextDate.setText(getIntent().getStringExtra("RECURRING_EXPENSE_NEXT_DATE_DEMO"));
 
@@ -108,38 +101,59 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         } else {
             toolbar.setTitle("Thêm Chi Tiêu Định Kỳ");
             btnDeleteRecurringExpense.setVisibility(View.GONE);
-            setupDefaultNextDate();
+            setupDefaultNextDate(); // Đặt ngày mặc định cho chế độ thêm mới
         }
 
-        // BỎ Listener cho chọn nhóm
-        // layoutSelectRecurringCategory.setOnClickListener(v -> { ... });
-
+        // Listener cho chọn ngày tiếp theo
         layoutSelectNextDate.setOnClickListener(v -> {
             showDatePicker();
         });
 
+        // Listener cho nút Lưu/Cập nhật
         btnSaveRecurringExpense.setOnClickListener(v -> {
             saveOrUpdateRecurringExpense();
         });
 
+        // Listener cho nút Xóa
         btnDeleteRecurringExpense.setOnClickListener(v -> {
             showDeleteConfirmationDialog();
         });
 
+        // Đặt mặc định chọn "Hàng tháng" khi tạo mới
         radioMonthly.setChecked(true);
     }
 
     // --- Phương thức hỗ trợ ---
+
+    /**
+     * Thiết lập ngày tiếp theo mặc định là ngày hiện tại.
+     */
     private void setupDefaultNextDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         tvRecurringNextDate.setText(sdf.format(calendar.getTime()));
     }
 
+    /**
+     * Hiển thị DatePicker để chọn ngày.
+     */
     private void showDatePicker() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Chọn Ngày Tiếp Theo");
-        builder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+        // Nếu đã có ngày, đặt ngày đó làm mặc định. Nếu không, đặt ngày hiện tại.
+        try {
+            if (!TextUtils.isEmpty(tvRecurringNextDate.getText())) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                Calendar selectedCal = Calendar.getInstance();
+                selectedCal.setTime(sdf.parse(tvRecurringNextDate.getText().toString()));
+                builder.setSelection(selectedCal.getTimeInMillis());
+            } else {
+                builder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+            }
+        } catch (java.text.ParseException e) {
+            builder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+        }
+
 
         final MaterialDatePicker<Long> materialDatePicker = builder.build();
 
@@ -153,60 +167,76 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         materialDatePicker.show(getSupportFragmentManager(), "RECURRING_DATE_PICKER");
     }
 
-    // --- Logic Save/Update (Hiện tại chỉ là Toast/Dummy, sau này sẽ dùng DB) ---
+    /**
+     * Thu thập dữ liệu từ UI và truyền nó về RecurringExpensesActivity.
+     */
     private void saveOrUpdateRecurringExpense() {
         String name = edtRecurringName.getText().toString().trim();
         String amountStr = edtRecurringAmount.getText().toString().trim();
-        String categoryName = edtRecurringCategoryName.getText().toString().trim(); // Lấy từ EditText tên nhóm
+        String categoryName = edtRecurringCategoryName.getText().toString().trim();
         String nextDate = tvRecurringNextDate.getText().toString();
         String frequency = "";
         if (radioMonthly.isChecked()) frequency = "Hàng tháng";
         else if (radioWeekly.isChecked()) frequency = "Hàng tuần";
         else if (radioYearly.isChecked()) frequency = "Hàng năm";
         String status = switchRecurringStatus.isChecked() ? "active" : "paused";
+        String type = "Expense"; // Giả định là Expense, nếu bạn có lựa chọn thu/chi, cần lấy từ UI
 
-        // Validation
+        // Validation cơ bản
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(amountStr) || TextUtils.isEmpty(categoryName) || TextUtils.isEmpty(nextDate)) {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double amount = Double.parseDouble(amountStr);
-        // Gán icon mặc định R.drawable.ic_category (hoặc một icon khác phù hợp với tên nhóm nếu bạn có logic đó)
-        int iconResId = R.drawable.ic_category;
-        int iconTintColorResId = R.color.primary_green_dark; // Màu tint mặc định
-
-        if (currentExpenseId == -1) {
-            Toast.makeText(this, "Thêm mới: " + name + " - " + amount + " - Nhóm: " + categoryName, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Cập nhật: ID " + currentExpenseId + " - " + name + " - Nhóm: " + categoryName, Toast.LENGTH_LONG).show();
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số tiền không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
         }
-        setResult(Activity.RESULT_OK); // Đặt kết quả OK để RecurringExpensesActivity làm mới
+
+        // Lấy Resource ID của icon và màu sắc
+        // Vì bạn không có ChooseCategoryActivity, chúng ta sẽ dùng các ID mặc định
+        // hoặc các ID bạn đã định nghĩa nếu có ánh xạ tên nhóm -> icon/màu
+        int iconResId = R.drawable.ic_category; // Icon mặc định
+        int iconTintColorResId = R.color.primary_green_dark; // Màu mặc định
+
+        // --- Tạo Intent để trả về dữ liệu ---
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("RECURRING_EXPENSE_ID", currentExpenseId); // Truyền ID nếu là sửa
+        resultIntent.putExtra("RECURRING_EXPENSE_NAME_DEMO", name); // <-- Đã đổi để truyền biến 'name'
+        resultIntent.putExtra("RECURRING_EXPENSE_AMOUNT_DEMO", amount); // <-- Đã đổi để truyền biến 'amount'
+        resultIntent.putExtra("RECURRING_EXPENSE_CATEGORY_NAME_DEMO", categoryName); // <-- Truyền tên nhóm
+        resultIntent.putExtra("RECURRING_EXPENSE_FREQUENCY_DEMO", frequency);
+        resultIntent.putExtra("RECURRING_EXPENSE_NEXT_DATE_DEMO", nextDate);
+        resultIntent.putExtra("RECURRING_EXPENSE_ICON_RES_ID_DEMO", iconResId);
+        resultIntent.putExtra("RECURRING_EXPENSE_ICON_TINT_COLOR_RES_ID_DEMO", iconTintColorResId);
+        resultIntent.putExtra("RECURRING_EXPENSE_STATUS_DEMO", status);
+        resultIntent.putExtra("RECURRING_EXPENSE_TYPE_DEMO", type);
+
+        // Đặt kết quả và kết thúc Activity
+        setResult(Activity.RESULT_OK, resultIntent); // Đặt kết quả OK và truyền Intent
         finish();
     }
 
-    // --- Logic Delete (Hiện tại chỉ là Toast/Dummy, sau này sẽ dùng DB) ---
+    /**
+     * Hiển thị hộp thoại xác nhận xóa.
+     */
     private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận xóa")
                 .setMessage("Bạn có chắc chắn muốn xóa khoản chi tiêu định kỳ này không?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
-                    Toast.makeText(AddEditRecurringExpenseActivity.this, "Đã xóa (mẫu) ID: " + currentExpenseId, Toast.LENGTH_SHORT).show();
-                    setResult(Activity.RESULT_OK);
+                    // Để xử lý xóa, bạn sẽ cần truyền tín hiệu về RecurringExpensesActivity
+                    // Ví dụ: set result là OK và thêm extra "ACTION_DELETE"
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ACTION_DELETE", true);
+                    resultIntent.putExtra("RECURRING_EXPENSE_ID", currentExpenseId);
+                    setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
     }
-
-    // BỎ onActivityResult cho chọn nhóm vì giờ là EditText
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // if (requestCode == SELECT_RECURRING_CATEGORY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-        // ... (code cũ)
-        // }
-    }
-    */
 }

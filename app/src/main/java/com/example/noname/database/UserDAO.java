@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.noname.utils.PasswordHasher; // Import PasswordHasher
-import java.text.ParseException; // Thêm import này
+import com.example.noname.utils.PasswordHasher;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit; // Thêm import này
+import java.util.concurrent.TimeUnit;
 
 public class UserDAO {
     private SQLiteDatabase database;
@@ -37,8 +37,6 @@ public class UserDAO {
         Log.d("UserDAO", "Database closed.");
     }
 
-    // --- Các phương thức CRUD cho Users ---
-
     /**
      * Thêm người dùng mới vào database (đã bỏ câu hỏi bảo mật).
      *
@@ -49,7 +47,7 @@ public class UserDAO {
      * @return ID của hàng mới được thêm vào, hoặc -1 nếu có lỗi.
      */
     public long createUser(String email, String fullName, String phoneNumber,
-                           String passwordHash) { // ĐÃ BỎ: securityQuestion, securityAnswer
+                           String passwordHash) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_EMAIL, email);
         values.put(DatabaseHelper.COLUMN_FULL_NAME, fullName);
@@ -87,21 +85,57 @@ public class UserDAO {
                             DatabaseHelper.COLUMN_FULL_NAME,
                             DatabaseHelper.COLUMN_PHONE_NUMBER,
                             DatabaseHelper.COLUMN_PASSWORD_HASH
-                            // ĐÃ BỎ: COLUMN_SECURITY_QUESTION, COLUMN_SECURITY_ANSWER_HASH
                     },
                     DatabaseHelper.COLUMN_EMAIL + " = ?",
                     new String[]{email},
                     null, null, null
             );
             Log.d("UserDAO", "Query getUserByEmail for: " + email + ", found " + (cursor != null ? cursor.getCount() : 0) + " rows.");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e("UserDAO", "Error getting user by email: " + e.getMessage());
         }
         return cursor;
     }
 
-    // Các phương thức khác (updateLastLogin, isEmailExists, deleteUserByEmail, updatePassword, updateUserEmail, updateUserProfile)
-    // Giữ nguyên như bạn đã có:
+    /**
+     * Lấy ID người dùng dựa trên địa chỉ email.
+     *
+     * @param email Địa chỉ email của người dùng.
+     * @return ID của người dùng nếu tìm thấy, hoặc -1 nếu không tìm thấy hoặc có lỗi.
+     */
+    public long getUserIdByEmail(String email) {
+        Cursor cursor = null;
+        long userId = -1;
+        try {
+            cursor = database.query(
+                    DatabaseHelper.TABLE_USERS,
+                    new String[]{DatabaseHelper.COLUMN_ID},
+                    DatabaseHelper.COLUMN_EMAIL + " = ?",
+                    new String[]{email},
+                    null, null, null
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                int idColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
+                if (idColumnIndex != -1) {
+                    userId = cursor.getLong(idColumnIndex);
+                    Log.d("UserDAO", "Found user ID " + userId + " for email: " + email);
+                } else {
+                    Log.e("UserDAO", "COLUMN_ID not found in cursor for email: " + email);
+                }
+            } else {
+                Log.d("UserDAO", "No user found for email: " + email);
+            }
+        } catch (Exception e) {
+            Log.e("UserDAO", "Error getting user ID by email: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return userId;
+    }
+
     public int updateLastLogin(long userId) {
         ContentValues values = new ContentValues();
         String currentTime = DATETIME_FORMAT.format(new Date());
@@ -127,7 +161,7 @@ public class UserDAO {
         try {
             cursor = database.query(
                     DatabaseHelper.TABLE_USERS,
-                    new String[]{DatabaseHelper.COLUMN_ID}, // Chỉ cần lấy ID để kiểm tra sự tồn tại
+                    new String[]{DatabaseHelper.COLUMN_ID},
                     DatabaseHelper.COLUMN_EMAIL + " = ?",
                     new String[]{email},
                     null, null, null
@@ -137,10 +171,10 @@ public class UserDAO {
             return exists;
         } catch (Exception e) {
             Log.e("UserDAO", "Error checking email existence: " + e.getMessage());
-            return false; // Trả về false nếu có lỗi xảy ra
+            return false;
         } finally {
             if (cursor != null) {
-                cursor.close(); // Đảm bảo đóng Cursor để tránh rò rỉ bộ nhớ
+                cursor.close();
             }
         }
     }
@@ -149,9 +183,9 @@ public class UserDAO {
         int rowsAffected = 0;
         try {
             rowsAffected = database.delete(
-                    DatabaseHelper.TABLE_USERS, // Tên bảng
-                    DatabaseHelper.COLUMN_EMAIL + " = ?", // Mệnh đề WHERE
-                    new String[]{email} // Giá trị cho WHERE
+                    DatabaseHelper.TABLE_USERS,
+                    DatabaseHelper.COLUMN_EMAIL + " = ?",
+                    new String[]{email}
             );
             Log.d("UserDAO", "Deleted user with email: " + email + ", rows affected: " + rowsAffected);
         } catch (Exception e) {
@@ -220,9 +254,6 @@ public class UserDAO {
         return rowsAffected;
     }
 
-
-    // --- CÁC PHƯƠNG THỨC MỚI CHO CHỨC NĂNG QUÊN MẬT KHẨU (OTP Demo) ---
-
     /**
      * Tạo và lưu một mã OTP mới cho người dùng.
      *
@@ -239,16 +270,14 @@ public class UserDAO {
         String currentTime = DATETIME_FORMAT.format(new Date());
         values.put(DatabaseHelper.COLUMN_CREATED_AT, currentTime);
 
-        // Tính thời gian hết hạn
         Date expiresAtDate = new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(expiresInMinutes));
         String expiresAt = DATETIME_FORMAT.format(expiresAtDate);
         values.put(DatabaseHelper.COLUMN_EXPIRES_AT, expiresAt);
 
-        values.put(DatabaseHelper.COLUMN_IS_USED, 0); // Ban đầu OTP chưa được sử dụng
+        values.put(DatabaseHelper.COLUMN_IS_USED, 0);
 
         long rowId = -1;
         try {
-            // Xóa bất kỳ OTP cũ nào chưa sử dụng cho người dùng này để tránh xung đột
             database.delete(DatabaseHelper.TABLE_OTP_TOKENS,
                     DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " + DatabaseHelper.COLUMN_IS_USED + " = 0",
                     new String[]{String.valueOf(userId)});
@@ -276,7 +305,6 @@ public class UserDAO {
         Cursor userCursor = null;
         Cursor otpCursor = null;
         try {
-            // 1. Lấy ID người dùng từ email
             long userId = -1;
             userCursor = getUserByEmail(email);
             if (userCursor != null && userCursor.moveToFirst()) {
@@ -286,10 +314,9 @@ public class UserDAO {
                 return false;
             }
 
-            // 2. Lấy OTP gần nhất cho người dùng này
             String selection = DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " +
                     DatabaseHelper.COLUMN_OTP_CODE + " = ? AND " +
-                    DatabaseHelper.COLUMN_IS_USED + " = 0"; // OTP chưa được sử dụng
+                    DatabaseHelper.COLUMN_IS_USED + " = 0";
 
             String[] selectionArgs = {String.valueOf(userId), providedOtp};
 
@@ -298,7 +325,7 @@ public class UserDAO {
                     new String[]{DatabaseHelper.COLUMN_EXPIRES_AT},
                     selection,
                     selectionArgs,
-                    null, null, DatabaseHelper.COLUMN_CREATED_AT + " DESC", "1" // Lấy OTP gần nhất
+                    null, null, DatabaseHelper.COLUMN_CREATED_AT + " DESC", "1"
             );
 
             if (otpCursor != null && otpCursor.moveToFirst()) {
@@ -310,7 +337,6 @@ public class UserDAO {
                     if (now.before(expiresAt)) {
                         Log.d("UserDAO", "OTP " + providedOtp + " for email " + email + " is valid and not expired.");
 
-                        // 3. OTP hợp lệ, tiến hành cập nhật mật khẩu
                         ContentValues userValues = new ContentValues();
                         userValues.put(DatabaseHelper.COLUMN_PASSWORD_HASH, PasswordHasher.hashPassword(newPassword));
 
@@ -323,7 +349,6 @@ public class UserDAO {
 
                         if (rowsAffected > 0) {
                             Log.d("UserDAO", "Password reset successfully for " + email);
-                            // 4. Đánh dấu OTP là đã sử dụng
                             markOtpAsUsed(providedOtp);
                             return true;
                         } else {
@@ -332,7 +357,7 @@ public class UserDAO {
                         }
                     } else {
                         Log.w("UserDAO", "OTP " + providedOtp + " for email " + email + " has expired.");
-                        return false; // OTP đã hết hạn
+                        return false;
                     }
                 } catch (ParseException e) {
                     Log.e("UserDAO", "Error parsing expiration date for OTP: " + e.getMessage());
@@ -340,7 +365,7 @@ public class UserDAO {
                 }
             } else {
                 Log.w("UserDAO", "OTP " + providedOtp + " not found, already used, or invalid for email: " + email);
-                return false; // OTP không tìm thấy hoặc đã được sử dụng
+                return false;
             }
         } catch (Exception e) {
             Log.e("UserDAO", "Error verifying OTP and resetting password: " + e.getMessage());

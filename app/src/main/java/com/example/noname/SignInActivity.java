@@ -30,7 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.example.noname.database.UserDAO;
 import com.example.noname.database.DatabaseHelper;
 import com.example.noname.utils.PasswordHasher;
-import com.example.noname.Forgotpassword.ForgotPasswordRequestActivity; // THÊM IMPORT NÀY
+import com.example.noname.Forgotpassword.ForgotPasswordRequestActivity;
 
 
 public class SignInActivity extends BaseActivity {
@@ -64,6 +64,7 @@ public class SignInActivity extends BaseActivity {
         btnSignIn = findViewById(R.id.btnSignIn);
         tvSignUpLink = findViewById(R.id.tvSignUpLink);
 
+        // Khởi tạo UserDAO
         userDAO = new UserDAO(this);
 
         applyStyledLogoText(tvLogoTextSignIn);
@@ -71,7 +72,7 @@ public class SignInActivity extends BaseActivity {
         // --- KHỞI TẠO VÀ CẤU HÌNH VIDEOVIEW BẮT ĐẦU ---
         videoBackground = findViewById(R.id.video_background);
 
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.login_background; // Đảm bảo login_background.mp4 hoặc .avi ... nằm trong res/raw
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.login_background;
         Uri videoUri = Uri.parse(videoPath);
         videoBackground.setVideoURI(videoUri);
 
@@ -79,7 +80,7 @@ public class SignInActivity extends BaseActivity {
 
         videoBackground.setOnPreparedListener(mp -> {
             mp.setLooping(true);
-            mp.setVolume(0f, 0f); // Tắt âm lượng video
+            mp.setVolume(0f, 0f);
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -111,7 +112,7 @@ public class SignInActivity extends BaseActivity {
 
         btnBack.setOnClickListener(v -> onBackPressed());
 
-        // --- BẮT ĐẦU PHẦN XỬ LÝ ĐĂNG NHẬP (GIỮ NGUYÊN) ---
+        // --- BẮT ĐẦU PHẦN XỬ LÝ ĐĂNG NHẬP (ĐÃ CẬP NHẬT) ---
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,18 +134,23 @@ public class SignInActivity extends BaseActivity {
                         String storedPasswordHash = (passwordHashColumnIndex != -1) ? cursor.getString(passwordHashColumnIndex) : null;
 
                         if (storedPasswordHash != null && PasswordHasher.verifyPassword(plainPassword, storedPasswordHash)) {
+                            // Đăng nhập thành công, lưu thông tin vào SharedPreferences
                             SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString("LOGGED_IN_USER_EMAIL", email);
-                            editor.apply();
-
-                            Toast.makeText(SignInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
                             int userIdColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
                             if (userIdColumnIndex != -1) {
                                 long userId = cursor.getLong(userIdColumnIndex);
-                                userDAO.updateLastLogin(userId);
+                                editor.putLong("LOGGED_IN_USER_ID", userId); // LƯU USER ID VÀO SHARED PREFERENCES
+                                userDAO.updateLastLogin(userId); // Cập nhật thời gian đăng nhập cuối
+                                Log.d("SignInActivity", "User logged in. ID: " + userId + ", Email: " + email);
+                            } else {
+                                Log.e("SignInActivity", "User ID column not found in cursor.");
                             }
+                            editor.apply(); // Áp dụng thay đổi
+
+                            Toast.makeText(SignInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(SignInActivity.this, MainActivity.class); // Thay MainActivity bằng Activity chính của bạn
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -169,7 +175,6 @@ public class SignInActivity extends BaseActivity {
         });
         // --- KẾT THÚC PHẦN XỬ LÝ ĐĂNG NHẬP ---
 
-        // ĐÃ SỬA: Thay thế Toast bằng Intent để mở ForgotPasswordRequestActivity
         tvForgotPassword.setOnClickListener(v -> {
             Intent intent = new Intent(SignInActivity.this, com.example.noname.Forgotpassword.ForgotPasswordRequestActivity.class);
             startActivity(intent);

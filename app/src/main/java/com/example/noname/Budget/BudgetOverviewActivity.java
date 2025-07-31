@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity; // Lớp cơ sở cho các Acti
 import androidx.recyclerview.widget.LinearLayoutManager; // Một `LayoutManager` cho `RecyclerView` để hiển thị các mục theo một danh sách tuyến tính (dọc hoặc ngang).
 import androidx.recyclerview.widget.RecyclerView;         // Một View hiệu quả và linh hoạt để hiển thị các danh sách lớn hoặc lưới dữ liệu có thể cuộn được, bằng cách tái sử dụng các View item.
 
+import com.example.noname.AccountActivity;
+import com.example.noname.TransactionHistoryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Thành phần thanh điều hướng dưới cùng theo Material Design, hiển thị các tùy chọn điều hướng chính của ứng dụng.
 import com.google.android.material.floatingactionbutton.FloatingActionButton; // Nút hành động nổi (FAB) theo Material Design, thường dùng để thực hiện hành động chính hoặc phổ biến nhất trên màn hình.
 
@@ -166,14 +168,20 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
                     startActivity(overviewIntent);
                     return true;
                 } else if (itemId == R.id.navigation_transactions) {
-                    Toast.makeText(BudgetOverviewActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(BudgetOverviewActivity.this, "Mở màn hình giao dịch!", Toast.LENGTH_SHORT).show();
                     // TODO: Điều hướng đến TransactionsActivity.
+                    Intent overviewIntent = new Intent(BudgetOverviewActivity.this, TransactionHistoryActivity.class);
+                    overviewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(overviewIntent);
                     return true;
                 } else if (itemId == R.id.navigation_budget) {
                     return true; // Đã ở màn hình này.
                 } else if (itemId == R.id.navigation_account) {
-                    Toast.makeText(BudgetOverviewActivity.this, "Mở màn hình tài khoản!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(BudgetOverviewActivity.this, "Mở màn hình tài khoản!", Toast.LENGTH_SHORT).show();
                     // TODO: Điều hướng đến AccountActivity.
+                    Intent overviewIntent = new Intent(BudgetOverviewActivity.this, AccountActivity.class);
+                    overviewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(overviewIntent);
                     return true;
                 }
                 return false;

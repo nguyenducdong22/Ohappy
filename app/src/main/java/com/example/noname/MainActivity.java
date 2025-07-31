@@ -1,63 +1,74 @@
 package com.example.noname;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+
+import com.example.noname.Budget.BudgetOverviewActivity;
+import com.example.noname.database.DatabaseHelper;
+import com.example.noname.database.ReportManager;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import com.example.noname.Budget.BudgetOverviewActivity; // Import your BudgetActivity
-import com.example.noname.AccountActivity; // Import your AccountActivity (if it's in a subpackage)
-// import com.example.noname.TransactionsActivity; // Uncomment if you have this Activity
-// import com.example.noname.AddTransactionActivity; // Uncomment if you have this Activity
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Top Bar elements
-    private LinearLayout headerTitleSection;
+    // Views
     private TextView tvHeaderMainText;
-    private LinearLayout subHeaderBalanceDetails;
-    private TextView tvSubHeaderText; // "Tổng số dư"
-    private LinearLayout subHeaderReportDots; // Page indicators for report
-    private View dot1, dot2, dot3; // Individual dots for top header
-    private ImageButton btnSearch;
-    private ImageButton btnNotifications;
-
-    // Main Content Cards
-    private CardView walletSummaryCard;
-    private CardView reportCardDynamicContent;
-    private LinearLayout reportSummaryView; // "Tổng đã chi / Tổng thu"
-    private LinearLayout reportTabView;     // "Tuần / Tháng" tab and chart
-    private CardView dealCard;
-    private CardView topExpenseCard;
-    private CardView recentTransactionsCard;
-
-    // Report Card Dynamic Elements
-    private TextView tvReportSectionTitle; // "Báo cáo tháng này"
+    private PieChart pieChartReport;
+    private TextView tvTotalSpent, tvTotalIncome;
     private TextView tvSeeReportDetails;
-    private TabLayout tabLayoutWeekMonthReport; // For "Tuần" / "Tháng" in report card
-    private TextView tvCurrentReportValue;
-    private TextView tvTotalSpentPercentage;
-    private ImageButton btnReportPrev, btnReportNext;
-    private LinearLayout reportPageIndicators; // Dots for report trend
-
-    // Bottom Navigation
+    private TextView tvEmptyReportPrompt;
+    private LinearLayout recentTransactionsContainer;
+    private TextView tvEmptyTransactions;
+    private TextView tvSeeAllTransactions;
     private BottomNavigationView bottomNavigationView;
-    private FloatingActionButton fabAddTransaction;
-    private FloatingActionButton fabChatbot; // Đã khai báo biến mới cho FAB Chatbot
-
-    private int currentReportGraphPage = 0; // 0 for Tổng đã chi/Tổng thu, 1 for Tuần/Tháng graph
+    private FloatingActionButton fabAddTransaction, fabChatbot;
+    // Biến để lưu trạng thái trang báo cáo hiện tại (0 = PieChart, 1 = Tab View)
+    private int currentReportPage = 0;
+    // Các View trong Report Card cần để điều khiển
+    private LinearLayout reportSummaryView; // View chứa PieChart
+    private LinearLayout reportTabView;     // View chứa TabLayout Tuần/Tháng
+    private TextView tvReportTrendTitle;
+    private ImageButton btnReportPrev, btnReportNext;
+    private View reportDot1, reportDot2;
+    private TabLayout tabLayoutWeekMonthReport; // TabLayout để xử lý logic bên trong
+    private LinearLayout topExpensesContainer;
+    private TextView tvEmptyTopExpenses;
+    private BarChart barChartReport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,160 +79,468 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        // Initialize Top Bar elements
-        headerTitleSection = findViewById(R.id.header_title_section);
+        initializeViews();
+        setupListeners();
+        updateReportView(); // <<< GỌI Ở ĐÂY để set trạng thái ban đầu
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Luôn tải lại dữ liệu khi quay lại màn hình chính
+        loadDashboardData();
+    }
+
+    private void initializeViews() {
+        // Header
         tvHeaderMainText = findViewById(R.id.tv_header_main_text);
-        subHeaderBalanceDetails = findViewById(R.id.sub_header_balance_details);
-        tvSubHeaderText = findViewById(R.id.tv_sub_header_text);
-        subHeaderReportDots = findViewById(R.id.sub_header_report_dots);
-        dot1 = findViewById(R.id.dot1);
-        dot2 = findViewById(R.id.dot2);
-        dot3 = findViewById(R.id.dot3);
-        btnSearch = findViewById(R.id.btn_search);
-        btnNotifications = findViewById(R.id.btn_notifications);
 
-        // Initialize Main Content Cards
-        walletSummaryCard = findViewById(R.id.wallet_summary_card);
-        reportCardDynamicContent = findViewById(R.id.report_card_dynamic_content);
-        reportSummaryView = findViewById(R.id.report_summary_view);
-        reportTabView = findViewById(R.id.report_tab_view);
-        dealCard = findViewById(R.id.deal_card);
-        topExpenseCard = findViewById(R.id.top_expense_card);
-        recentTransactionsCard = findViewById(R.id.recent_transactions_card);
-
-        // Initialize Dynamic Report Card elements
-        tvReportSectionTitle = findViewById(R.id.tv_report_section_title);
+        // Report Card
+        pieChartReport = findViewById(R.id.pie_chart_report);
+        tvTotalSpent = findViewById(R.id.tv_total_spent);
+        tvTotalIncome = findViewById(R.id.tv_total_income);
         tvSeeReportDetails = findViewById(R.id.tv_see_report_details);
-        tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
-        tvCurrentReportValue = findViewById(R.id.tv_current_report_value);
-        tvTotalSpentPercentage = findViewById(R.id.tv_total_spent_percentage);
-        btnReportPrev = findViewById(R.id.btn_report_prev);
-        btnReportNext = findViewById(R.id.btn_report_next);
-        reportPageIndicators = findViewById(R.id.report_page_indicators);
+        tvEmptyReportPrompt = findViewById(R.id.tv_empty_report_prompt);
 
-        // Initialize Bottom Navigation and FAB
+        // Recent Transactions Card
+        recentTransactionsContainer = findViewById(R.id.recent_transactions_container);
+        tvEmptyTransactions = findViewById(R.id.tv_empty_transactions);
+        tvSeeAllTransactions = findViewById(R.id.tv_see_all_transactions);
+
+        // Bottom Navigation & FABs
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
-        fabChatbot = findViewById(R.id.fab_chatbot); // <<< ÁNH XẠ FAB CHATBOT >>>
+        fabChatbot = findViewById(R.id.fab_chatbot);
 
-        // --- Set up initial state of the UI (Default to Overview Screen - image_ba3ced.jpg) ---
-        updateHeaderAndContentForOverview();
+        reportSummaryView = findViewById(R.id.report_summary_view);
+        reportTabView = findViewById(R.id.report_tab_view);
 
-        tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 0) {
-                    Toast.makeText(MainActivity.this, "Tuần Selected", Toast.LENGTH_SHORT).show();
-                    tvCurrentReportValue.setText("500.000 đ");
-                    tvTotalSpentPercentage.setText("Tổng đã chi tuần này - 25%");
-                } else {
-                    Toast.makeText(MainActivity.this, "Tháng Selected", Toast.LENGTH_SHORT).show();
-                    tvCurrentReportValue.setText("1.500.000 đ");
-                    tvTotalSpentPercentage.setText("Tổng đã chi tháng này - 15%");
-                }
+        tvReportTrendTitle = findViewById(R.id.tv_report_trend_title);
+        btnReportPrev = findViewById(R.id.btn_report_prev);
+        btnReportNext = findViewById(R.id.btn_report_next);
+        reportDot1 = findViewById(R.id.report_dot1);
+        reportDot2 = findViewById(R.id.report_dot2);
+        tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
+
+        topExpensesContainer = findViewById(R.id.top_expenses_container);
+        tvEmptyTopExpenses = findViewById(R.id.tv_empty_top_expenses);
+        barChartReport = findViewById(R.id.bar_chart_report);
+    }
+
+    private void updateReportView() {
+        if (currentReportPage == 0) {
+            // --- Hiển thị chế độ xem Pie Chart ---
+            reportSummaryView.setVisibility(View.VISIBLE);
+            pieChartReport.setVisibility(View.VISIBLE);
+            tvEmptyReportPrompt.setVisibility(pieChartReport.isEmpty() ? View.VISIBLE : View.GONE);
+
+            reportTabView.setVisibility(View.GONE);
+
+            // Cập nhật tiêu đề và dấu chấm chỉ thị
+            tvReportTrendTitle.setText("Báo cáo xu hướng");
+            reportDot1.setBackgroundResource(R.drawable.dot_active);
+            reportDot2.setBackgroundResource(R.drawable.dot_inactive);
+
+        } else { // currentReportPage == 1
+            // --- Hiển thị chế độ xem Tab (Tuần/Tháng) ---
+            reportSummaryView.setVisibility(View.GONE);
+            pieChartReport.setVisibility(View.GONE);
+            tvEmptyReportPrompt.setVisibility(View.GONE);
+
+            reportTabView.setVisibility(View.VISIBLE);
+
+            // Cập nhật tiêu đề và dấu chấm chỉ thị
+            tvReportTrendTitle.setText("Báo cáo chi tiêu");
+            reportDot1.setBackgroundResource(R.drawable.dot_inactive);
+            reportDot2.setBackgroundResource(R.drawable.dot_active);
+
+            // ▼▼▼ PHẦN ĐƯỢC CẬP NHẬT ▼▼▼
+            // Tự động tải dữ liệu cho tab đang được chọn (mặc định là "Tuần")
+            // ngay khi người dùng chuyển sang chế độ xem này.
+            if (tabLayoutWeekMonthReport.getSelectedTabPosition() == 0) {
+                setupAndLoadWeeklyBarChart();
+            } else {
+                setupAndLoadMonthlyBarChart();
             }
+        }
+    }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) { /* Do nothing */ }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
-        });
 
-        btnReportPrev.setOnClickListener(v -> {
-            currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
-            updateReportGraphView();
-        });
-
-        btnReportNext.setOnClickListener(v -> {
-            currentReportGraphPage = (currentReportGraphPage + 1) % 2;
-            updateReportGraphView();
-        });
-
-        // <<< THÊM MỚI: SỰ KIỆN CLICK CHO "XEM BÁO CÁO" >>>
+    private void setupListeners() {
         tvSeeReportDetails.setOnClickListener(v -> {
-            // Tạo Intent để mở ReportDetailsActivity
             Intent intent = new Intent(MainActivity.this, ReportDetailsActivity.class);
             startActivity(intent);
         });
 
-        // Set up Bottom Navigation Listener
+        tvSeeAllTransactions.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+            startActivity(intent);
+        });
+
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.navigation_overview) {
-                updateHeaderAndContentForOverview();
-                return true;
-            } else if (itemId == R.id.navigation_transactions) {
-                // Tạo một Intent để mở TransactionHistoryActivity
-                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
-                startActivity(intent);
+            if (itemId == R.id.navigation_transactions) {
+                startActivity(new Intent(MainActivity.this, TransactionHistoryActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                // Chuyển sang BudgetActivity khi chọn mục "Ngân sách"
-                Intent budgetIntent = new Intent(MainActivity.this, BudgetOverviewActivity.class);
-                startActivity(budgetIntent);
+                startActivity(new Intent(MainActivity.this, BudgetOverviewActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
                 return true;
             }
-            return false;
+            return itemId == R.id.navigation_overview;
         });
 
         fabAddTransaction.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-            // TODO: Điều hướng đến màn hình Thêm giao dịch (e.g., AddTransactionActivity)
-            Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
-            startActivity(addTransactionIntent);
+            startActivity(new Intent(MainActivity.this, Addtransaction.class));
         });
 
-        // <<< LISTENER CHO FAB CHATBOT MỚI >>>
         fabChatbot.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, ChatbotActivity.class));
+        });
+
+        // === THÊM CÁC LISTENER MỚI DƯỚI ĐÂY ===
+        btnReportPrev.setOnClickListener(v -> {
+            currentReportPage = 0; // Luôn quay về trang 0
+            updateReportView();
+        });
+
+        btnReportNext.setOnClickListener(v -> {
+            currentReportPage = 1; // Luôn đi tới trang 1
+            updateReportView();
+        });
+
+        // (Tùy chọn) Thêm listener cho TabLayout nếu bạn cần xử lý logic Tuần/Tháng
+        tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    // Logic cho tab "Tuần"
+                    setupAndLoadWeeklyBarChart(); // <<< GỌI PHƯƠNG THỨC MỚI
+                } else {
+                    // Logic cho tab "Tháng"
+                    setupAndLoadMonthlyBarChart();
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
         });
     }
 
-    private void updateHeaderAndContentForOverview() {
-        // Top Bar
-        tvHeaderMainText.setText("0.00 đ");
-        subHeaderBalanceDetails.setVisibility(View.VISIBLE);
-        subHeaderReportDots.setVisibility(View.GONE);
+    private void loadDashboardData() {
+        // 1. Tải tổng số dư
+        double totalBalance = ReportManager.getTotalBalance(this);
+        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        tvHeaderMainText.setText(formatter.format(totalBalance));
 
-        // Main Content Cards visibility
-        walletSummaryCard.setVisibility(View.VISIBLE);
-        reportCardDynamicContent.setVisibility(View.VISIBLE);
-        dealCard.setVisibility(View.VISIBLE);
-        topExpenseCard.setVisibility(View.VISIBLE);
-        recentTransactionsCard.setVisibility(View.VISIBLE);
+        // 2. Tải báo cáo tháng này
+        SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+        String currentMonth = monthFormat.format(Calendar.getInstance().getTime());
+        Map<String, Double> summary = ReportManager.getMonthlySummary(this, currentMonth);
 
-        // Inside reportCardDynamicContent
-        tvReportSectionTitle.setText("Báo cáo tháng này");
-        tvSeeReportDetails.setText("Xem báo cáo");
-        reportSummaryView.setVisibility(View.VISIBLE);
-        reportTabView.setVisibility(View.GONE);
-        reportPageIndicators.setVisibility(View.VISIBLE);
-        updateReportGraphView();
+        double totalIncome = summary.getOrDefault("totalIncome", 0.0);
+        double totalExpense = summary.getOrDefault("totalExpense", 0.0);
+
+        tvTotalIncome.setText(formatter.format(totalIncome));
+        tvTotalSpent.setText(formatter.format(totalExpense));
+
+        if (totalIncome > 0 || totalExpense > 0) {
+            pieChartReport.setVisibility(View.VISIBLE);
+            tvEmptyReportPrompt.setVisibility(View.GONE);
+            setupPieChart(totalIncome, totalExpense);
+        } else {
+            pieChartReport.setVisibility(View.GONE);
+            tvEmptyReportPrompt.setVisibility(View.VISIBLE);
+        }
+
+        // 3. Tải và hiển thị các giao dịch gần đây
+        loadRecentTransactions();
+
+        // 4. GỌI PHƯƠNG THỨC MỚI ĐỂ TẢI TOP CHI TIÊU
+        loadTopExpenses(totalExpense, currentMonth);
     }
 
-    // This method handles switching between report graph views within reportCardDynamicContent
-    private void updateReportGraphView() {
-        if (currentReportGraphPage == 0) {
-            reportSummaryView.setVisibility(View.VISIBLE);
-            reportTabView.setVisibility(View.GONE);
-            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Tháng này");
-            findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_active);
-            findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_inactive);
-        } else {
-            reportSummaryView.setVisibility(View.GONE);
-            reportTabView.setVisibility(View.VISIBLE);
-            ((TextView)findViewById(R.id.tv_report_trend_title)).setText("Trung bình 3 tháng trước");
-            findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
-            findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
-            if (tabLayoutWeekMonthReport.getTabCount() > 0) {
-                tabLayoutWeekMonthReport.getTabAt(0).select(); // Select the first tab (Week)
-            }
+    private void setupPieChart(double totalIncome, double totalExpense) {
+        pieChartReport.setUsePercentValues(true);
+        pieChartReport.getDescription().setEnabled(false);
+        pieChartReport.setExtraOffsets(5, 10, 5, 5);
+        pieChartReport.setDragDecelerationFrictionCoef(0.95f);
+        pieChartReport.setDrawHoleEnabled(true);
+        pieChartReport.setHoleColor(Color.WHITE);
+        pieChartReport.setTransparentCircleRadius(61f);
+        pieChartReport.getLegend().setEnabled(false);
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        if (totalExpense > 0) entries.add(new PieEntry((float) totalExpense, "Chi tiêu"));
+        if (totalIncome > 0) entries.add(new PieEntry((float) totalIncome, "Thu nhập"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        if (totalExpense > 0) colors.add(Color.parseColor("#EF5350")); // Màu đỏ
+        if (totalIncome > 0) colors.add(Color.parseColor("#66BB6A")); // Màu xanh
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter(pieChartReport));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChartReport.setData(data);
+        pieChartReport.animateY(1000);
+        pieChartReport.invalidate();
+    }
+
+    private void loadRecentTransactions() {
+        // Xóa các giao dịch cũ trước khi thêm mới
+        // Bắt đầu từ index 1 để giữ lại LinearLayout chứa title "Giao dịch gần đây"
+        if (recentTransactionsContainer.getChildCount() > 1) {
+            recentTransactionsContainer.removeViews(1, recentTransactionsContainer.getChildCount() - 1);
         }
+
+        try (Cursor cursor = ReportManager.getRecentTransactions(this, 3)) {
+            if (cursor != null && cursor.getCount() > 0) {
+                tvEmptyTransactions.setVisibility(View.GONE);
+                LayoutInflater inflater = LayoutInflater.from(this);
+                while (cursor.moveToNext()) {
+                    View itemView = inflater.inflate(R.layout.list_item_transaction, recentTransactionsContainer, false);
+
+                    // Lấy các view từ item layout
+                    ImageView ivItemIcon = itemView.findViewById(R.id.iv_category_icon);
+                    TextView tvItemCategory = itemView.findViewById(R.id.tv_category_name);
+                    TextView tvItemDesc = itemView.findViewById(R.id.tv_transaction_description);
+                    TextView tvItemAmount = itemView.findViewById(R.id.tv_transaction_amount);
+                    TextView tvItemDate = itemView.findViewById(R.id.tv_transaction_date);
+
+                    // Lấy dữ liệu từ Cursor
+                    String type = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TRANSACTION_TYPE));
+                    double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_AMOUNT));
+                    String categoryName = cursor.getString(cursor.getColumnIndexOrThrow("category_name"));
+                    String description = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DESCRIPTION));
+                    String dateString = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TRANSACTION_DATE));
+                    String iconName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ICON_NAME));
+
+                    // Điền dữ liệu vào view
+                    tvItemCategory.setText(categoryName);
+                    tvItemDesc.setText(description);
+
+                    DecimalFormat amountFormatter = new DecimalFormat("#,### đ");
+                    String formattedAmount = amountFormatter.format(amount);
+
+                    if ("Expense".equalsIgnoreCase(type)) {
+                        tvItemAmount.setText("-" + formattedAmount);
+                        tvItemAmount.setTextColor(Color.parseColor("#EF5350"));
+                    } else {
+                        tvItemAmount.setText("+" + formattedAmount);
+                        tvItemAmount.setTextColor(Color.parseColor("#66BB6A"));
+                    }
+
+                    try {
+                        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        SimpleDateFormat displayFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        Date date = dbFormat.parse(dateString);
+                        tvItemDate.setText(displayFormat.format(date));
+                    } catch (ParseException e) {
+                        tvItemDate.setText(dateString.split(" ")[0]);
+                    }
+
+                    int iconResId = getResources().getIdentifier(iconName, "drawable", getPackageName());
+                    ivItemIcon.setImageResource(iconResId != 0 ? iconResId : R.drawable.ic_help);
+
+                    recentTransactionsContainer.addView(itemView);
+                }
+            } else {
+                tvEmptyTransactions.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error loading recent transactions", e);
+            tvEmptyTransactions.setVisibility(View.VISIBLE);
+        } finally {
+            // Đảm bảo database được đóng nếu ReportManager không tự đóng
+            new DatabaseHelper(this).close();
+        }
+    }
+
+    private void loadTopExpenses(double totalExpense, String currentMonth) {
+        // Xóa các view cũ trước khi thêm mới
+        topExpensesContainer.removeAllViews();
+
+        if (totalExpense == 0) {
+            tvEmptyTopExpenses.setVisibility(View.VISIBLE);
+            topExpensesContainer.setVisibility(View.GONE);
+            return;
+        }
+
+        tvEmptyTopExpenses.setVisibility(View.GONE);
+        topExpensesContainer.setVisibility(View.VISIBLE);
+
+        try (Cursor cursor = ReportManager.getTopExpensesForMonth(this, currentMonth)) {
+            if (cursor != null && cursor.getCount() > 0) {
+                LayoutInflater inflater = LayoutInflater.from(this);
+                while (cursor.moveToNext()) {
+                    View itemView = inflater.inflate(R.layout.list_item_top_expense, topExpensesContainer, false);
+
+                    // Lấy view từ item layout
+                    ImageView ivIcon = itemView.findViewById(R.id.iv_top_expense_icon);
+                    TextView tvCategory = itemView.findViewById(R.id.tv_top_expense_category);
+                    TextView tvPercent = itemView.findViewById(R.id.tv_top_expense_percent);
+                    ProgressBar progressBar = itemView.findViewById(R.id.pb_top_expense_progress);
+
+                    // Lấy dữ liệu từ Cursor
+                    String categoryName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME));
+                    String iconName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ICON_NAME));
+                    double categoryAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("total_amount"));
+
+                    // Tính toán phần trăm
+                    int percentage = (int) ((categoryAmount / totalExpense) * 100);
+
+                    // Điền dữ liệu vào view
+                    tvCategory.setText(categoryName);
+                    tvPercent.setText(percentage + "%");
+                    progressBar.setProgress(percentage);
+
+                    int iconResId = getResources().getIdentifier(iconName, "drawable", getPackageName());
+                    ivIcon.setImageResource(iconResId != 0 ? iconResId : R.drawable.ic_help);
+
+                    topExpensesContainer.addView(itemView);
+                }
+            } else {
+                tvEmptyTopExpenses.setVisibility(View.VISIBLE);
+                topExpensesContainer.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error loading top expenses", e);
+            tvEmptyTopExpenses.setVisibility(View.VISIBLE);
+            topExpensesContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupAndLoadWeeklyBarChart() {
+        // 1. Lấy tổng chi tuần này và tuần trước từ ReportManager
+        double previousWeekTotal = ReportManager.getTotalForPreviousWeek(this);
+        double currentWeekTotal = ReportManager.getTotalForCurrentWeek(this);
+
+        // 2. Cập nhật các TextView (logic này giữ nguyên)
+        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        TextView tvCurrentReportValue = findViewById(R.id.tv_current_report_value);
+        TextView tvTotalSpentPercentage = findViewById(R.id.tv_total_spent_percentage);
+
+        tvCurrentReportValue.setText(formatter.format(currentWeekTotal));
+
+        if (previousWeekTotal > 0) {
+            double change = ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
+            String changeText = String.format(Locale.US, "%.1f%% so với tuần trước", change);
+            tvTotalSpentPercentage.setText(changeText);
+            tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : Color.parseColor("#66BB6A"));
+        } else {
+            tvTotalSpentPercentage.setText(currentWeekTotal > 0 ? "Bắt đầu chi tiêu tuần này" : "Chưa có dữ liệu");
+        }
+
+        // 3. Chuẩn bị dữ liệu cho biểu đồ (CHỈ 2 CỘT)
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, (float) previousWeekTotal));
+        entries.add(new BarEntry(1, (float) currentWeekTotal));
+
+        BarDataSet dataSet = new BarDataSet(entries, "So sánh chi tiêu");
+
+        // Đặt màu khác nhau cho 2 cột
+        dataSet.setColors(Color.parseColor("#FFC107"), Color.parseColor("#4CAF50")); // Vàng & Xanh
+        dataSet.setDrawValues(true); // Hiển thị giá trị trên cột
+        dataSet.setValueTextSize(10f);
+        dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return new DecimalFormat("#,###").format(value);
+            }
+        });
+
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.5f); // Làm cho cột nhỏ hơn
+        barChartReport.setData(barData);
+
+        // 4. Tùy chỉnh giao diện biểu đồ
+        barChartReport.getDescription().setEnabled(false);
+        barChartReport.getLegend().setEnabled(false);
+        barChartReport.getAxisRight().setEnabled(false);
+        barChartReport.getAxisLeft().setAxisMinimum(0f);
+        barChartReport.getAxisLeft().setDrawAxisLine(false); // Ẩn đường kẻ trục Y
+        barChartReport.setFitBars(true); // Căn cột vào giữa
+
+        // Đặt nhãn cho trục X
+        String[] labels = new String[]{"Tuần trước", "Tuần này"};
+        barChartReport.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(labels));
+        barChartReport.getXAxis().setPosition(com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM);
+        barChartReport.getXAxis().setGranularity(1f);
+        barChartReport.getXAxis().setDrawGridLines(false);
+        barChartReport.getXAxis().setDrawAxisLine(false);
+
+        // Làm mới biểu đồ
+        barChartReport.animateY(1000);
+        barChartReport.invalidate();
+    }
+
+    private void setupAndLoadMonthlyBarChart() {
+        // 1. Lấy tổng chi tháng này và tháng trước
+        double previousMonthTotal = ReportManager.getTotalForPreviousMonth(this);
+        double currentMonthTotal = ReportManager.getTotalForCurrentMonth(this);
+
+        // 2. Cập nhật các TextView
+        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        TextView tvCurrentReportValue = findViewById(R.id.tv_current_report_value);
+        TextView tvTotalSpentPercentage = findViewById(R.id.tv_total_spent_percentage);
+
+        tvCurrentReportValue.setText(formatter.format(currentMonthTotal));
+
+        if (previousMonthTotal > 0) {
+            double change = ((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100;
+            String changeText = String.format(Locale.US, "%.1f%% so với tháng trước", change);
+            tvTotalSpentPercentage.setText(changeText);
+            tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : Color.parseColor("#66BB6A"));
+        } else {
+            tvTotalSpentPercentage.setText(currentMonthTotal > 0 ? "Bắt đầu chi tiêu tháng này" : "Chưa có dữ liệu");
+        }
+
+        // 3. Chuẩn bị dữ liệu cho biểu đồ (2 cột)
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, (float) previousMonthTotal));
+        entries.add(new BarEntry(1, (float) currentMonthTotal));
+
+        BarDataSet dataSet = new BarDataSet(entries, "So sánh chi tiêu tháng");
+        dataSet.setColors(Color.parseColor("#FFC107"), Color.parseColor("#4CAF50"));
+        dataSet.setDrawValues(true);
+        dataSet.setValueTextSize(10f);
+        dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return new DecimalFormat("#,###").format(value);
+            }
+        });
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.5f);
+        barChartReport.setData(barData);
+
+        // 4. Tùy chỉnh giao diện biểu đồ
+        barChartReport.getDescription().setEnabled(false);
+        barChartReport.getLegend().setEnabled(false);
+        barChartReport.getAxisRight().setEnabled(false);
+        barChartReport.getAxisLeft().setAxisMinimum(0f);
+        barChartReport.setFitBars(true);
+
+        // Đặt nhãn cho trục X (QUAN TRỌNG)
+        String[] labels = new String[]{"Tháng trước", "Tháng này"};
+        barChartReport.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(labels));
+        barChartReport.getXAxis().setPosition(com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM);
+        barChartReport.getXAxis().setGranularity(1f);
+        barChartReport.getXAxis().setDrawGridLines(false);
+
+        barChartReport.animateY(1000);
+        barChartReport.invalidate();
     }
 }

@@ -71,6 +71,5 @@ dependencies {
     implementation(libs.core)
     implementation (libs.androidsvg) // Sử dụng phiên bản mới nhất
 
-
-
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

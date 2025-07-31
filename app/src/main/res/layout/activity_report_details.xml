@@ -263,10 +263,26 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         android:orientation="horizontal"
-                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:layout_marginTop="24dp"
                         android:weightSum="2">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/pie_chart_income_category"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"/>
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/pie_chart_expense_category"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"/>
+
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -275,6 +291,7 @@
                             app:cardElevation="0dp"
                             app:cardBackgroundColor="@color/dashboard_background_light"
                             android:layout_marginEnd="8dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -319,33 +336,6 @@
                                     android:src="@drawable/ic_arrow_forward_ios"/>
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginTop="24dp"
-                        android:weightSum="2">
-                        <ProgressBar
-                            android:id="@+id/progress_income"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:indeterminateOnly="false"
-                            android:progress="75"
-                            android:progressDrawable="@drawable/progress_circle"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_marginEnd="16dp"/>
-                        <ProgressBar
-                            android:id="@+id/progress_expense"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:indeterminateOnly="false"
-                            android:progress="40"
-                            android:progressDrawable="@drawable/progress_circle"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_marginStart="16dp"/>
                     </LinearLayout>
 
                     <LinearLayout

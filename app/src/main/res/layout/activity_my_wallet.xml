@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/dashboard_background_dark"
+    android:background="@android:color/white"
     tools:context=".MyWalletActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="16dp"
+        android:background="@android:color/white">
 
         <TextView
             android:id="@+id/btn_close_wallet"
@@ -29,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/my_wallet_title"
-            android:textColor="@color/white"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +64,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_background_dark_rounded"
+                android:background="@drawable/card_background_light_rounded"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:gravity="center_vertical">
@@ -85,14 +86,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total"
-                        android:textColor="@color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="0.00 đ"
-                        android:textColor="@color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
@@ -108,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/included_in_total"
-                android:textColor="@color/text_secondary_gray"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginTop="24dp"
@@ -117,7 +118,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_background_dark_rounded"
+                android:background="@drawable/card_background_light_rounded"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:gravity="center_vertical">
@@ -139,14 +140,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cash"
-                        android:textColor="@color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="0.00 đ"
-                        android:textColor="@color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
                 </LinearLayout>

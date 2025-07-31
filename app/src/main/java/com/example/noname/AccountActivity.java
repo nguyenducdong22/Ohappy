@@ -107,7 +107,7 @@ public class AccountActivity extends BaseActivity {
         binding.optionNotifications.setOnClickListener(v ->
                 startActivity(new Intent(AccountActivity.this, NotificationSettingsActivity.class))
         );
-        binding.optionTheme.setOnClickListener(v -> showThemeSelectionDialog());
+
         binding.optionLanguage.setOnClickListener(v -> showLanguageSelectionDialog());
         binding.optionHelpCenter.setOnClickListener(v -> {
             startActivity(new Intent(AccountActivity.this, HelpCenterActivity.class));
@@ -162,28 +162,7 @@ public class AccountActivity extends BaseActivity {
         }
     }
 
-    private void showThemeSelectionDialog() {
-        final String[] themes = {
-                getString(R.string.theme_light),
-                getString(R.string.theme_dark),
-                getString(R.string.theme_system)
-        };
-        final int[] themeModes = {
-                AppCompatDelegate.MODE_NIGHT_NO,
-                AppCompatDelegate.MODE_NIGHT_YES,
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        };
 
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.select_theme))
-                .setItems(themes, (dialog, which) -> {
-                    int selectedMode = themeModes[which];
-                    SharedPreferences prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE);
-                    prefs.edit().putInt("theme_mode", selectedMode).apply();
-                    AppCompatDelegate.setDefaultNightMode(selectedMode);
-                })
-                .show();
-    }
 
     private void showLanguageSelectionDialog() {
         final String[] languages = {getString(R.string.language_vietnamese), getString(R.string.language_english)};

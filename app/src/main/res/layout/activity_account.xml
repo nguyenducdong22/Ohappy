@@ -125,13 +125,7 @@
 
                 <View style="@style/Divider" />
 
-                <TextView
-                    android:id="@+id/option_theme"
-                    style="@style/AccountOptionItem"
-                    app:drawableStartCompat="@drawable/ic_theme"
-                    android:text="@string/account_option_theme" />
 
-                <View style="@style/Divider" />
 
                 <TextView
                     android:id="@+id/option_language"

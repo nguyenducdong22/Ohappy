@@ -38,6 +38,10 @@
         <activity android:name=".ChooseWalletActivity" android:exported="true" />
         <activity android:name=".Addtransaction" android:exported="false" />
         <activity android:name=".ChooseGroupActivity" android:exported="true" />
+        <activity android:name=".models.Transaction" android:exported="true"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".TransactionListActivity" android:exported="true"
+            tools:ignore="Instantiatable" />
 
 
 

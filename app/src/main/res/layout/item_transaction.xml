@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="8dp"
+    style="@style/Widget.App.CardView"
+    app:cardBackgroundColor="@color/card_bg_white"
+    app:cardElevation="2dp"
+    app:cornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/img_transaction_category_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:background="@drawable/rounded_card_background_icon"
+            app:tint="@color/primary_green_dark"
+            tools:src="@drawable/ic_food" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp">
+
+            <TextView
+                android:id="@+id/tv_transaction_category_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/text_dark"
+                android:textSize="16sp"
+                tools:text="Ăn uống" />
+
+            <TextView
+                android:id="@+id/tv_transaction_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_medium"
+                android:textSize="14sp"
+                tools:text="Bữa trưa với bạn bè" />
+
+            <TextView
+                android:id="@+id/tv_transaction_wallet_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_light"
+                android:textSize="12sp"
+                tools:text="Tiền mặt - 20/07/2025" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_transaction_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/button_red"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="- 50.000 VND" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.content.Context; // Thêm import này
+import android.content.SharedPreferences; // Thêm import này
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.example.noname.R;
 import com.example.noname.database.DatabaseHelper; // Needed for getCategoryId.
 import com.example.noname.database.BudgetDAO;     // For budget data operations.
+import com.example.noname.SignInActivity; // Thêm import cho SignInActivity
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,10 +58,26 @@ public class AddBudgetActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper; // Để lấy Category ID từ tên (vì DAO chỉ quản lý Budgets, không phải Categories).
     private BudgetDAO budgetDAO;     // Để lưu hoặc cập nhật dữ liệu ngân sách vào database.
 
+    private long currentUserId; // Biến để lưu userId
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_budget);
+
+        // Lấy User ID từ SharedPreferences NGAY KHI Activity ĐƯỢC TẠO
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
+
+        if (currentUserId == -1) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+            // Chuyển hướng về màn hình đăng nhập
+            Intent loginIntent = new Intent(this, SignInActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(loginIntent);
+            finish(); // Đóng activity nếu không có userId hợp lệ
+            return;
+        }
 
         dbHelper = new DatabaseHelper(this);
         budgetDAO = new BudgetDAO(this);
@@ -170,7 +189,7 @@ public class AddBudgetActivity extends AppCompatActivity {
                     return;
                 }
 
-                long userId = 1; // TODO: Lấy userId thực tế từ phiên đăng nhập.
+                // Sử dụng `currentUserId` đã lấy từ SharedPreferences
                 boolean repeatBudget = switchRepeatBudget.isChecked();
 
                 // Placeholder cho startDate/endDate. Cần thay thế bằng lựa chọn thực tế từ DatePicker.
@@ -183,7 +202,7 @@ public class AddBudgetActivity extends AppCompatActivity {
 
                 if (existingBudget == null) {
                     // --- Chế độ TẠO MỚI ngân sách ---
-                    success = budgetDAO.addBudget(userId, selectedCategoryId, amount, startDate, endDate, repeatBudget);
+                    success = budgetDAO.addBudget(currentUserId, selectedCategoryId, amount, startDate, endDate, repeatBudget);
                 } else {
                     // --- Chế độ CẬP NHẬT ngân sách hiện có ---
                     // Cập nhật đối tượng `existingBudget` với các giá trị mới từ UI.
@@ -194,6 +213,8 @@ public class AddBudgetActivity extends AppCompatActivity {
                     existingBudget.setStartDate(startDate); // Cập nhật ngày bắt đầu.
                     existingBudget.setEndDate(endDate);     // Cập nhật ngày kết thúc.
                     existingBudget.setRepeat(repeatBudget); // Cập nhật trạng thái lặp lại.
+                    // Đảm bảo userId không bị thay đổi khi cập nhật (nếu userId của existingBudget đã đúng)
+                    // Hoặc bạn có thể thêm: existingBudget.setUserId(currentUserId); nếu userId có thể bị mất.
 
                     success = budgetDAO.updateBudget(existingBudget); // Gọi phương thức update.
                 }
@@ -225,7 +246,8 @@ public class AddBudgetActivity extends AppCompatActivity {
                 selectedGroupName = data.getStringExtra("selected_group_name");
                 selectedGroupIconResId = data.getIntExtra("selected_group_icon", R.drawable.ic_circle);
 
-                selectedCategoryId = dbHelper.getCategoryId(selectedGroupName, "Expense");
+                // Truyền currentUserId vào đây
+                selectedCategoryId = dbHelper.getCategoryId(selectedGroupName, "Expense", currentUserId); // THÊM currentUserId
                 if (selectedCategoryId == -1) {
                     Toast.makeText(this, "Lỗi: Không tìm thấy ID danh mục cho '" + selectedGroupName + "'.", Toast.LENGTH_SHORT).show();
                 }

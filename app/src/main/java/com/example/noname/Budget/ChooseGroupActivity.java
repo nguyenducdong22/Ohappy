@@ -90,7 +90,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
         setupCategoryItem(R.id.item_dung_cu_hoc_tap, R.drawable.ic_study_tools, "Dụng Cụ Học Tập", R.color.accent_yellow);
 
         setupCategoryItem(R.id.item_dau_tu, R.drawable.ic_invest, "Đầu Tư", R.color.primary_green);
-        setupCategoryItem(R.id.item_tiet_kiem, R.drawable.ic_saving, "Tiết Kiệm", R.color.accent_yellow);
+        setupCategoryItem(R.id.item_tiet_kiem, R.drawable.ic_saving, "Tiết Kiệm", "#40E0D0"); // Đã sửa màu trực tiếp cho khớp với giá trị hex trong addDefaultCategories
         setupCategoryItem(R.id.item_quy_khan_cap, R.drawable.ic_emergency_fund, "Quỹ Khẩn Cấp", R.color.primary_green);
         setupCategoryItem(R.id.item_khac, R.drawable.ic_other, "Khác", R.color.accent_yellow);
         setupCategoryItem(R.id.item_add_more_category, R.drawable.ic_add_circle, "Thêm", R.color.accent_yellow);
@@ -112,6 +112,39 @@ public class ChooseGroupActivity extends AppCompatActivity {
             if (iconView != null) {
                 iconView.setImageResource(iconResId);
                 iconView.setColorFilter(ContextCompat.getColor(this, tintColorResId));
+            }
+            if (nameView != null) {
+                nameView.setText(categoryName);
+            }
+
+            itemView.setOnClickListener(v -> {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("selected_group_name", categoryName);
+                resultIntent.putExtra("selected_group_icon", iconResId);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+        }
+    }
+
+    /**
+     * Phương thức trợ giúp để khởi tạo và thiết lập các lắng nghe sự kiện click cho từng mục danh mục riêng lẻ.
+     * Phương thức này được tạo thêm để xử lý trường hợp truyền mã màu trực tiếp thay vì ID tài nguyên.
+     * @param viewId ID tài nguyên của layout cha cho mục danh mục.
+     * @param iconResId ID tài nguyên drawable cho biểu tượng của danh mục.
+     * @param categoryName Tên hiển thị của danh mục.
+     * @param hexColorCode Mã màu hex (ví dụ: "#RRGGBB") để tô màu biểu tượng.
+     */
+    private void setupCategoryItem(int viewId, int iconResId, String categoryName, String hexColorCode) {
+        View itemView = findViewById(viewId);
+        if (itemView != null) {
+            ImageView iconView = itemView.findViewById(R.id.category_icon);
+            TextView nameView = itemView.findViewById(R.id.category_name);
+
+            if (iconView != null) {
+                iconView.setImageResource(iconResId);
+                // Parse the hex color string and apply
+                iconView.setColorFilter(android.graphics.Color.parseColor(hexColorCode));
             }
             if (nameView != null) {
                 nameView.setText(categoryName);

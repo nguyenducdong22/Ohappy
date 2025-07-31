@@ -336,6 +336,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private void insertCategory(SQLiteDatabase db, String name, String type, String iconName, String colorCode) {
         ContentValues cv = new ContentValues();
+        // Không gán COLUMN_USER_ID_FK cho danh mục mặc định (sẽ là NULL)
         cv.put(COLUMN_CATEGORY_NAME, name);
         cv.put(COLUMN_CATEGORY_TYPE, type);
         cv.put(COLUMN_ICON_NAME, iconName);
@@ -350,36 +351,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Truy xuất ID của một danh mục dựa trên tên và loại của nó.
+     * Truy xuất ID của một danh mục dựa trên tên, loại và User ID.
+     * Ưu tiên tìm danh mục của người dùng cụ thể trước, sau đó tìm danh mục mặc định (userId IS NULL).
      * @param categoryName Tên của danh mục.
      * @param categoryType Loại của danh mục (Expense/Income).
+     * @param userId ID của người dùng.
      * @return ID của danh mục, hoặc -1 nếu không tìm thấy.
      */
-    public long getCategoryId(String categoryName, String categoryType) {
-        // QUAN TRỌNG: KHÔNG nên mở/đóng cơ sở dữ liệu trực tiếp ở đây nếu phương thức này
-        // được gọi nhiều lần trong một thao tác DAO duy nhất (ví dụ: trong BudgetDAO.getAllBudgets()).
-        // Thay vào đó, DAO gọi phương thức này nên quản lý việc mở/đóng cơ sở dữ liệu.
-
-        // Giả sử rằng phương thức này được gọi trong một ngữ cảnh mà DB đã được mở hoặc sẽ được đóng bởi người gọi.
-        // Nếu phương thức này được gọi bên ngoài khối open()/close() của DAO, bạn sẽ cần dbHelper.getReadableDatabase()
-        // và sau đó đóng nó trong khối finally.
-        // Tuy nhiên, AddBudgetActivity trực tiếp gọi dbHelper.getCategoryId.
-        // Vì vậy, để an toàn, chúng ta sẽ mở và đóng DB cục bộ ở đây.
-
-        SQLiteDatabase db = this.getReadableDatabase(); // Lấy một thể hiện đọc được
+    public long getCategoryId(String categoryName, String categoryType, long userId) { // Thêm userId
+        SQLiteDatabase db = this.getReadableDatabase();
         long categoryId = -1;
         String[] columns = {COLUMN_ID};
-        String selection = COLUMN_CATEGORY_NAME + " = ? AND " + COLUMN_CATEGORY_TYPE + " = ?";
-        String[] selectionArgs = {categoryName, categoryType};
-
+        String selection;
+        String[] selectionArgs;
         Cursor cursor = null;
+
         try {
+            // 1. Tìm danh mục của người dùng cụ thể (user_id = userId)
+            selection = COLUMN_CATEGORY_NAME + " = ? AND " + COLUMN_CATEGORY_TYPE + " = ? AND " + COLUMN_USER_ID_FK + " = ?";
+            selectionArgs = new String[]{categoryName, categoryType, String.valueOf(userId)};
+
             cursor = db.query(TABLE_CATEGORIES, columns, selection, selectionArgs, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
-                Log.d("DatabaseHelper", "Tìm thấy ID danh mục: " + categoryId + " cho '" + categoryName + "' loại '" + categoryType + "'");
+                Log.d("DatabaseHelper", "Tìm thấy ID danh mục (cho người dùng): " + categoryId + " cho '" + categoryName + "' loại '" + categoryType + "'");
             } else {
-                Log.w("DatabaseHelper", "Không tìm thấy danh mục: '" + categoryName + "' (Loại: '" + categoryType + "'). Kiểm tra lại dữ liệu mặc định của cơ sở dữ liệu.");
+                // 2. Nếu không tìm thấy, tìm trong các danh mục mặc định (user_id IS NULL)
+                if (cursor != null) {
+                    cursor.close(); // Đóng cursor cũ trước khi mở cái mới
+                }
+                selection = COLUMN_CATEGORY_NAME + " = ? AND " + COLUMN_CATEGORY_TYPE + " = ? AND " + COLUMN_USER_ID_FK + " IS NULL";
+                selectionArgs = new String[]{categoryName, categoryType};
+
+                cursor = db.query(TABLE_CATEGORIES, columns, selection, selectionArgs, null, null, null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    Log.d("DatabaseHelper", "Tìm thấy ID danh mục (mặc định): " + categoryId + " cho '" + categoryName + "' loại '" + categoryType + "'");
+                } else {
+                    Log.w("DatabaseHelper", "Không tìm thấy danh mục: '" + categoryName + "' (Loại: '" + categoryType + "'). Kiểm tra lại dữ liệu mặc định của cơ sở dữ liệu.");
+                }
             }
         } catch (Exception e) {
             Log.e("DatabaseHelper", "Lỗi khi lấy ID danh mục cho '" + categoryName + "': " + e.getMessage());
@@ -387,11 +398,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            // QUAN TRỌNG: Không đóng cơ sở dữ liệu ở đây (db.close()) nếu phương thức này
-            // được gọi bởi một DAO quản lý vòng đời cơ sở dữ liệu (ví dụ: BudgetDAO).
-            // Việc đóng nó ở đây sẽ đóng thể hiện cơ sở dữ liệu được chia sẻ cho DAO.
-            // Tuy nhiên, vì AddBudgetActivity trực tiếp gọi dbHelper.getCategoryId mà không có cơ chế open/close
-            // riêng cho DatabaseHelper, việc đóng nó ở đây là phù hợp để tránh rò rỉ.
             if (db != null && db.isOpen()) {
                 db.close(); // Đóng cơ sở dữ liệu nếu nó được mở cục bộ cho truy vấn này
             }

@@ -157,6 +157,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
             tvBudgetTotal.setText(currencyFormat.format(budget.getAmount()));
 
             // TODO: Triển khai logic THỰC TẾ để tính toán `amountSpent`.
+            // Phần này sẽ được tính toán trong BudgetOverviewActivity và truyền vào thông qua một hàm setter nếu cần,
+            // hoặc tính toán lại tại đây nếu bạn có thể truy cập BudgetDAO.
+            // Để đơn giản hóa, hiện tại tôi sẽ để placeholder.
             double amountSpent = 50000.0; // Placeholder
             double remainingAmount = budget.getAmount() - amountSpent;
             tvBudgetRemaining.setText(String.format("Còn lại %s", currencyFormat.format(remainingAmount)));

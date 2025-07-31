@@ -3,6 +3,7 @@ package com.example.noname.Budget;
 import android.app.Activity;    // Import lớp Activity, cần thiết để sử dụng các hằng số kết quả (như `Activity.RESULT_OK`, `Activity.RESULT_CANCELED`) khi nhận kết quả từ các Activity khác (ví dụ: `AddBudgetActivity`).
 import android.content.Context; // Cung cấp thông tin môi trường ứng dụng, cần thiết cho các lớp khác hoặc hệ thống.
 import android.content.Intent;  // Đối tượng dùng để thực hiện các thao tác "có ý định", chủ yếu là khởi động các Activity khác (như `AddBudgetActivity` hoặc `MainActivity`).
+import android.content.SharedPreferences; // Thêm import này để đọc SharedPreferences
 import android.os.Bundle;       // Lớp `Bundle` được dùng để lưu trữ và khôi phục trạng thái của Activity khi nó bị hủy và tạo lại (ví dụ: khi xoay màn hình).
 import android.view.View;       // Lớp cơ sở cho mọi thành phần giao diện người dùng (UI) trong Android.
 import android.widget.Button;    // Thành phần UI dạng nút bấm.
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager; // Một `LayoutManager
 import androidx.recyclerview.widget.RecyclerView;         // Một View hiệu quả và linh hoạt để hiển thị các danh sách lớn hoặc lưới dữ liệu có thể cuộn được, bằng cách tái sử dụng các View item.
 
 import com.example.noname.AccountActivity;
+import com.example.noname.SignInActivity; // Thêm import cho SignInActivity
 import com.example.noname.TransactionHistoryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Thành phần thanh điều hướng dưới cùng theo Material Design, hiển thị các tùy chọn điều hướng chính của ứng dụng.
 import com.google.android.material.floatingactionbutton.FloatingActionButton; // Nút hành động nổi (FAB) theo Material Design, thường dùng để thực hiện hành động chính hoặc phổ biến nhất trên màn hình.
@@ -94,13 +96,30 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
     // Biến này sẽ lưu trữ đối tượng Budget đang được hiển thị chi tiết ở phần tổng quan
     // (khu vực khoanh tròn màu đỏ trên ảnh). Nếu là null, có nghĩa là đang hiển thị tổng quan chung.
     private Budget selectedBudgetForOverview = null;
-    // User ID giả định. Trong ứng dụng thực, lấy từ phiên đăng nhập.
-    private long currentUserId = 1; // TODO: Lấy User ID thực tế.
+    // User ID được lấy từ SharedPreferences.
+    private long currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget_overview);
+
+        // Lấy User ID từ SharedPreferences NGAY KHI Activity ĐƯỢC TẠO
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        // Lấy userId, mặc định là -1 nếu không tìm thấy (người dùng chưa đăng nhập)
+        currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
+
+        // Kiểm tra xem userId có hợp lệ không
+        if (currentUserId == -1) {
+            // Xử lý trường hợp người dùng chưa đăng nhập hoặc lỗi lấy userId
+            Toast.makeText(this, "Lỗi: Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+            // Có thể chuyển hướng về màn hình đăng nhập
+            Intent loginIntent = new Intent(this, SignInActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(loginIntent);
+            finish();
+            return; // Dừng lại không thực hiện tiếp
+        }
 
         // Khởi tạo BudgetDAO.
         budgetDAO = new BudgetDAO(this);
@@ -214,7 +233,9 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(this, "Ngân sách đã được lưu!", Toast.LENGTH_SHORT).show();
                 // Sau khi thêm/sửa thành công, tải lại danh sách và đặt lại tổng quan chung.
-                selectedBudgetForOverview = null; // Đặt lại về chế độ tổng quan chung.
+                // selectedBudgetForOverview = null; // Đặt lại về chế độ tổng quan chung.
+                // Để giữ chế độ xem chi tiết nếu đang sửa ngân sách đó, chỉ đặt null khi thêm mới.
+                // Hoặc đơn giản là cứ tải lại, nếu budget cũ không còn thì nó sẽ tự về tổng quan chung.
                 loadBudgetsAndDisplay(); // Tải lại dữ liệu và cập nhật UI.
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(this, "Thao tác đã bị hủy.", Toast.LENGTH_SHORT).show();
@@ -228,18 +249,36 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
      * để hiển thị chi tiết ngân sách đã chọn hoặc tổng quan chung.
      */
     private void loadBudgetsAndDisplay() {
+        if (currentUserId == -1) {
+            // Đảm bảo không tải dữ liệu nếu userId không hợp lệ
+            Log.e("BudgetOverviewActivity", "Không thể tải ngân sách: User ID không hợp lệ.");
+            return;
+        }
+
         budgetDAO.open(); // Mở kết nối database.
-        List<Budget> loadedBudgets = budgetDAO.getAllBudgets(); // Lấy tất cả ngân sách.
+        List<Budget> loadedBudgets = budgetDAO.getAllBudgets(currentUserId); // Lấy tất cả ngân sách của user hiện tại.
         budgetDAO.close(); // Đóng kết nối.
 
         currentBudgetsList.clear(); // Xóa dữ liệu cũ.
         currentBudgetsList.addAll(loadedBudgets); // Thêm dữ liệu mới.
         budgetAdapter.setBudgetList(currentBudgetsList); // Cập nhật Adapter, RecyclerView sẽ refresh.
 
-        // Cập nhật phần tổng quan dựa trên `selectedBudgetForOverview`.
-        // Nếu `selectedBudgetForOverview` vẫn giữ giá trị (sau khi sửa chẳng hạn),
-        // thì hiển thị chi tiết của nó. Ngược lại, hiển thị tổng quan chung.
-        displayOverviewForBudget(selectedBudgetForOverview); // FIXED: Corrected variable name.
+        // Kiểm tra xem `selectedBudgetForOverview` có còn tồn tại trong danh sách `loadedBudgets` không.
+        // Nếu không, đặt nó về null để hiển thị tổng quan chung.
+        if (selectedBudgetForOverview != null) {
+            boolean found = false;
+            for (Budget b : loadedBudgets) {
+                if (b.getId() == selectedBudgetForOverview.getId()) {
+                    selectedBudgetForOverview = b; // Cập nhật đối tượng nếu nó được sửa
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                selectedBudgetForOverview = null; // Ngân sách đã bị xóa hoặc không còn tồn tại
+            }
+        }
+        displayOverviewForBudget(selectedBudgetForOverview); // Cập nhật phần tổng quan.
     }
 
     /**
@@ -252,8 +291,11 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         currencyFormat.setMinimumFractionDigits(0);
         currencyFormat.setMaximumFractionDigits(0);
 
-        // TODO: Lấy User ID thực tế từ phiên đăng nhập.
-        //long userId = 1; // Sử dụng userId đã có.
+        if (currentUserId == -1) {
+            // Đảm bảo không hiển thị overview nếu userId không hợp lệ
+            Log.e("BudgetOverviewActivity", "Không thể hiển thị tổng quan: User ID không hợp lệ.");
+            return;
+        }
 
         if (budget == null) {
             // --- Hiển thị Tổng quan chung (khi không có ngân sách cụ thể nào được chọn) ---
@@ -264,7 +306,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             double totalAllSpentAmount = 0.0;   // Tổng số tiền đã chi tiêu qua tất cả các ngân sách.
 
             budgetDAO.open(); // Mở DB để tính toán tổng chi tiêu.
-            for (Budget b : currentBudgetsList) {
+            for (Budget b : currentBudgetsList) { // currentBudgetsList giờ đã chứa dữ liệu của user hiện tại
                 totalAllBudgetsAmount += b.getAmount(); // Tổng tất cả ngân sách.
                 // Tính tổng đã chi cho MỖI ngân sách và cộng dồn.
                 totalAllSpentAmount += budgetDAO.getTotalSpentForBudgetCategory(b.getCategoryId(), b.getStartDate(), b.getEndDate(), currentUserId);
@@ -274,8 +316,8 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             int daysToEndOfCurrentMonth = getDaysToEndOfCurrentMonth();
 
             tvRemainingSpendableAmount.setText(currencyFormat.format(totalAllBudgetsAmount - totalAllSpentAmount));
-            tvTotalBudgetAmount.setText(String.format("%,.0f M", totalAllBudgetsAmount / 1000000.0)); // Hiển thị "M" cho triệu.
-            tvTotalSpentAmount.setText(String.format("%,.0f K", totalAllSpentAmount / 1000.0)); // Hiển thị "K" cho nghìn.
+            tvTotalBudgetAmount.setText(String.format("%,.0f Tr", totalAllBudgetsAmount / 1_000_000.0)); // Hiển thị "Tr" cho triệu.
+            tvTotalSpentAmount.setText(String.format("%,.0f Ng", totalAllSpentAmount / 1_000.0)); // Hiển thị "Ng" cho nghìn.
             tvDaysToEndOfMonth.setText(daysToEndOfCurrentMonth + " ngày");
 
         } else {
@@ -323,7 +365,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         // Thực hiện xóa ngân sách từ database.
         // Trong ứng dụng thực tế, nên thêm một hộp thoại xác nhận trước khi xóa để cải thiện UX.
         budgetDAO.open();
-        boolean success = budgetDAO.deleteBudget(budget.getId());
+        boolean success = budgetDAO.deleteBudget(budget.getId(), currentUserId); // THÊM currentUserId
         budgetDAO.close();
 
         if (success) {

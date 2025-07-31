@@ -86,7 +86,7 @@ public class BudgetDAO {
         try {
             insertId = database.insert(DatabaseHelper.TABLE_BUDGETS, null, values);
             if (insertId != -1) {
-                Log.d("BudgetDAO", "Budget added successfully with ID: " + insertId);
+                Log.d("BudgetDAO", "Budget added successfully with ID: " + insertId + " for user: " + userId);
                 return true;
             } else {
                 Log.e("BudgetDAO", "Failed to add budget: insert returned -1.");
@@ -105,7 +105,7 @@ public class BudgetDAO {
      */
     public boolean updateBudget(Budget budget) {
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_USER_ID_FK, budget.getUserId());
+        values.put(DatabaseHelper.COLUMN_USER_ID_FK, budget.getUserId()); // Giữ userId nguyên khi cập nhật
         values.put(DatabaseHelper.COLUMN_CATEGORY_ID_FK, budget.getCategoryId());
         values.put(DatabaseHelper.COLUMN_BUDGET_AMOUNT, budget.getAmount());
         values.put(DatabaseHelper.COLUMN_START_DATE, budget.getStartDate());
@@ -118,14 +118,14 @@ public class BudgetDAO {
             rowsAffected = database.update(
                     DatabaseHelper.TABLE_BUDGETS,
                     values,
-                    DatabaseHelper.COLUMN_ID + " = ?", // Điều kiện WHERE để tìm bản ghi cần cập nhật.
-                    new String[]{String.valueOf(budget.getId())} // Đối số cho điều kiện WHERE.
+                    DatabaseHelper.COLUMN_ID + " = ? AND " + DatabaseHelper.COLUMN_USER_ID_FK + " = ?", // THÊM ĐIỀU KIỆN USER_ID
+                    new String[]{String.valueOf(budget.getId()), String.valueOf(budget.getUserId())} // THÊM ĐỐI SỐ USER_ID
             );
             if (rowsAffected > 0) {
-                Log.d("BudgetDAO", "Budget updated successfully for ID: " + budget.getId());
+                Log.d("BudgetDAO", "Budget updated successfully for ID: " + budget.getId() + " and user: " + budget.getUserId());
                 return true;
             } else {
-                Log.e("BudgetDAO", "Failed to update budget: no rows affected for ID: " + budget.getId());
+                Log.e("BudgetDAO", "Failed to update budget: no rows affected for ID: " + budget.getId() + " and user: " + budget.getUserId());
                 return false;
             }
         } catch (Exception e) {
@@ -135,23 +135,24 @@ public class BudgetDAO {
     }
 
     /**
-     * Xóa một bản ghi ngân sách khỏi bảng 'budgets' dựa trên ID của nó.
+     * Xóa một bản ghi ngân sách khỏi bảng 'budgets' dựa trên ID của nó và User ID.
      * @param budgetId ID của ngân sách cần xóa.
+     * @param userId ID của người dùng sở hữu ngân sách.
      * @return true nếu xóa thành công, false nếu lỗi.
      */
-    public boolean deleteBudget(long budgetId) {
+    public boolean deleteBudget(long budgetId, long userId) { // Thêm userId vào đây
         int rowsAffected = 0;
         try {
             rowsAffected = database.delete(
                     DatabaseHelper.TABLE_BUDGETS,
-                    DatabaseHelper.COLUMN_ID + " = ?", // Điều kiện WHERE để tìm bản ghi cần xóa.
-                    new String[]{String.valueOf(budgetId)} // Đối số cho điều kiện WHERE.
+                    DatabaseHelper.COLUMN_ID + " = ? AND " + DatabaseHelper.COLUMN_USER_ID_FK + " = ?", // THÊM ĐIỀU KIỆN USER_ID
+                    new String[]{String.valueOf(budgetId), String.valueOf(userId)} // THÊM ĐỐI SỐ USER_ID
             );
             if (rowsAffected > 0) {
-                Log.d("BudgetDAO", "Budget deleted successfully for ID: " + budgetId);
+                Log.d("BudgetDAO", "Budget deleted successfully for ID: " + budgetId + " and user: " + userId);
                 return true;
             } else {
-                Log.e("BudgetDAO", "Failed to delete budget: no rows affected for ID: " + budgetId);
+                Log.e("BudgetDAO", "Failed to delete budget: no rows affected for ID: " + budgetId + " and user: " + userId);
                 return false;
             }
         } catch (Exception e) {
@@ -161,11 +162,13 @@ public class BudgetDAO {
     }
 
     /**
-     * Truy xuất tất cả các bản ghi ngân sách từ database, bao gồm thông tin danh mục.
-     * Thực hiện INNER JOIN với bảng 'categories' để lấy tên danh mục và tên icon.
+     * Truy xuất tất cả các bản ghi ngân sách từ database cho một người dùng cụ thể,
+     * bao gồm thông tin danh mục. Thực hiện INNER JOIN với bảng 'categories'
+     * để lấy tên danh mục và tên icon.
+     * @param userId ID của người dùng.
      * @return Một List các đối tượng Budget. Trả về danh sách rỗng nếu không tìm thấy.
      */
-    public List<Budget> getAllBudgets() {
+    public List<Budget> getAllBudgets(long userId) { // Thay đổi chữ ký phương thức để nhận userId
         List<Budget> budgetList = new ArrayList<>();
         String selectQuery = "SELECT " +
                 "B." + DatabaseHelper.COLUMN_ID + ", " +
@@ -180,16 +183,17 @@ public class BudgetDAO {
                 "C." + DatabaseHelper.COLUMN_ICON_NAME + " " +
                 "FROM " + DatabaseHelper.TABLE_BUDGETS + " B " +
                 "INNER JOIN " + DatabaseHelper.TABLE_CATEGORIES + " C ON B." + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = C." + DatabaseHelper.COLUMN_ID +
+                " WHERE B." + DatabaseHelper.COLUMN_USER_ID_FK + " = ?" + // THÊM ĐIỀU KIỆN LỌC THEO USER_ID
                 " ORDER BY B." + DatabaseHelper.COLUMN_CREATED_AT + " DESC";
 
         Cursor cursor = null;
         try {
-            cursor = database.rawQuery(selectQuery, null);
+            cursor = database.rawQuery(selectQuery, new String[]{String.valueOf(userId)}); // TRUYỀN USER_ID LÀM ĐỐI SỐ
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     long id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
-                    long userId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ID_FK));
+                    long fetchedUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ID_FK)); // Lấy userId từ cursor
                     long categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_ID_FK));
                     double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BUDGET_AMOUNT));
                     String startDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_START_DATE));
@@ -204,13 +208,14 @@ public class BudgetDAO {
                         Log.w("BudgetDAO", "Icon resource not found for: " + iconName + ". Using default.");
                     }
 
-                    Budget budget = new Budget(id, userId, categoryId, categoryName, iconResId, amount, startDate, endDate, isRecurring);
+                    // Sử dụng fetchedUserId để tạo đối tượng Budget
+                    Budget budget = new Budget(id, fetchedUserId, categoryId, categoryName, iconResId, amount, startDate, endDate, isRecurring);
                     budgetList.add(budget);
 
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
-            Log.e("BudgetDAO", "Error getting all budgets: " + e.getMessage());
+            Log.e("BudgetDAO", "Error getting all budgets for user " + userId + ": " + e.getMessage());
             budgetList.clear();
         } finally {
             if (cursor != null) {
@@ -241,7 +246,7 @@ public class BudgetDAO {
         // cho một người dùng và danh mục cụ thể trong khoảng thời gian.
         String selectQuery = "SELECT SUM(" + DatabaseHelper.COLUMN_AMOUNT + ") " +
                 "FROM " + DatabaseHelper.TABLE_TRANSACTIONS + " " +
-                "WHERE " + DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " +
+                "WHERE " + DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " + // THÊM ĐIỀU KIỆN USER_ID
                 DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = ? AND " +
                 DatabaseHelper.COLUMN_TRANSACTION_DATE + " BETWEEN ? AND ? AND " +
                 DatabaseHelper.COLUMN_TRANSACTION_TYPE + " = 'Expense'";
@@ -249,7 +254,7 @@ public class BudgetDAO {
         Cursor cursor = null;
         try {
             cursor = database.rawQuery(selectQuery, new String[]{
-                    String.valueOf(userId),
+                    String.valueOf(userId), // TRUYỀN USER_ID LÀM ĐỐI SỐ
                     String.valueOf(categoryId),
                     startDate,
                     endDate

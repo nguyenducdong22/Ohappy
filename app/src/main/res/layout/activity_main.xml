@@ -134,13 +134,17 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="100dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/wallet_summary_card"
@@ -223,6 +227,7 @@
                 app:cardElevation="0dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/white">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -259,8 +264,8 @@
                         android:id="@+id/report_summary_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="24dp">
+                        android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/tv_empty_report_prompt"
                             android:layout_width="match_parent"
@@ -272,12 +277,38 @@
                             android:paddingVertical="40dp"
                             android:visibility="gone"/>
 
-                        <com.github.mikephil.charting.charts.LineChart
-                            android:id="@+id/line_chart"
+                        <LinearLayout
+                            android:id="@+id/line_chart_container"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:background="@color/dashboard_background_light"
-                            android:visibility="gone"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tổng chi tháng này"
+                                android:textColor="@color/text_secondary_gray"
+                                android:textSize="14sp"
+                                android:layout_gravity="center_horizontal"/>
+
+                            <TextView
+                                android:id="@+id/tv_total_spent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:textColor="@color/text_main_header"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:text="5.000.000 đ"
+                                android:layout_marginBottom="16dp"/>
+
+                            <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/line_chart_report"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"/>
+                        </LinearLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -313,7 +344,7 @@
                             android:id="@+id/tv_current_report_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0.00 đ"
+                            tools:text="5.000.000 đ"
                             android:textColor="@color/text_main_header"
                             android:textSize="24sp"
                             android:textStyle="bold"
@@ -324,51 +355,17 @@
                             android:id="@+id/tv_total_spent_percentage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng đã chi tháng này - 0%"
+                            tools:text="+25.5% so với kỳ trước"
                             android:textColor="@color/text_secondary_gray"
                             android:textSize="14sp"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginBottom="24dp"/>
 
                         <com.github.mikephil.charting.charts.BarChart
-                            android:id="@+id/bar_chart"
+                            android:id="@+id/bar_chart_report"
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
-                            android:layout_marginBottom="16dp"
-                            android:background="@color/dashboard_background_light"
-                            android:visibility="gone"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="16dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tháng trước"
-                                android:textColor="@color/text_secondary_gray" />
-                            <View
-                                android:id="@+id/dot_active_chart"
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:background="@drawable/dot_active"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginEnd="8dp" />
-                            <View
-                                android:id="@+id/dot_inactive_chart"
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:background="@drawable/dot_inactive" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tháng này"
-                                android:textColor="@color/text_secondary_gray"
-                                android:layout_marginStart="8dp" />
-                        </LinearLayout>
-
+                            android:layout_marginBottom="16dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -395,9 +392,7 @@
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:clickable="true"
-                            android:focusable="true" />
+                            android:textStyle="bold" />
                         <ImageButton
                             android:id="@+id/btn_report_next"
                             android:layout_width="wrap_content"
@@ -408,6 +403,7 @@
                             app:tint="@color/primary_green"
                             tools:ignore="ContentDescription" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/report_page_indicators"
                         android:layout_width="wrap_content"

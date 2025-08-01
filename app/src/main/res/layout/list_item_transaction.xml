@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/dashboard_background_dark">
-
+    android:background="@android:color/transparent">
     <LinearLayout
         android:id="@+id/header_date_layout"
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
             tools:text="01"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/text_main_header"
             android:layout_marginEnd="8dp"/>
 
         <TextView
@@ -40,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        app:cardBackgroundColor="@color/card_background_dark"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp">
 
@@ -53,10 +52,10 @@
                 android:id="@+id/iv_category_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/circular_bg_gray"
+                android:background="@drawable/circular_bg_gray_light"
                 android:padding="8dp"
                 android:src="@drawable/ic_restaurant"
-                app:tint="@color/white"
+                app:tint="@color/text_dark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -68,7 +67,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
                 tools:text="Ăn uống"
-                android:textColor="@color/white"
+                android:textColor="@color/text_dark"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/iv_category_icon"

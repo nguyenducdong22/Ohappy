@@ -5,15 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dashboard_background_dark"
+    android:background="@color/dashboard_background_light"
     tools:context=".TransactionHistoryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dashboard_background_dark"
+        android:background="@color/dashboard_background_light"
         app:elevation="0dp">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00 đ"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_main_header"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -54,7 +55,7 @@
                     android:id="@+id/wallet_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/wallet_selector_background"
+                    android:background="@drawable/wallet_selector_background_light"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="12dp"
@@ -66,7 +67,7 @@
                         android:layout_height="16dp"
                         android:src="@drawable/ic_wallet_cash"
                         android:layout_marginEnd="8dp"
-                        app:tint="@color/white"
+                        app:tint="@color/text_dark"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -74,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tiền mặt"
-                        android:textColor="@color/white"
+                        android:textColor="@color/text_dark"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -86,7 +87,7 @@
                 android:src="@drawable/ic_search"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                app:tint="@color/white"
+                app:tint="@color/text_main_header"
                 app:layout_constraintEnd_toStartOf="@id/btn_more_options"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -98,7 +99,7 @@
                 android:src="@drawable/ic_more_vert"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                app:tint="@color/white"
+                app:tint="@color/text_main_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -109,10 +110,10 @@
             android:id="@+id/tab_layout_months"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dashboard_background_dark"
+            android:background="@color/dashboard_background_light"
             app:tabIndicatorColor="@color/primary_green"
             app:tabTextColor="@color/text_secondary_gray"
-            app:tabSelectedTextColor="@color/white"
+            app:tabSelectedTextColor="@color/primary_green"
             app:tabMode="fixed"
             app:tabGravity="fill"/>
 
@@ -121,19 +122,23 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="120dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/onboarding_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/card_background_dark"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -158,7 +163,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Bạn vẫn còn băn khoăn chưa biết bắt đầu từ đâu? Chúng mình sẽ giúp bạn!"
-                        android:textColor="@color/white"
+                        android:textColor="@color/text_main_header"
                         android:textSize="16sp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -206,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:text="Thêm một giao dịch"
-                        android:textColor="@color/white"
+                        android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step2_icon"
                         app:layout_constraintEnd_toStartOf="@id/btn_onboarding_add"
@@ -244,7 +249,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:text="Tạo ngân sách đầu tiên"
-                        android:textColor="@color/white"
+                        android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step3_icon"
                         app:layout_constraintEnd_toStartOf="@id/btn_onboarding_create"
@@ -267,7 +272,7 @@
                         android:id="@+id/line1"
                         android:layout_width="2dp"
                         android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
+                        android:background="@color/input_border_light"
                         app:layout_constraintTop_toBottomOf="@id/iv_step1_icon"
                         app:layout_constraintBottom_toTopOf="@id/tv_step2_icon"
                         app:layout_constraintStart_toStartOf="@id/iv_step1_icon"
@@ -277,7 +282,7 @@
                         android:id="@+id/line2"
                         android:layout_width="2dp"
                         android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
+                        android:background="@color/input_border_light"
                         app:layout_constraintTop_toBottomOf="@id/tv_step2_icon"
                         app:layout_constraintBottom_toTopOf="@id/tv_step3_icon"
                         app:layout_constraintStart_toStartOf="@id/tv_step2_icon"
@@ -287,7 +292,7 @@
                         android:id="@+id/line3"
                         android:layout_width="2dp"
                         android:layout_height="0dp"
-                        android:background="@color/button_dark_gray"
+                        android:background="@color/input_border_light"
                         app:layout_constraintTop_toBottomOf="@id/tv_step3_icon"
                         app:layout_constraintStart_toStartOf="@id/tv_step3_icon"
                         app:layout_constraintEnd_toEndOf="@id/tv_step3_icon" />
@@ -365,6 +370,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -376,6 +382,7 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:elevation="8dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_transaction"
         android:layout_width="wrap_content"

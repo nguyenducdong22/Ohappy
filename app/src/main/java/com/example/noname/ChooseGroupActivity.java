@@ -1,21 +1,42 @@
-package com.example.noname; // Đảm bảo đúng package của bạn
+package com.example.noname;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log; // Thêm import cho Log
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.example.noname.database.CategoryDAO;
+import com.example.noname.models.Category;
+
+import java.util.List;
+
 public class ChooseGroupActivity extends AppCompatActivity {
+
+    private CategoryDAO categoryDAO;
+    private long currentUserId;
+    private static final int ADD_CATEGORY_REQUEST_CODE = 200; // Mã yêu cầu cho màn hình thêm mới
+    private static final String TAG = "ChooseGroupActivity"; // Định nghĩa tag cho Log
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_group);
+        setContentView(R.layout.activity_choose_group_dynamic); // Đổi tên layout thành activity_choose_group_dynamic
+
+        Log.d(TAG, "onCreate: Activity started.");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -24,89 +45,136 @@ public class ChooseGroupActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // Xử lý nút back của hệ thống
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setResult(RESULT_CANCELED); // Gửi kết quả hủy nếu người dùng nhấn nút back
+                Log.d(TAG, "System back button clicked. Cancelling result.");
+                setResult(RESULT_CANCELED);
                 finish();
             }
         });
 
-        // Xử lý nút back trên Toolbar
         toolbar.setNavigationOnClickListener(v -> {
-            setResult(RESULT_CANCELED); // Gửi kết quả hủy nếu người dùng nhấn nút back trên toolbar
+            Log.d(TAG, "Toolbar back button clicked. Cancelling result.");
+            setResult(RESULT_CANCELED);
             finish();
         });
 
-        // --- Thiết lập các mục nhóm chi tiêu ---
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
+        Log.d(TAG, "Retrieved currentUserId: " + currentUserId);
 
-        // Nhu Cầu Thiết Yếu
-        setupCategoryItem(R.id.item_an_uong, R.drawable.ic_restaurant, "Ăn Uống", R.color.primary_green);
-        setupCategoryItem(R.id.item_nha_cua, R.drawable.ic_home_and_utility, "Nhà cửa & Tiện ích", R.color.primary_green);
-        setupCategoryItem(R.id.item_di_chuyen, R.drawable.ic_directions_car, "Di Chuyển", R.color.primary_green);
-        setupCategoryItem(R.id.item_sam_sua, R.drawable.ic_shopping_basket, "Sắm Sửa", R.color.primary_green);
-        setupCategoryItem(R.id.item_suc_khoe, R.drawable.ic_health, "Sức Khỏe", R.color.primary_green);
-        setupCategoryItem(R.id.item_giao_tiep, R.drawable.ic_person, "Giao Tiếp", R.color.primary_green); // Đã thêm mục này theo XML
-
-        // Giải Trí, Cá Nhân
-        setupCategoryItem(R.id.item_giai_tri, R.drawable.ic_entertainment, "Giải Trí", R.color.primary_green);
-        setupCategoryItem(R.id.item_the_thao, R.drawable.ic_sport, "Thể Thao", R.color.accent_yellow);
-        setupCategoryItem(R.id.item_lam_dep, R.drawable.ic_beauty, "Làm Đẹp", R.color.primary_green);
-        setupCategoryItem(R.id.item_qua_tang, R.drawable.ic_gift, "Quà Tặng", R.color.accent_yellow);
-        setupCategoryItem(R.id.item_du_lich, R.drawable.ic_travel, "Du Lịch", R.color.primary_green);
-        setupCategoryItem(R.id.item_ban_be, R.drawable.ic_friends, "Bạn Bè", R.color.accent_yellow);
-
-        // Học Tập, Phát Triển
-        setupCategoryItem(R.id.item_hoc_tap, R.drawable.ic_learning, "Học Tập", R.color.primary_green);
-        setupCategoryItem(R.id.item_sach_vo, R.drawable.ic_book, "Sách vở", R.color.accent_yellow);
-        setupCategoryItem(R.id.item_khoa_hoc, R.drawable.ic_course, "Khóa Học", R.color.primary_green);
-        setupCategoryItem(R.id.item_dung_cu_hoc_tap, R.drawable.ic_study_tools, "Dụng Cụ Học Tập", R.color.accent_yellow);
-
-        // Chi Phí Khác
-        setupCategoryItem(R.id.item_dau_tu, R.drawable.ic_invest, "Đầu Tư", R.color.primary_green);
-        setupCategoryItem(R.id.item_quy_khan_cap, R.drawable.ic_emergency_fund, "Quỹ Khẩn Cấp", R.color.primary_green);
-        setupCategoryItem(R.id.item_khac, R.drawable.ic_other, "Khác", R.color.accent_yellow);
-        setupCategoryItem(R.id.item_add_more_category, R.drawable.ic_add_circle, "Thêm", R.color.accent_yellow);
+        categoryDAO = new CategoryDAO(this);
     }
 
-    /**
-     * Phương thức trợ giúp để thiết lập các mục danh mục.
-     * Nó tìm kiếm View cha (LinearLayout/MaterialCardView), sau đó tìm ImageView và TextView
-     * bên trong nó để thiết lập icon, màu sắc và tên.
-     *
-     * @param viewId ID của View cha (ví dụ: R.id.item_an_uong)
-     * @param iconResId ID tài nguyên của icon (ví dụ: R.drawable.ic_restaurant)
-     * @param categoryName Tên của danh mục (ví dụ: "Ăn Uống")
-     * @param tintColorResId ID tài nguyên màu sắc để tô màu icon (ví dụ: R.color.primary_green)
-     */
-    private void setupCategoryItem(int viewId, int iconResId, String categoryName, int tintColorResId) {
-        View itemView = findViewById(viewId);
-        // Đảm bảo View cha được tìm thấy
-        if (itemView != null) {
-            ImageView iconView = itemView.findViewById(R.id.category_icon);
-            TextView nameView = itemView.findViewById(R.id.category_name);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume called. Loading categories.");
+        loadCategoriesAndDisplay();
+    }
 
-            // Kiểm tra các thành phần con có tồn tại không trước khi gán giá trị
-            if (iconView != null) {
-                iconView.setImageResource(iconResId);
-                iconView.setColorFilter(ContextCompat.getColor(this, tintColorResId));
-            }
-            if (nameView != null) {
-                nameView.setText(categoryName);
-            }
-
-            // Thiết lập OnClickListener cho toàn bộ mục
-            itemView.setOnClickListener(v -> {
-                // TẠO INTENT ĐỂ TRẢ VỀ DỮ LIỆU CHO ACTIVITY GỌI
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("selected_group_name", categoryName); // Gửi tên nhóm
-                resultIntent.putExtra("selected_group_icon", iconResId); // Gửi ID icon
-                setResult(RESULT_OK, resultIntent); // Đặt kết quả là OK và gửi Intent
-                finish(); // Đóng Activity hiện tại
-            });
+    private void loadCategoriesAndDisplay() {
+        if (currentUserId == -1) {
+            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Current User ID is -1. Cannot load categories.");
+            return;
         }
-        // Không cần Toast.makeText hoặc Log.e ở đây trong môi trường production
-        // nếu bạn chắc chắn rằng tất cả các ID trong XML đều có View tương ứng.
+
+        categoryDAO.open();
+        List<Category> categories = categoryDAO.getAllCategories(currentUserId);
+        categoryDAO.close();
+        Log.d(TAG, "Found " + categories.size() + " categories for user ID " + currentUserId);
+
+        LinearLayout categoryContainer = findViewById(R.id.category_container);
+        if (categoryContainer == null) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy container danh mục", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Layout container not found with ID R.id.category_container");
+            return;
+        }
+
+        categoryContainer.removeAllViews();
+        Log.d(TAG, "Removed all existing views from category container.");
+
+        if (categories.isEmpty()) {
+            Toast.makeText(this, "Không có danh mục nào được tìm thấy.", Toast.LENGTH_LONG).show();
+            Log.w(TAG, "Category list is empty.");
+        } else {
+            for (Category category : categories) {
+                Log.d(TAG, "Processing category: " + category.getName() + " (ID: " + category.getId() + ")");
+                setupCategoryItem(categoryContainer, category);
+            }
+        }
+
+        setupAddMoreCategoryItem(categoryContainer);
+    }
+
+    private void setupCategoryItem(LinearLayout parentLayout, Category category) {
+        LayoutInflater inflater = getLayoutInflater();
+        View itemView = inflater.inflate(R.layout.item_category, parentLayout, false);
+        Log.d(TAG, "Inflated new view for category: " + category.getName());
+
+        ImageView iconView = itemView.findViewById(R.id.category_icon);
+        TextView nameView = itemView.findViewById(R.id.category_name);
+
+        nameView.setText(category.getName());
+
+        int iconResId = getResources().getIdentifier(category.getIconName(), "drawable", getPackageName());
+        if (iconResId != 0) {
+            iconView.setImageResource(iconResId);
+            iconView.setColorFilter(ContextCompat.getColor(this, R.color.primary_green));
+            Log.d(TAG, "Set icon for " + category.getName() + " with resource ID: " + iconResId);
+        } else {
+            Log.w(TAG, "Icon resource not found for name: " + category.getIconName() + ". Using default icon.");
+            iconView.setImageResource(R.drawable.ic_other); // Icon mặc định
+            iconView.setColorFilter(ContextCompat.getColor(this, R.color.grey_text_link));
+        }
+
+        itemView.setOnClickListener(v -> {
+            Log.d(TAG, "Category item clicked: " + category.getName() + ", ID: " + category.getId());
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("selected_category_id", category.getId());
+            resultIntent.putExtra("selected_group_name", category.getName());
+            resultIntent.putExtra("selected_group_icon", iconResId);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+        parentLayout.addView(itemView);
+        Log.d(TAG, "Added new category view to container.");
+    }
+
+    private void setupAddMoreCategoryItem(LinearLayout parentLayout) {
+        LayoutInflater inflater = getLayoutInflater();
+        View itemView = inflater.inflate(R.layout.item_category, parentLayout, false);
+
+        ImageView iconView = itemView.findViewById(R.id.category_icon);
+        TextView nameView = itemView.findViewById(R.id.category_name);
+
+        nameView.setText("Thêm danh mục mới");
+        iconView.setImageResource(R.drawable.ic_add_circle);
+        iconView.setColorFilter(ContextCompat.getColor(this, R.color.accent_yellow));
+
+        Log.d(TAG, "Setting up 'Add new category' item.");
+
+        itemView.setOnClickListener(v -> {
+            Log.d(TAG, "Add new category button clicked.");
+            // Đây là nơi bạn điều hướng đến màn hình thêm mới danh mục.
+            // startActivityForResult(new Intent(this, AddCategoryActivity.class), ADD_CATEGORY_REQUEST_CODE);
+            Toast.makeText(this, "Chức năng thêm danh mục đang phát triển.", Toast.LENGTH_SHORT).show();
+        });
+
+        parentLayout.addView(itemView);
+        Log.d(TAG, "Added 'Add new category' view to container.");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Received result from another activity. RequestCode: " + requestCode + ", ResultCode: " + resultCode);
+
+        if (requestCode == ADD_CATEGORY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Log.d(TAG, "Returned from AddCategoryActivity. Reloading categories.");
+            loadCategoriesAndDisplay();
+        }
     }
 }

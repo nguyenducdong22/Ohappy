@@ -53,101 +53,13 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
+            android:id="@+id/wallet_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
+            android:paddingVertical="8dp"/>
 
-            <LinearLayout
-                android:id="@+id/wallet_cash"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="?attr/selectableItemBackground"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_wallet_cash"
-                    app:tint="@color/primary_green_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Tiền mặt"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_dark"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_color" />
-
-            <LinearLayout
-                android:id="@+id/wallet_momo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="?attr/selectableItemBackground"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_wallet_momo"
-                    app:tint="@color/accent_yellow_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Ví Momo"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_dark"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_color" />
-
-            <LinearLayout
-                android:id="@+id/wallet_bank"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="?attr/selectableItemBackground"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_wallet_bank"
-                    app:tint="@color/primary_green_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Ngân hàng"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_dark"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

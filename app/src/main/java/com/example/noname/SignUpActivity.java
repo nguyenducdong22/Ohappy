@@ -47,7 +47,6 @@ public class SignUpActivity extends BaseActivity {
         initializeViews();
         setupListeners();
 
-        // Áp dụng style cho logo (nếu có)
         TextView tvLogoTextSignUp = findViewById(R.id.tvLogoTextSignUp);
         applyStyledLogoText(tvLogoTextSignUp);
     }
@@ -71,7 +70,7 @@ public class SignUpActivity extends BaseActivity {
             finish();
         });
 
-        ImageButton btnBackSignUp = findViewById(R.id.btnBackSignUp); // Khởi tạo và gán listener
+        ImageButton btnBackSignUp = findViewById(R.id.btnBackSignUp);
         btnBackSignUp.setOnClickListener(v -> onBackPressed());
     }
 
@@ -95,39 +94,32 @@ public class SignUpActivity extends BaseActivity {
             return;
         }
 
-        userDAO.open();
-        try {
-            if (userDAO.isEmailExists(email)) {
-                Toast.makeText(this, getString(R.string.error_email_exists), Toast.LENGTH_LONG).show();
-                return;
-            }
+        String hashedPassword = PasswordHasher.hashPassword(plainPassword);
 
-            String hashedPassword = PasswordHasher.hashPassword(plainPassword);
-            long userId = userDAO.createUser(email, fullName, phoneNumber, hashedPassword);
+        // Kiểm tra email đã tồn tại chưa
+        if (userDAO.isEmailExists(email)) {
+            Toast.makeText(this, getString(R.string.error_email_exists), Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            if (userId != -1) {
-                Toast.makeText(this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
-                Log.d("SignUpActivity", "User registered: " + email + " with ID: " + userId);
+        // Gọi phương thức createUser, nó sẽ không tạo ví mặc định nữa
+        long userId = userDAO.createUser(email, fullName, phoneNumber, hashedPassword);
 
-                // **QUAN TRỌNG: LƯU PHIÊN ĐĂNG NHẬP NGAY SAU KHI ĐĂNG KÝ**
-                SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("LOGGED_IN_USER_EMAIL", email);
-                editor.apply();
+        if (userId != -1) {
+            Log.d("SignUpActivity", "User registered successfully with ID: " + userId);
 
-                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
-                Log.e("SignUpActivity", "Failed to create user in database.");
-            }
-        } catch (Exception e) {
-            Log.e("SignUpActivity", "Error during sign up: " + e.getMessage(), e);
-            Toast.makeText(this, getString(R.string.error_generic_registration), Toast.LENGTH_SHORT).show();
-        } finally {
-            userDAO.close();
+            // TẠO VÍ MẶC ĐỊNH NGAY SAU KHI TẠO NGƯỜI DÙNG
+            userDAO.createDefaultWalletsForUser(userId);
+
+            Toast.makeText(this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
+            Log.e("SignUpActivity", "Failed to create user in database.");
         }
     }
 

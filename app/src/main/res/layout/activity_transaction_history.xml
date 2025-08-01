@@ -61,9 +61,10 @@
                     android:paddingVertical="6dp">
 
                     <ImageView
+                        android:id="@+id/iv_wallet_icon"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_wallet"
+                        android:src="@drawable/ic_wallet_cash"
                         android:layout_marginEnd="8dp"
                         app:tint="@color/white"
                         tools:ignore="ContentDescription" />
@@ -290,9 +291,19 @@
                         app:layout_constraintStart_toStartOf="@id/tv_step3_icon"
                         app:layout_constraintEnd_toEndOf="@id/tv_step3_icon" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:listitem="@layout/list_item_transaction"
+                tools:itemCount="5"/>
 
             <LinearLayout
                 android:id="@+id/empty_state_view"

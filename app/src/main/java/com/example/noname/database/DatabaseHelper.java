@@ -13,8 +13,8 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "expending_money.db";
-    // TĂNG PHIÊN BẢN DATABASE LÊN 5 để kích hoạt onUpgrade() và tạo bảng mới OTP
-    private static final int DATABASE_VERSION = 5;
+    // Tăng phiên bản database để kích hoạt onUpgrade()
+    private static final int DATABASE_VERSION = 7;
 
     // --- Tên các Bảng (Tables) ---
     public static final String TABLE_USERS = "users";
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_BUDGETS = "budgets";
     public static final String TABLE_RECURRING_TRANSACTIONS = "recurring_transactions";
     public static final String TABLE_SAVINGS_GOALS = "savings_goals";
-    public static final String TABLE_OTP_TOKENS = "otp_tokens"; // Bảng MỚI cho OTP
+    public static final String TABLE_OTP_TOKENS = "otp_tokens";
 
     // --- Cột chung (Common Columns) ---
     public static final String COLUMN_ID = "id";
@@ -37,7 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PHONE_NUMBER = "phone_number";
     public static final String COLUMN_PASSWORD_HASH = "password_hash";
     public static final String COLUMN_LAST_LOGIN = "last_login";
-    // ĐÃ XÓA: COLUMN_SECURITY_QUESTION và COLUMN_SECURITY_ANSWER_HASH
 
     // --- Cột bảng ACCOUNTS ---
     public static final String COLUMN_ACCOUNT_NAME = "name";
@@ -69,6 +68,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FREQUENCY_TYPE = "frequency_type";
     public static final String COLUMN_FREQUENCY_VALUE = "frequency_value";
     public static final String COLUMN_LAST_GENERATED_DATE = "last_generated_date";
+    public static final String COLUMN_NEXT_DATE = "next_date";
+    // Thêm các cột thiếu để khớp với DAO
+    public static final String COLUMN_IS_ACTIVE_RECURRING = "is_active_recurring";
 
     // --- Cột bảng SAVINGS_GOALS ---
     public static final String COLUMN_GOAL_NAME = "name";
@@ -77,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TARGET_DATE = "target_date";
     public static final String COLUMN_IS_COMPLETED = "is_completed";
 
-    // --- Cột bảng OTP_TOKENS (MỚI) ---
+    // --- Cột bảng OTP_TOKENS ---
     public static final String COLUMN_OTP_CODE = "otp_code";
     public static final String COLUMN_EXPIRES_AT = "expires_at";
     public static final String COLUMN_IS_USED = "is_used";
@@ -87,10 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ACCOUNT_ID_FK = "account_id";
     public static final String COLUMN_CATEGORY_ID_FK = "category_id";
 
-
     // --- CÂU LỆNH TẠO BẢNG (CREATE TABLE STATEMENTS) ---
 
-    // 1. Bảng USERS (ĐÃ BỎ CỘT CÂU HỎI BẢO MẬT)
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_EMAIL + " TEXT UNIQUE NOT NULL,"
@@ -101,7 +101,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_LAST_LOGIN + " TEXT"
             + ")";
 
-    // 2. Bảng ACCOUNTS (giữ nguyên)
     private static final String CREATE_TABLE_ACCOUNTS = "CREATE TABLE " + TABLE_ACCOUNTS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -114,10 +113,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 3. Bảng CATEGORIES (giữ nguyên)
     private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE " + TABLE_CATEGORIES + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + COLUMN_USER_ID_FK + " INTEGER," // COLUMN_USER_ID_FK có thể NULL
+            + COLUMN_USER_ID_FK + " INTEGER,"
             + COLUMN_CATEGORY_NAME + " TEXT NOT NULL,"
             + COLUMN_CATEGORY_TYPE + " TEXT NOT NULL,"
             + COLUMN_ICON_NAME + " TEXT,"
@@ -126,7 +124,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 4. Bảng TRANSACTIONS (giữ nguyên)
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE " + TABLE_TRANSACTIONS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -143,7 +140,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORIES + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 5. Bảng BUDGETS (giữ nguyên)
     private static final String CREATE_TABLE_BUDGETS = "CREATE TABLE " + TABLE_BUDGETS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -157,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORIES + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 6. Bảng RECURRING_TRANSACTIONS (giữ nguyên)
+    // Đã sửa lại để khớp với code Java của bạn
     private static final String CREATE_TABLE_RECURRING_TRANSACTIONS = "CREATE TABLE " + TABLE_RECURRING_TRANSACTIONS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -172,12 +168,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_END_DATE + " TEXT,"
             + COLUMN_LAST_GENERATED_DATE + " TEXT,"
             + COLUMN_CREATED_AT + " TEXT,"
+            + COLUMN_IS_ACTIVE + " INTEGER DEFAULT 1,"
+            + COLUMN_UPDATED_AT + " TEXT,"
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE,"
-            + "FOREIGN KEY(" + COLUMN_ACCOUNT_ID_FK + ") REFERENCES " + TABLE_ACCOUNTS + "(" + COLUMN_ID + ") ON DELETE CASCADE,"
-            + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORIES + "(" + COLUMN_ID + ") ON DELETE CASCADE"
+            + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORIES + "(" + COLUMN_ID + ") ON DELETE CASCADE,"
+            + "FOREIGN KEY(" + COLUMN_ACCOUNT_ID_FK + ") REFERENCES " + TABLE_ACCOUNTS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 7. Bảng SAVINGS_GOALS (giữ nguyên)
     private static final String CREATE_TABLE_SAVINGS_GOALS = "CREATE TABLE " + TABLE_SAVINGS_GOALS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -190,17 +187,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // 8. Bảng OTP_TOKENS (MỚI)
     private static final String CREATE_TABLE_OTP_TOKENS = "CREATE TABLE " + TABLE_OTP_TOKENS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
             + COLUMN_OTP_CODE + " TEXT NOT NULL UNIQUE,"
             + COLUMN_CREATED_AT + " TEXT NOT NULL,"
             + COLUMN_EXPIRES_AT + " TEXT NOT NULL,"
-            + COLUMN_IS_USED + " INTEGER DEFAULT 0," // 0 = false (chưa dùng), 1 = true (đã dùng)
+            + COLUMN_IS_USED + " INTEGER DEFAULT 0,"
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
-
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -225,12 +220,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void addDefaultCategories(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
 
-        // Danh mục chi tiêu mặc định
         cv.put(COLUMN_CATEGORY_NAME, "Ăn uống");
         cv.put(COLUMN_CATEGORY_TYPE, "Expense");
         cv.put(COLUMN_ICON_NAME, "ic_restaurant");
         cv.put(COLUMN_COLOR_CODE, "#FF5733");
-        cv.putNull(COLUMN_USER_ID_FK); // Đặt user_id là NULL cho danh mục mặc định
+        cv.putNull(COLUMN_USER_ID_FK);
         db.insert(TABLE_CATEGORIES, null, cv);
 
         cv.clear();

@@ -174,63 +174,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Thu nhập ròng"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_main_header"
-                                android:textSize="16sp"/>
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_help_outline"
-                                android:layout_marginStart="4dp"/>
-                        </LinearLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Xem chi tiết"
-                            android:textColor="@color/primary_green"
-                            android:layout_alignParentEnd="true"/>
-                    </RelativeLayout>
-                    <TextView
-                        android:id="@+id/tv_net_income"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="= 0.00"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Khoản thu"
-                        android:textColor="@color/text_secondary_gray"
-                        android:layout_marginTop="12dp"/>
-                    <TextView
-                        android:id="@+id/tv_total_income"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.00"
-                        android:textColor="@color/primary_green"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Khoản chi"
-                        android:textColor="@color/text_secondary_gray"
-                        android:layout_marginTop="8dp"/>
+                        android:text="Tổng chi"
+                        android:textColor="@color/text_secondary_gray"/>
                     <TextView
                         android:id="@+id/tv_total_expense"
                         android:layout_width="wrap_content"
@@ -238,7 +186,8 @@
                         android:text="0.00"
                         android:textColor="@color/expense_item_red"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -281,32 +230,6 @@
                                 android:padding="12dp"
                                 android:gravity="center_vertical">
                                 <TextView
-                                    android:id="@+id/tv_income_by_category"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Khoản thu\n0.00"
-                                    android:textColor="@color/text_dark"/>
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_arrow_forward_ios"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/dashboard_background_light"
-                            android:layout_marginStart="8dp">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="12dp"
-                                android:gravity="center_vertical">
-                                <TextView
                                     android:id="@+id/tv_expense_by_category"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -328,15 +251,6 @@
                         android:gravity="center"
                         android:layout_marginTop="24dp"
                         android:weightSum="2">
-                        <ProgressBar
-                            android:id="@+id/progress_income"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:indeterminateOnly="false"
-                            android:progress="75"
-                            android:progressDrawable="@drawable/progress_circle"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_marginEnd="16dp"/>
                         <ProgressBar
                             android:id="@+id/progress_expense"
                             android:layout_width="120dp"
@@ -368,112 +282,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_arrow_forward_ios"/>
+
                     </LinearLayout>
 
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                android:layout_marginBottom="16dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="16dp">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="12dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Nợ"
-                            android:textColor="@color/text_dark"/>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:id="@+id/tv_debt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:layout_marginEnd="8dp"
-                                android:textColor="@color/text_dark"/>
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_arrow_forward_ios"/>
-                        </LinearLayout>
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/dashboard_background_light"/>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="12dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cho vay"
-                            android:textColor="@color/text_dark"/>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:id="@+id/tv_loan"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:layout_marginEnd="8dp"
-                                android:textColor="@color/text_dark"/>
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_arrow_forward_ios"/>
-                        </LinearLayout>
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/dashboard_background_light"/>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="12dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Khác"
-                            android:textColor="@color/text_dark"/>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:id="@+id/tv_other"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:layout_marginEnd="8dp"
-                                android:textColor="@color/text_dark"/>
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_arrow_forward_ios"/>
-                        </LinearLayout>
-                    </RelativeLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

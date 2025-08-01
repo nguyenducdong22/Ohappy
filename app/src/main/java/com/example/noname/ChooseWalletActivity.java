@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log; // Thêm import cho Log
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +17,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.example.noname.database.AccountDAO;
 import com.example.noname.models.Account;
@@ -30,8 +32,22 @@ public class ChooseWalletActivity extends AppCompatActivity {
 
     private AccountDAO accountDAO;
     private long currentUserId;
+    private LinearLayout walletContainer;
 
-    private static final String TAG = "ChooseWalletActivity"; // Định nghĩa tag cho Log
+    private static final String TAG = "ChooseWalletActivity";
+
+    // Khai báo ActivityResultLauncher để nhận kết quả từ màn hình thêm/sửa ví
+    private final ActivityResultLauncher<Intent> addEditWalletLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Log.d(TAG, "Add/Edit wallet activity returned with OK result. Reloading data.");
+                    Toast.makeText(this, "Đã cập nhật danh sách ví", Toast.LENGTH_SHORT).show();
+                    loadWallets(); // Tải lại danh sách ví sau khi có thay đổi
+                } else {
+                    Log.d(TAG, "Add/Edit wallet activity cancelled.");
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,49 +88,88 @@ public class ChooseWalletActivity extends AppCompatActivity {
         }
 
         accountDAO = new AccountDAO(this);
+        walletContainer = findViewById(R.id.wallet_container);
+
+        // Gắn sự kiện cho nút Thêm ví mới (nếu có trong layout)
+        // Dòng này giả định có một FloatingActionButton với ID 'fab_add_wallet'
+        // trong layout activity_choose_wallet.xml
+        // Nếu layout của bạn không có, hãy bỏ dòng này.
+        // FloatingActionButton fabAddWallet = findViewById(R.id.fab_add_wallet);
+        // if (fabAddWallet != null) {
+        //     fabAddWallet.setOnClickListener(v -> {
+        //         Log.d(TAG, "Add new wallet FAB clicked.");
+        //         Intent intent = new Intent(ChooseWalletActivity.this, AddEditWalletActivity.class);
+        //         intent.putExtra("user_id", currentUserId);
+        //         addEditWalletLauncher.launch(intent);
+        //     });
+        // }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         accountDAO.open();
-        List<Account> accounts = accountDAO.getAllAccountsByUserId(currentUserId);
+        loadWallets();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         accountDAO.close();
+    }
+
+    private void loadWallets() {
+        if (currentUserId == -1) {
+            Log.e(TAG, "Current User ID is -1. Cannot load wallets.");
+            return;
+        }
+
+        List<Account> accounts = accountDAO.getAllAccountsByUserId(currentUserId);
         Log.d(TAG, "Found " + accounts.size() + " accounts for user ID " + currentUserId);
 
-        LinearLayout walletContainer = findViewById(R.id.wallet_container);
         if (walletContainer == null) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy container ví", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Layout container not found with ID R.id.wallet_container");
             return;
         }
 
-        // Xóa các View cũ nếu có
         walletContainer.removeAllViews();
         Log.d(TAG, "Removed all existing views from wallet container.");
 
-        // Tạo một Map để liên kết tên ví với tên file icon
-        Map<String, String> walletIconMap = new HashMap<>();
-        walletIconMap.put("Tiền mặt", "ic_money");
-        walletIconMap.put("Ví Momo", "ic_wallet_momo");
-        walletIconMap.put("Ngân hàng", "ic_wallet_bank");
+        // Thêm nút "Thêm ví mới" ở đầu danh sách
+        setupAddWalletButton(walletContainer);
 
-        // Duyệt qua danh sách tài khoản từ database và gán dữ liệu
         if (accounts.isEmpty()) {
-            Toast.makeText(this, "Không có ví nào được tìm thấy. Vui lòng tạo ví mặc định.", Toast.LENGTH_LONG).show();
             Log.w(TAG, "Account list is empty. No wallets to display.");
         } else {
             for (Account account : accounts) {
-                String iconName = walletIconMap.get(account.getName());
-                Log.d(TAG, "Processing account: " + account.getName() + ", Icon Name: " + iconName);
+                String iconName = getWalletIconName(account.getName());
                 setupWalletItem(walletContainer, account, iconName);
             }
         }
     }
 
+    private String getWalletIconName(String walletName) {
+        Map<String, String> walletIconMap = new HashMap<>();
+        walletIconMap.put("Tiền mặt", "ic_money");
+        walletIconMap.put("Ví Momo", "ic_wallet_momo");
+        walletIconMap.put("Ngân hàng", "ic_wallet_bank");
+        return walletIconMap.getOrDefault(walletName, "ic_wallet");
+    }
+
     private void setupWalletItem(LinearLayout parentLayout, Account account, String iconName) {
         LayoutInflater inflater = getLayoutInflater();
-        View itemView = inflater.inflate(R.layout.item_wallet, parentLayout, false);
+        View itemView = inflater.inflate(R.layout.item_wallet, parentLayout, false); // Sửa thành item_wallet_editable
         Log.d(TAG, "Inflated new view for account: " + account.getName());
 
         ImageView iconView = itemView.findViewById(R.id.wallet_icon);
         TextView nameView = itemView.findViewById(R.id.wallet_name);
         TextView balanceView = itemView.findViewById(R.id.wallet_balance);
+        ImageView editButton = itemView.findViewById(R.id.btn_edit_wallet);
+
+        if (account == null) {
+            Log.e(TAG, "Account object is null, skipping view setup.");
+            return;
+        }
 
         nameView.setText(account.getName());
         Log.d(TAG, "Setting wallet name: " + account.getName());
@@ -126,22 +181,13 @@ public class ChooseWalletActivity extends AppCompatActivity {
         balanceView.setText(formattedBalance);
         Log.d(TAG, "Setting balance: " + formattedBalance);
 
-        if (iconView != null && iconName != null) {
-            int iconResId = getResources().getIdentifier(iconName, "drawable", getPackageName());
-            if (iconResId != 0) {
-                iconView.setImageResource(iconResId);
-                iconView.setColorFilter(ContextCompat.getColor(this, R.color.primary_green_dark));
-                Log.d(TAG, "Set icon for " + account.getName() + " with resource ID: " + iconResId);
-            } else {
-                Log.w(TAG, "Icon resource not found for name: " + iconName);
-                iconView.setImageResource(R.drawable.ic_wallet);
-                iconView.setColorFilter(ContextCompat.getColor(this, R.color.primary_green_dark));
-            }
+        int iconResId = getResources().getIdentifier(iconName, "drawable", getPackageName());
+        if (iconResId != 0) {
+            iconView.setImageResource(iconResId);
         } else {
-            Log.w(TAG, "Icon name is null for account: " + account.getName());
             iconView.setImageResource(R.drawable.ic_wallet);
-            iconView.setColorFilter(ContextCompat.getColor(this, R.color.primary_green_dark));
         }
+        iconView.setColorFilter(ContextCompat.getColor(this, R.color.primary_green_dark));
 
         itemView.setOnClickListener(v -> {
             Log.d(TAG, "Wallet item clicked: " + account.getName() + ", ID: " + account.getId());
@@ -152,7 +198,31 @@ public class ChooseWalletActivity extends AppCompatActivity {
             finish();
         });
 
+        if (editButton != null) {
+            editButton.setOnClickListener(v -> {
+                Log.d(TAG, "Edit button clicked for wallet: " + account.getName() + ", ID: " + account.getId());
+                Intent intent = new Intent(ChooseWalletActivity.this, AddEditWalletActivity.class);
+                intent.putExtra("user_id", currentUserId);
+                intent.putExtra("edit_mode", true);
+                intent.putExtra("account_id_to_edit", account.getId());
+                addEditWalletLauncher.launch(intent);
+            });
+        }
+
+
         parentLayout.addView(itemView);
         Log.d(TAG, "Added new wallet view to container.");
+    }
+
+    private void setupAddWalletButton(LinearLayout parentLayout) {
+        LayoutInflater inflater = getLayoutInflater();
+        View addView = inflater.inflate(R.layout.item_add_wallet, parentLayout, false);
+        addView.setOnClickListener(v -> {
+            Log.d(TAG, "Add new wallet button clicked.");
+            Intent intent = new Intent(ChooseWalletActivity.this, AddEditWalletActivity.class);
+            intent.putExtra("user_id", currentUserId);
+            addEditWalletLauncher.launch(intent);
+        });
+        parentLayout.addView(addView, 0); // Thêm vào vị trí đầu tiên của container
     }
 }

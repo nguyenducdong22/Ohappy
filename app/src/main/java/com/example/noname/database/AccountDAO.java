@@ -39,16 +39,19 @@ public class AccountDAO {
     }
 
     public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-        Log.d(TAG, "Database opened for writing.");
+        if (database == null || !database.isOpen()) {
+            database = dbHelper.getWritableDatabase();
+            Log.d(TAG, "Database opened for writing.");
+        }
     }
 
     public void close() {
+        if (database != null && database.isOpen()) {
+            database.close();
+            Log.d(TAG, "Database closed.");
+        }
         dbHelper.close();
-        Log.d(TAG, "Database closed.");
     }
-
-    // ... (Các phương thức khác giữ nguyên) ...
 
     /**
      * Tạo một tài khoản mới cho người dùng.
@@ -73,12 +76,34 @@ public class AccountDAO {
             accountId = database.insert(DatabaseHelper.TABLE_ACCOUNTS, null, values);
             Log.d(TAG, "Account created with ID: " + accountId);
         } catch (Exception e) {
-            Log.e(TAG, "Error creating account: " + e.getMessage(), e); // Log lỗi chi tiết hơn
+            Log.e(TAG, "Error creating account: " + e.getMessage(), e);
         }
         return accountId;
     }
 
-    // ... (Các phương thức khác của AccountDAO) ...
+    /**
+     * Cập nhật thông tin của một tài khoản hiện có.
+     * @param accountId ID của tài khoản cần cập nhật.
+     * @param newName Tên mới của ví.
+     * @param newBalance Số dư mới.
+     * @return Số hàng bị ảnh hưởng.
+     */
+    public int updateAccount(long accountId, String newName, double newBalance) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_ACCOUNT_NAME, newName);
+        values.put(DatabaseHelper.COLUMN_BALANCE, newBalance);
+
+        int rowsAffected = database.update(
+                DatabaseHelper.TABLE_ACCOUNTS,
+                values,
+                DatabaseHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(accountId)}
+        );
+
+        Log.d(TAG, "Updated account ID: " + accountId + ", rows affected: " + rowsAffected);
+        return rowsAffected;
+    }
+
     public List<Account> getAllAccountsByUserId(long userId) {
         List<Account> accounts = new ArrayList<>();
         Cursor cursor = database.query(

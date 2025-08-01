@@ -13,34 +13,43 @@
     android:focusable="true">
 
     <LinearLayout
+        android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/img_recurring_expense_category_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_category" app:tint="@color/primary_green_dark"
-            android:background="@drawable/circle_bg_light_green" android:padding="8dp" />
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rounded_background_with_border">
+
+            <ImageView
+                android:id="@+id/img_recurring_expense_category_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                tools:src="@drawable/ic_category"
+                app:tint="@color/text_dark"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="16dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_recurring_expense_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiền thuê nhà"
+                tools:text="Học phí hàng tháng"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 android:textColor="@color/text_dark"
+                android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -60,7 +69,7 @@
                     android:id="@+id/tv_recurring_expense_frequency_next_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hàng tháng (Ngày 15)"
+                    tools:text="Hàng tháng (Ngày 15)"
                     android:textSize="13sp"
                     android:textColor="@color/text_medium"
                     android:layout_marginStart="4dp" />
@@ -72,7 +81,7 @@
             android:id="@+id/tv_recurring_expense_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5.000.000 VND"
+            tools:text="5.000.000 VND"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/button_red" />

@@ -1,20 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    android:layout_marginBottom="8dp"
-    android:backgroundTint="@color/white">
+    app:cardElevation="0dp">
 
     <LinearLayout
+        android:id="@+id/budget_item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/iv_group_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                tools:src="@drawable/ic_food"
+                android:background="@drawable/bottom_nav_background"
+                android:padding="6dp"
+                android:layout_marginEnd="12dp"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_group_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Ăn uống"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btn_more_options"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_more_vert"
+                app:tint="@color/light_gray_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,55 +62,51 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
-            <ImageView
-                android:id="@+id/iv_budget_item_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_food_circle"
-                android:contentDescription="Budget Category Icon"
-                android:layout_marginEnd="16dp"/>
+            <TextView
+                android:id="@+id/tv_spent_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="150,000 đ"
+                android:textSize="14sp"
+                android:textColor="@color/expense_item_red"
+                android:layout_marginEnd="4dp" />
 
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textColor="@color/light_gray_bg"
+                android:textSize="14sp"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:id="@+id/tv_total_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_budget_item_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tên Ngân sách"
-                    android:textColor="@color/text_dark"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/tv_budget_item_remaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Còn lại 0.00 đ"
-                    android:textColor="@color/text_light"
-                    android:textSize="14sp"/>
-            </LinearLayout>
+                tools:text="500,000 đ"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary_gray" />
 
             <TextView
-                android:id="@+id/tv_budget_item_total"
+                android:id="@+id/tv_progress_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.00 đ"
-                android:textColor="@color/text_dark"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                tools:text="30%"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_bg"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ProgressBar
-            android:id="@+id/progress_budget_item"
-            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/budget_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:progress="50"
-            android:progressTint="@color/blue_500"/>
+            android:layout_height="6dp"
+            android:max="100"
+            tools:progress="30"
+            android:progressTint="@color/primary_green"
+            android:backgroundTint="@color/green_accent" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

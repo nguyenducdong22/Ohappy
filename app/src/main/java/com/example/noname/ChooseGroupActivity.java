@@ -1,11 +1,11 @@
-package com.example.noname;
+package com.example.noname; // Đảm bảo đúng package của bạn
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log; // Thêm import cho Log
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,20 +21,22 @@ import androidx.core.content.ContextCompat;
 
 import com.example.noname.database.CategoryDAO;
 import com.example.noname.models.Category;
+import com.example.noname.R; // Đảm bảo import R.class của bạn
 
 import java.util.List;
 
 public class ChooseGroupActivity extends AppCompatActivity {
 
+    private static final String TAG = "ChooseGroupActivity";
+    private static final int ADD_CATEGORY_REQUEST_CODE = 200;
+
     private CategoryDAO categoryDAO;
     private long currentUserId;
-    private static final int ADD_CATEGORY_REQUEST_CODE = 200; // Mã yêu cầu cho màn hình thêm mới
-    private static final String TAG = "ChooseGroupActivity"; // Định nghĩa tag cho Log
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_group_dynamic); // Đổi tên layout thành activity_choose_group_dynamic
+        setContentView(R.layout.activity_choose_group_dynamic);
 
         Log.d(TAG, "onCreate: Activity started.");
 
@@ -64,6 +66,13 @@ public class ChooseGroupActivity extends AppCompatActivity {
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         Log.d(TAG, "Retrieved currentUserId: " + currentUserId);
 
+        if (currentUserId == -1) {
+            Log.e(TAG, "Current User ID is -1. Cannot load categories.");
+            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         categoryDAO = new CategoryDAO(this);
     }
 
@@ -76,8 +85,6 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
     private void loadCategoriesAndDisplay() {
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Current User ID is -1. Cannot load categories.");
             return;
         }
 
@@ -88,8 +95,8 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
         LinearLayout categoryContainer = findViewById(R.id.category_container);
         if (categoryContainer == null) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy container danh mục", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Layout container not found with ID R.id.category_container");
+            Toast.makeText(this, "Lỗi: Không tìm thấy container danh mục", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -126,8 +133,8 @@ public class ChooseGroupActivity extends AppCompatActivity {
             Log.d(TAG, "Set icon for " + category.getName() + " with resource ID: " + iconResId);
         } else {
             Log.w(TAG, "Icon resource not found for name: " + category.getIconName() + ". Using default icon.");
-            iconView.setImageResource(R.drawable.ic_other); // Icon mặc định
-            iconView.setColorFilter(ContextCompat.getColor(this, R.color.grey_text_link));
+            iconView.setImageResource(R.drawable.ic_other);
+            iconView.setColorFilter(ContextCompat.getColor(this, R.color.light_gray_bg));
         }
 
         itemView.setOnClickListener(v -> {
@@ -158,8 +165,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
         itemView.setOnClickListener(v -> {
             Log.d(TAG, "Add new category button clicked.");
-            // Đây là nơi bạn điều hướng đến màn hình thêm mới danh mục.
-            // startActivityForResult(new Intent(this, AddCategoryActivity.class), ADD_CATEGORY_REQUEST_CODE);
+            // TODO: Điều hướng đến màn hình thêm mới danh mục
             Toast.makeText(this, "Chức năng thêm danh mục đang phát triển.", Toast.LENGTH_SHORT).show();
         });
 
@@ -170,9 +176,9 @@ public class ChooseGroupActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "Received result from another activity. RequestCode: " + requestCode + ", ResultCode: " + resultCode);
+        Log.d(TAG, "Received result. RequestCode: " + requestCode + ", ResultCode: " + resultCode);
 
-        if (requestCode == ADD_CATEGORY_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == ADD_CATEGORY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Returned from AddCategoryActivity. Reloading categories.");
             loadCategoriesAndDisplay();
         }

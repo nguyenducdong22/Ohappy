@@ -1,198 +1,276 @@
 package com.example.noname.Budget;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.EditText;
 import android.widget.Toast;
+import android.util.Log; // Thêm import cho Log
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken; // <-- CẦN IMPORT NÀY
+import androidx.core.content.ContextCompat;
 
+import com.example.noname.ChooseGroupActivity;
 import com.example.noname.R;
+import com.example.noname.database.BudgetDAO;
+import com.example.noname.database.CategoryDAO;
+import com.example.noname.models.Category;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.lang.reflect.Type; // <-- CẦN IMPORT NÀY
-import java.util.ArrayList; // <-- CẦN IMPORT NÀY
-import java.util.List; // <-- CẦN IMPORT NÀY
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class AddBudgetActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_SELECT_GROUP = 1;
+    public static final String EXTRA_BUDGET_TO_EDIT = "EXTRA_BUDGET_TO_EDIT";
+    private static final int REQUEST_CODE_CHOOSE_CATEGORY = 101;
 
-    private TextView tvGroupName;
+    // UI elements
+    private Toolbar toolbar;
+    private TextView btnCancel;
+    private LinearLayout layoutChooseGroup;
     private ImageView ivGroupIcon;
+    private TextView tvGroupName;
     private EditText etAmount;
+    private LinearLayout layoutDateRange;
     private TextView tvDateRange;
     private SwitchMaterial switchRepeatBudget;
+    private Button btnSaveBudget;
 
-    private String selectedGroupName = "Chọn nhóm";
-    private int selectedGroupIconResId = R.drawable.ic_circle; // Đảm bảo ic_circle tồn tại
-    private String selectedDateRange = "Tháng này (01/07 - 31/07)";
+    // Data
+    private BudgetDAO budgetDAO;
+    private CategoryDAO categoryDAO;
+    private long currentUserId;
+    private Budget budgetToEdit = null;
+    private Category selectedCategory = null;
+
+    private Calendar startDateCalendar = Calendar.getInstance();
+    private Calendar endDateCalendar = Calendar.getInstance();
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM", new Locale("vi", "VN"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_budget);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_add_budget);
-        setSupportActionBar(toolbar);
+        Log.d("AddBudgetActivity", "onCreate started.");
 
-        tvGroupName = findViewById(R.id.tv_group_name);
-        ivGroupIcon = findViewById(R.id.iv_group_icon);
-        etAmount = findViewById(R.id.et_amount);
-        tvDateRange = findViewById(R.id.tv_date_range);
-        switchRepeatBudget = findViewById(R.id.switch_repeat_budget);
-
-        // Hiển thị giá trị ban đầu
-        tvGroupName.setText(selectedGroupName);
-        ivGroupIcon.setImageResource(selectedGroupIconResId);
-        tvDateRange.setText(selectedDateRange);
-
-        // Xử lý nút "Hủy"
-        TextView btnCancel = findViewById(R.id.btn_cancel_add_budget);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(Activity.RESULT_CANCELED); // Đặt kết quả là hủy
-                finish();
-            }
-        });
-
-        // Xử lý click vào "Chọn nhóm"
-        LinearLayout layoutChooseGroup = findViewById(R.id.layout_choose_group);
-        layoutChooseGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddBudgetActivity.this, ChooseGroupActivity.class);
-                intent.putExtra("current_selected_group_name", selectedGroupName);
-                intent.putExtra("current_selected_group_icon_res_id", selectedGroupIconResId);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_GROUP);
-            }
-        });
-
-        // Xử lý layout_date_range
-        LinearLayout layoutDateRangeClick = findViewById(R.id.layout_date_range);
-        layoutDateRangeClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(AddBudgetActivity.this, "Mở Date Picker (chưa triển khai)", Toast.LENGTH_SHORT).show();
-                // TODO: Hiển thị DatePickerDialog hoặc điều hướng đến màn hình chọn khoảng thời gian
-                // Khi chọn xong, cập nhật selectedDateRange và tvDateRange.setText()
-            }
-        });
-
-        // Xử lý layout_total (nếu có và cần click)
-        LinearLayout layoutTotal = findViewById(R.id.layout_total);
-        if (layoutTotal != null) { // Kiểm tra null nếu layoutTotal không luôn tồn tại
-            layoutTotal.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(AddBudgetActivity.this, "Mở thiết lập Tổng cộng (chưa triển khai)", Toast.LENGTH_SHORT).show();
-                }
-            });
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
+        if (currentUserId == -1) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy người dùng.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
 
-        // Xử lý nút "Lưu"
-        Button btnSaveBudget = findViewById(R.id.btn_save_budget);
-        btnSaveBudget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amountString = etAmount.getText().toString().trim();
-                double amount = 0.0;
-                if (amountString.isEmpty() || amountString.equals("0")) {
-                    Toast.makeText(AddBudgetActivity.this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                try {
-                    amount = Double.parseDouble(amountString);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(AddBudgetActivity.this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        budgetDAO = new BudgetDAO(this);
+        categoryDAO = new CategoryDAO(this);
 
-                if (selectedGroupName.equals("Chọn nhóm")) {
-                    Toast.makeText(AddBudgetActivity.this, "Vui lòng chọn một nhóm", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        toolbar = findViewById(R.id.toolbar_add_budget);
+        btnCancel = findViewById(R.id.btn_cancel_add_budget);
+        layoutChooseGroup = findViewById(R.id.layout_choose_group);
+        ivGroupIcon = findViewById(R.id.iv_group_icon);
+        tvGroupName = findViewById(R.id.tv_group_name);
+        etAmount = findViewById(R.id.et_amount);
+        layoutDateRange = findViewById(R.id.layout_date_range);
+        tvDateRange = findViewById(R.id.tv_date_range);
+        switchRepeatBudget = findViewById(R.id.switch_repeat_budget);
+        btnSaveBudget = findViewById(R.id.btn_save_budget);
 
-                boolean repeatBudget = switchRepeatBudget.isChecked();
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        btnCancel.setOnClickListener(v -> finish());
+        btnSaveBudget.setOnClickListener(v -> saveBudget());
+        layoutChooseGroup.setOnClickListener(v -> chooseCategory());
+        layoutDateRange.setOnClickListener(v -> showDateRangePicker());
 
-                // Tạo đối tượng Budget mới
-                // Đảm bảo constructor của Budget Class có 5 tham số:
-                // public Budget(String groupName, int groupIconResId, double amount, String dateRange, boolean repeat)
-                Budget newBudget = new Budget(selectedGroupName, selectedGroupIconResId, amount, selectedDateRange, repeatBudget);
+        etAmount.addTextChangedListener(textWatcher);
+        switchRepeatBudget.setOnCheckedChangeListener((buttonView, isChecked) -> checkInputs());
 
-                // LƯU DANH SÁCH NGÂN SÁCH VÀO SharedPreferences
-                saveBudgetToSharedPreferences(newBudget);
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(EXTRA_BUDGET_TO_EDIT)) {
+            budgetToEdit = (Budget) intent.getSerializableExtra(EXTRA_BUDGET_TO_EDIT);
+            updateUiForEditMode();
+        } else {
+            startDateCalendar.set(Calendar.DAY_OF_MONTH, 1);
+            endDateCalendar.set(Calendar.DAY_OF_MONTH, endDateCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            updateDateRangeDisplay();
+        }
 
-                Toast.makeText(AddBudgetActivity.this, "Đã lưu ngân sách cho: " + selectedGroupName, Toast.LENGTH_LONG).show();
+        checkInputs();
+    }
 
-                // Trả về RESULT_OK cho BudgetOverviewActivity
-                setResult(Activity.RESULT_OK);
-                finish(); // Đóng Activity
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            checkInputs();
+        }
+    };
+
+    private void checkInputs() {
+        boolean isAmountValid = !etAmount.getText().toString().isEmpty() && Double.parseDouble(etAmount.getText().toString()) > 0;
+        boolean isCategorySelected = selectedCategory != null;
+        btnSaveBudget.setEnabled(isAmountValid && isCategorySelected);
+        btnSaveBudget.setBackgroundResource(isAmountValid && isCategorySelected ? R.color.primary_green : R.color.primary_green_light);
+        Log.d("AddBudgetActivity", "checkInputs: isAmountValid = " + isAmountValid + ", isCategorySelected = " + isCategorySelected);
+    }
+
+    private void showDateRangePicker() {
+        DatePickerDialog startDatePicker = new DatePickerDialog(this,
+                (view, year, month, dayOfMonth) -> {
+                    startDateCalendar.set(year, month, dayOfMonth);
+                    DatePickerDialog endDatePicker = new DatePickerDialog(this,
+                            (view2, year2, month2, dayOfMonth2) -> {
+                                endDateCalendar.set(year2, month2, dayOfMonth2);
+                                if (endDateCalendar.before(startDateCalendar)) {
+                                    Toast.makeText(this, "Ngày kết thúc phải sau ngày bắt đầu.", Toast.LENGTH_SHORT).show();
+                                    endDateCalendar.setTime(startDateCalendar.getTime());
+                                }
+                                updateDateRangeDisplay();
+                            },
+                            endDateCalendar.get(Calendar.YEAR),
+                            endDateCalendar.get(Calendar.MONTH),
+                            endDateCalendar.get(Calendar.DAY_OF_MONTH));
+                    endDatePicker.getDatePicker().setMinDate(startDateCalendar.getTimeInMillis());
+                    endDatePicker.show();
+                },
+                startDateCalendar.get(Calendar.YEAR),
+                startDateCalendar.get(Calendar.MONTH),
+                startDateCalendar.get(Calendar.DAY_OF_MONTH));
+        startDatePicker.show();
+    }
+
+    private void updateDateRangeDisplay() {
+        String start = displayDateFormat.format(startDateCalendar.getTime());
+        String end = displayDateFormat.format(endDateCalendar.getTime());
+        tvDateRange.setText(String.format("%s - %s", start, end));
+    }
+
+    private void chooseCategory() {
+        Intent intent = new Intent(this, ChooseGroupActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_CHOOSE_CATEGORY);
+    }
+
+    private void updateUiForEditMode() {
+        if (budgetToEdit != null) {
+            toolbar.setTitle("Sửa Ngân sách");
+            categoryDAO.open();
+            CategoryDAO.CategoryWithIcon categoryWithIcon = categoryDAO.getCategoryByIdWithIcon(budgetToEdit.getCategoryId());
+            if (categoryWithIcon != null) {
+                selectedCategory = categoryWithIcon.category;
+                ivGroupIcon.setImageResource(categoryWithIcon.iconResId);
+                tvGroupName.setText(categoryWithIcon.category.getName());
+                tvGroupName.setTextColor(getResources().getColor(R.color.text_dark));
             }
-        });
+            categoryDAO.close();
+
+            etAmount.setText(String.valueOf(budgetToEdit.getAmount()));
+            switchRepeatBudget.setChecked(budgetToEdit.isRepeat());
+
+            try {
+                startDateCalendar.setTime(dateFormat.parse(budgetToEdit.getStartDate()));
+                endDateCalendar.setTime(dateFormat.parse(budgetToEdit.getEndDate()));
+                updateDateRangeDisplay();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveBudget() {
+        if (selectedCategory == null) {
+            Toast.makeText(this, "Vui lòng chọn nhóm.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double amount = 0;
+        try {
+            amount = Double.parseDouble(etAmount.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số tiền không hợp lệ.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (amount <= 0) {
+            Toast.makeText(this, "Số tiền phải lớn hơn 0.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String startDate = dateFormat.format(startDateCalendar.getTime());
+        String endDate = dateFormat.format(endDateCalendar.getTime());
+        boolean isRecurring = switchRepeatBudget.isChecked();
+
+        budgetDAO.open();
+        long result;
+        if (budgetToEdit == null) {
+            result = budgetDAO.addBudget(
+                    currentUserId,
+                    selectedCategory.getId(),
+                    amount,
+                    startDate,
+                    endDate,
+                    isRecurring
+            );
+        } else {
+            result = budgetDAO.updateBudget(
+                    budgetToEdit.getId(),
+                    currentUserId,
+                    selectedCategory.getId(),
+                    amount,
+                    startDate,
+                    endDate,
+                    isRecurring
+            );
+        }
+        budgetDAO.close();
+
+        if (result > 0) {
+            setResult(Activity.RESULT_OK);
+            finish();
+        } else {
+            Toast.makeText(this, "Lưu ngân sách thất bại.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE_CATEGORY && resultCode == Activity.RESULT_OK && data != null) {
+            long categoryId = data.getLongExtra("selected_category_id", -1);
+            String categoryName = data.getStringExtra("selected_group_name");
+            int categoryIcon = data.getIntExtra("selected_group_icon", -1);
 
-        if (requestCode == REQUEST_CODE_SELECT_GROUP) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                selectedGroupName = data.getStringExtra("selected_group_name");
-                selectedGroupIconResId = data.getIntExtra("selected_group_icon_res_id", R.drawable.ic_circle); // Default icon nếu không tìm thấy
+            Log.d("AddBudgetActivity", "onActivityResult: categoryId = " + categoryId + ", categoryName = " + categoryName + ", categoryIcon = " + categoryIcon);
 
-                tvGroupName.setText(selectedGroupName);
-                ivGroupIcon.setImageResource(selectedGroupIconResId);
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // Người dùng đã hủy chọn nhóm, không thay đổi giá trị hiện tại
+            if (categoryId != -1) {
+                // Tạo một đối tượng Category từ dữ liệu trả về và gán cho selectedCategory
+                selectedCategory = new Category(categoryId, categoryName, categoryIcon);
+                ivGroupIcon.setImageResource(selectedCategory.getIconResId());
+                tvGroupName.setText(selectedCategory.getName());
+                tvGroupName.setTextColor(ContextCompat.getColor(this, R.color.text_dark));
+                checkInputs();
             }
         }
-    }
-
-    // PHƯƠNG THỨC NÀY ĐÃ ĐƯỢC THAY ĐỔI ĐỂ LƯU DANH SÁCH NGÂN SÁCH
-    private void saveBudgetToSharedPreferences(Budget newBudget) {
-        SharedPreferences sharedPref = getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-
-        // 1. Lấy chuỗi JSON của TẤT CẢ các ngân sách hiện có
-        String json = sharedPref.getString("all_budgets", null);
-
-        List<Budget> existingBudgets;
-        if (json == null) {
-            // Nếu chưa có ngân sách nào, tạo một danh sách rỗng mới
-            existingBudgets = new ArrayList<>();
-        } else {
-            // Nếu đã có, chuyển đổi chuỗi JSON thành List<Budget>
-            Type type = new TypeToken<ArrayList<Budget>>() {}.getType();
-            existingBudgets = gson.fromJson(json, type);
-            if (existingBudgets == null) { // Phòng trường hợp deserialize lỗi
-                existingBudgets = new ArrayList<>();
-            }
-        }
-
-        // 2. Thêm ngân sách mới vào danh sách
-        existingBudgets.add(newBudget);
-
-        // 3. Chuyển đổi toàn bộ danh sách thành chuỗi JSON
-        String updatedJson = gson.toJson(existingBudgets);
-
-        // 4. Lưu chuỗi JSON của danh sách đã cập nhật vào SharedPreferences
-        editor.putString("all_budgets", updatedJson); // Sử dụng key "all_budgets"
-        editor.apply(); // Áp dụng thay đổi
     }
 }

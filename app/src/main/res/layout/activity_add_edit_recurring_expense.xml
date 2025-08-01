@@ -79,20 +79,39 @@
                             android:textColor="@color/text_dark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <LinearLayout
+                        android:id="@+id/layout_select_recurring_category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tên nhóm (ví dụ: Ăn Uống, Học phí)"
-                        android:layout_marginTop="16dp"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_recurring_category_name"
-                            android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingVertical="12dp"
+                        android:layout_marginTop="16dp">
+
+                        <ImageView
+                            android:id="@+id/img_recurring_category_icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_category"
+                            app:tint="@color/primary_green_dark" />
+
+                        <TextView
+                            android:id="@+id/tv_recurring_category_name"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            android:maxLines="1"
-                            android:textColor="@color/text_dark" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_weight="1"
+                            android:text="Chọn nhóm"
+                            android:textColor="@color/text_dark"
+                            android:textSize="16sp"
+                            android:layout_marginStart="16dp" />
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/text_light" />
+                    </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

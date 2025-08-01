@@ -70,6 +70,7 @@ dependencies {
     // <<< KẾT THÚC THÊM >>>
     implementation(libs.core)
     implementation (libs.androidsvg) // Sử dụng phiên bản mới nhất
+    implementation(libs.mpandroidchart)
 
 
 

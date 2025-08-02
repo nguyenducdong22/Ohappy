@@ -315,4 +315,36 @@ public class TransactionDAO {
 
         return transaction;
     }
+
+    public double getTotalAmountByTypeAndDateRange(long userId, String type, String startDate, String endDate) {
+        double total = 0;
+        Cursor cursor = null; // Khởi tạo cursor là null
+        try {
+            // Câu truy vấn đã được sửa để tham chiếu đúng các hằng số từ DatabaseHelper
+            String query = "SELECT SUM(" + DatabaseHelper.COLUMN_AMOUNT + ") FROM " + DatabaseHelper.TABLE_TRANSACTIONS +
+                    " WHERE " + DatabaseHelper.COLUMN_USER_ID_FK + " = ? AND " +
+                    DatabaseHelper.COLUMN_TRANSACTION_TYPE + " = ? AND " +
+                    "SUBSTR(" + DatabaseHelper.COLUMN_TRANSACTION_DATE + ", 1, 10) BETWEEN ? AND ?";
+
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId), type, startDate, endDate});
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    // Kiểm tra xem kết quả có phải là NULL không (trường hợp không có giao dịch nào)
+                    if (!cursor.isNull(0)) {
+                        total = cursor.getDouble(0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Ghi lại lỗi để dễ dàng gỡ rối
+            Log.e(TAG, "Error getting total amount by type and date range: " + e.getMessage(), e);
+        } finally {
+            // Luôn đóng cursor trong khối finally để tránh rò rỉ bộ nhớ
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return total;
+    }
 }

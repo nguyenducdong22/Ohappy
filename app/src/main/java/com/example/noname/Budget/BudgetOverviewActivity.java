@@ -17,7 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.noname.AccountActivity;
+import com.example.noname.Addtransaction;
+import com.example.noname.MainActivity;
 import com.example.noname.R;
+import com.example.noname.TransactionHistoryActivity;
 import com.example.noname.database.BudgetDAO;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -95,6 +99,9 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         budgetAdapter = new BudgetAdapter(new ArrayList<>(), this);
         recyclerViewBudgets.setAdapter(budgetAdapter);
 
+        // Thiết lập mục "Ngân sách" là mục được chọn trên Bottom Navigation
+        bottomNavigationView.setSelectedItemId(R.id.navigation_budget);
+
         // --- Thiết lập các trình lắng nghe sự kiện click ---
         btnBackBudgetOverview.setOnClickListener(v -> finish());
         btnCreateBudget.setOnClickListener(v -> {
@@ -102,8 +109,39 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             startActivityForResult(intent, REQUEST_CODE_ADD_BUDGET);
         });
 
+        // Thiết lập listeners cho thanh điều hướng và các nút nổi
+        setupNavigationListeners();
+
         // Tải dữ liệu ban đầu
         loadBudgetsAndDisplay();
+    }
+
+    private void setupNavigationListeners() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_overview) {
+                // Chuyển đến màn hình chính
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (itemId == R.id.navigation_transactions) {
+                // Chuyển đến màn hình lịch sử giao dịch
+                startActivity(new Intent(this, TransactionHistoryActivity.class));
+                return true;
+            } else if (itemId == R.id.navigation_budget) {
+                // Đang ở màn hình này, không làm gì cả
+                return true;
+            } else if (itemId == R.id.navigation_account) {
+                // Chuyển đến màn hình tài khoản
+                startActivity(new Intent(this, AccountActivity.class));
+                return true;
+            }
+            return false;
+        });
+
+        fabAddTransaction.setOnClickListener(v -> {
+            // Mở màn hình thêm giao dịch
+            startActivity(new Intent(this, Addtransaction.class));
+        });
     }
 
     @Override

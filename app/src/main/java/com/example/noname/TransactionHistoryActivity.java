@@ -33,7 +33,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,8 +52,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     private TextView tvWalletName;
     private ImageView ivWalletIcon;
     private TextView tvBalance;
-    // private TextView tvStartBalance, tvEndBalance; // Bỏ các biến này
-    private TextView tvEmptyState;
     private LinearLayout emptyStateView;
 
     private TabLayout tabLayoutMonths;
@@ -61,7 +61,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
     // Adapters & DAOs
     private TransactionAdapter transactionAdapter;
-    private List<Transaction> transactionList;
     private TransactionDAO transactionDAO;
     private AccountDAO accountDAO;
 
@@ -95,7 +94,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                         currentAccountId = result.getData().getLongExtra("selected_account_id", -1);
                         String selectedWalletName = result.getData().getStringExtra("selected_wallet_name");
                         int selectedWalletIconId = result.getData().getIntExtra("selected_wallet_icon", R.drawable.ic_wallet);
-                        Log.d(TAG, "Selected wallet - ID: " + currentAccountId + ", Name: " + selectedWalletName);
 
                         if (currentAccountId != -1) {
                             tvWalletName.setText(selectedWalletName);
@@ -116,12 +114,12 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         setupClickListeners();
 
         loadInitialWalletInfo();
-        loadTransactionsAndBalances();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // Tải dữ liệu cho tab đang được chọn
         loadTransactionsAndBalances();
     }
 
@@ -137,8 +135,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         tvWalletName = findViewById(R.id.tv_wallet_name);
         ivWalletIcon = findViewById(R.id.iv_wallet_icon);
         tvBalance = findViewById(R.id.tv_balance);
-        // tvStartBalance = findViewById(R.id.tv_balance_start); // Bỏ dòng này
-        // tvEndBalance = findViewById(R.id.tv_balance_end); // Bỏ dòng này
         emptyStateView = findViewById(R.id.empty_state_view);
 
         tabLayoutMonths = findViewById(R.id.tab_layout_months);
@@ -169,6 +165,8 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             ivWalletIcon.setImageResource(R.drawable.ic_wallet);
             currentAccountId = -1;
         }
+        // Sau khi có ví, tải dữ liệu giao dịch
+        loadTransactionsAndBalances();
     }
 
     private void loadTransactionsAndBalances() {
@@ -180,8 +178,22 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             return;
         }
 
-        String startDate = "2025-08-01";
-        String endDate = "2025-08-31";
+        // === THAY ĐỔI LỚN: TÍNH TOÁN NGÀY THÁNG DỰA VÀO TAB ĐÃ CHỌN ===
+        Calendar cal = Calendar.getInstance();
+        int selectedTabPosition = tabLayoutMonths.getSelectedTabPosition();
+
+        // Vị trí 0 là "THÁNG TRƯỚC", vị trí 1 là "THÁNG NÀY"
+        if (selectedTabPosition == 0) {
+            cal.add(Calendar.MONTH, -1); // Lùi lại 1 tháng
+        }
+        // Nếu là tab "THÁNG NÀY" (vị trí 1), không cần thay đổi `cal`
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        String startDate = dateFormat.format(cal.getTime());
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String endDate = dateFormat.format(cal.getTime());
+        // ================================================================
 
         transactionDAO.open();
         List<Transaction> transactions = transactionDAO.getTransactionsByDateRange(currentUserId, currentAccountId, startDate, endDate);
@@ -216,22 +228,36 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private int getIconResIdForWallet(String walletName) {
+        // (Giữ nguyên không đổi)
         switch (walletName) {
-            case "Tiền mặt":
-                return R.drawable.ic_wallet_cash;
-            case "Ví Momo":
-                return R.drawable.ic_wallet_momo;
-            case "Ngân hàng":
-                return R.drawable.ic_wallet_bank;
-            default:
-                return R.drawable.ic_wallet;
+            case "Tiền mặt": return R.drawable.ic_wallet_cash;
+            case "Ví Momo": return R.drawable.ic_wallet_momo;
+            case "Ngân hàng": return R.drawable.ic_wallet_bank;
+            default: return R.drawable.ic_wallet;
         }
     }
 
     private void setupTabs() {
         tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG TRƯỚC"));
         tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG NÀY"), true);
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("TƯƠNG LAI"));
+
+        // === THAY ĐỔI LỚN: THÊM LISTENER ĐỂ XỬ LÝ KHI CHỌN TAB ===
+        tabLayoutMonths.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Mỗi khi một tab được chọn, gọi lại hàm tải dữ liệu
+                loadTransactionsAndBalances();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+        // ==========================================================
     }
 
     private void setupClickListeners() {
@@ -275,9 +301,8 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private void showTooltip(View tooltipView) {
-        if (hideTooltipRunnable != null) {
-            tooltipHandler.removeCallbacks(hideTooltipRunnable);
-        }
+        // (Giữ nguyên không đổi)
+        if (hideTooltipRunnable != null) tooltipHandler.removeCallbacks(hideTooltipRunnable);
         tooltipAddTransaction.setVisibility(View.GONE);
         tooltipCreateBudget.setVisibility(View.GONE);
         tooltipView.setVisibility(View.VISIBLE);

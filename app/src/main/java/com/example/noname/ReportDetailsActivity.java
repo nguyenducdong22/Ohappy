@@ -118,7 +118,6 @@ public class ReportDetailsActivity extends AppCompatActivity {
     private void setupTabs() {
         tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Tháng trước"));
         tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Tháng này"), true);
-        tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Tương lai"));
     }
 
     private void setupListeners() {

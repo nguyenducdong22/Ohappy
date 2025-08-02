@@ -27,14 +27,13 @@ import com.google.android.material.tabs.TabLayout;
 
 import com.example.noname.Budget.BudgetOverviewActivity;
 import com.example.noname.database.AccountDAO;
+import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.TransactionDAO;
 import com.example.noname.database.UserDAO;
 import com.example.noname.models.Account;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -44,9 +43,11 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,31 +70,32 @@ public class MainActivity extends AppCompatActivity {
     // Views
     private TextView tvHeaderMainText;
     private LinearLayout subHeaderBalanceDetails;
-    private LinearLayout subHeaderReportDots;
     private CardView walletSummaryCard;
-    private CardView reportCardDynamicContent;
     private CardView dealCard;
     private CardView topExpenseCard;
-    private TextView tvReportSectionTitle;
-    private TextView tvSeeReportDetails;
-    private TextView tvEmptyReportPrompt;
-    private TextView tvReportTrendTitle;
-    private ImageButton btnReportPrev, btnReportNext;
-    private LinearLayout reportPageIndicators;
-    private LinearLayout reportSummaryView;
-    private LinearLayout reportTabView;
     private TextView tvSeeAllWallets;
     private TextView tvAccountName;
     private TextView tvAccountBalance;
     private TextView tvTopExpense1, tvTopExpense2, tvTopExpense3;
     private ProgressBar pbTopExpense1, pbTopExpense2, pbTopExpense3;
 
-    private LineChart lineChart;
-    private BarChart barChart;
+    // Report Card Views
+    private LinearLayout reportSummaryView; // Chứa LineChart
+    private LinearLayout reportTabView;     // Chứa BarChart và TabLayout
+    private TextView tvSeeReportDetails;
+    private TextView tvEmptyReportPrompt;
+    private TextView tvReportTrendTitle;
+    private ImageButton btnReportPrev, btnReportNext;
+    private LinearLayout reportPageIndicators;
+    private LinearLayout lineChartContainer;
     private TextView tvCurrentReportValue;
     private TextView tvTotalSpentPercentage;
+    private TextView tvTotalSpent;
+    private LineChart lineChartReport;
+    private BarChart barChartReport;
+    private TabLayout tabLayoutWeekMonthReport;
 
-    private int currentReportGraphPage = 0;
+    private int currentReportPage = 0; // 0 for LineChart, 1 for BarChart
 
     private final ActivityResultLauncher<Intent> chooseWalletLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -103,12 +105,9 @@ public class MainActivity extends AppCompatActivity {
                     if (newAccountId != -1) {
                         displayedAccountId = newAccountId;
                         saveSelectedAccountId(displayedAccountId);
-                        Log.d("MainActivity", "Returned from ChooseWalletActivity. New displayed Account ID: " + displayedAccountId);
                     }
                     loadDashboardData();
                     Toast.makeText(this, "Đã cập nhật ví chính.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d("MainActivity", "Returned from ChooseWalletActivity with Canceled or no data.");
                 }
             });
 
@@ -131,55 +130,61 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         displayedAccountId = sharedPreferences.getLong(PREF_SELECTED_ACCOUNT_ID, -1);
-        Log.d("MainActivity", "Loaded stored account ID: " + displayedAccountId);
 
+        initializeViews();
+        setupListeners();
+    }
+
+    private void initializeViews() {
+        // Header & Wallet
         tvHeaderMainText = findViewById(R.id.tv_header_main_text);
         subHeaderBalanceDetails = findViewById(R.id.sub_header_balance_details);
-        subHeaderReportDots = findViewById(R.id.sub_header_report_dots);
         walletSummaryCard = findViewById(R.id.wallet_summary_card);
-        reportCardDynamicContent = findViewById(R.id.report_card_dynamic_content);
+        tvSeeAllWallets = findViewById(R.id.tv_see_all_wallets);
+        tvAccountName = findViewById(R.id.tv_account_name);
+        tvAccountBalance = findViewById(R.id.tv_account_balance);
+
+        // Report Card
         reportSummaryView = findViewById(R.id.report_summary_view);
         reportTabView = findViewById(R.id.report_tab_view);
-        dealCard = findViewById(R.id.deal_card);
-        topExpenseCard = findViewById(R.id.top_expense_card);
-        tvReportSectionTitle = findViewById(R.id.tv_report_section_title);
         tvSeeReportDetails = findViewById(R.id.tv_see_report_details);
         tvEmptyReportPrompt = findViewById(R.id.tv_empty_report_prompt);
         btnReportPrev = findViewById(R.id.btn_report_prev);
         btnReportNext = findViewById(R.id.btn_report_next);
         reportPageIndicators = findViewById(R.id.report_page_indicators);
         tvReportTrendTitle = findViewById(R.id.tv_report_trend_title);
-        tvSeeAllWallets = findViewById(R.id.tv_see_all_wallets);
-        tvAccountName = findViewById(R.id.tv_account_name);
-        tvAccountBalance = findViewById(R.id.tv_account_balance);
+        tvCurrentReportValue = findViewById(R.id.tv_current_report_value);
+        tvTotalSpentPercentage = findViewById(R.id.tv_total_spent_percentage);
+        tvTotalSpent = findViewById(R.id.tv_total_spent);
+        lineChartContainer = findViewById(R.id.line_chart_container);
+        lineChartReport = findViewById(R.id.line_chart_report);
+        barChartReport = findViewById(R.id.bar_chart_report);
+        tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
+
+        // Other Cards
+        dealCard = findViewById(R.id.deal_card);
+        topExpenseCard = findViewById(R.id.top_expense_card);
         tvTopExpense1 = findViewById(R.id.tv_top_expense_1);
         tvTopExpense2 = findViewById(R.id.tv_top_expense_2);
         tvTopExpense3 = findViewById(R.id.tv_top_expense_3);
         pbTopExpense1 = findViewById(R.id.progress_top_expense_1);
         pbTopExpense2 = findViewById(R.id.progress_top_expense_2);
         pbTopExpense3 = findViewById(R.id.progress_top_expense_3);
+    }
 
-        lineChart = findViewById(R.id.line_chart);
-        barChart = findViewById(R.id.bar_chart);
 
-        tvCurrentReportValue = findViewById(R.id.tv_current_report_value);
-        tvTotalSpentPercentage = findViewById(R.id.tv_total_spent_percentage);
-
-        updateHeaderAndContentForOverview();
-
+    private void setupListeners() {
         tvSeeAllWallets.setOnClickListener(v -> {
-            Log.d("MainActivity", "Clicked 'Xem tất cả' in Wallet section.");
             Intent intent = new Intent(MainActivity.this, ChooseWalletActivity.class);
             chooseWalletLauncher.launch(intent);
         });
 
-        TabLayout tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    Toast.makeText(MainActivity.this, "Biểu đồ tuần được chọn", Toast.LENGTH_SHORT).show();
+                    setupAndLoadWeeklyBarChart();
                 } else {
-                    Toast.makeText(MainActivity.this, "Biểu đồ tháng được chọn", Toast.LENGTH_SHORT).show();
+                    setupAndLoadMonthlyBarChart();
                 }
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
@@ -187,13 +192,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnReportPrev.setOnClickListener(v -> {
-            currentReportGraphPage = (currentReportGraphPage - 1 + 2) % 2;
-            updateReportGraphView();
+            currentReportPage = 0; // Go to Line Chart
+            updateReportView();
         });
 
         btnReportNext.setOnClickListener(v -> {
-            currentReportGraphPage = (currentReportGraphPage + 1) % 2;
-            updateReportGraphView();
+            currentReportPage = 1; // Go to Bar Chart
+            updateReportView();
         });
 
         tvSeeReportDetails.setOnClickListener(v -> {
@@ -205,19 +210,15 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
-                updateHeaderAndContentForOverview();
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, TransactionHistoryActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                Intent budgetIntent = new Intent(this, BudgetOverviewActivity.class);
-                startActivity(budgetIntent);
+                startActivity(new Intent(this, BudgetOverviewActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                Intent intent = new Intent(this, AccountActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, AccountActivity.class));
                 return true;
             }
             return false;
@@ -225,16 +226,12 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fabAddTransaction = findViewById(R.id.fab_add_transaction);
         fabAddTransaction.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Thêm giao dịch mới!", Toast.LENGTH_SHORT).show();
-            Intent addTransactionIntent = new Intent(MainActivity.this, Addtransaction.class);
-            startActivity(addTransactionIntent);
+            startActivity(new Intent(MainActivity.this, Addtransaction.class));
         });
 
         FloatingActionButton fabChatbot = findViewById(R.id.fab_chatbot);
         fabChatbot.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Mở Chatbot AI!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, ChatbotActivity.class));
         });
     }
 
@@ -245,59 +242,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        accountDAO.close();
-        transactionDAO.close();
-        userDAO.close();
+        if(accountDAO != null) accountDAO.close();
+        if(transactionDAO != null) transactionDAO.close();
+        if(userDAO != null) userDAO.close();
     }
 
-    private void updateHeaderAndContentForOverview() {
-        subHeaderBalanceDetails.setVisibility(View.VISIBLE);
-        subHeaderReportDots.setVisibility(View.GONE);
-        walletSummaryCard.setVisibility(View.VISIBLE);
-        reportCardDynamicContent.setVisibility(View.VISIBLE);
-        dealCard.setVisibility(View.VISIBLE);
-        topExpenseCard.setVisibility(View.VISIBLE);
-
-        tvReportSectionTitle.setText("Báo cáo tháng này");
-        tvSeeReportDetails.setText("Xem báo cáo");
-        reportPageIndicators.setVisibility(View.VISIBLE);
-        updateReportGraphView();
-    }
 
     private void loadDashboardData() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
-        String startDate = currentMonth + "-01";
-        String endDate = dateFormat.format(new Date());
-
+        // --- 1. Load Wallet and Total Balance ---
         List<Account> accounts = accountDAO.getAllAccountsByUserId(currentUserId);
         double totalBalance = 0.0;
-
         if (accounts != null && !accounts.isEmpty()) {
             for (Account account : accounts) {
                 totalBalance += account.getBalance();
             }
-            tvHeaderMainText.setText(String.format("%,.0f đ", totalBalance));
+            tvHeaderMainText.setText(String.format(Locale.GERMANY, "%,.0f đ", totalBalance));
 
-            Account displayedAccount = null;
-
+            Account displayedAccount;
             if (displayedAccountId == -1) {
-                for (Account acc : accounts) {
-                    if ("Tiền mặt".equals(acc.getName())) {
-                        displayedAccount = acc;
-                        break;
-                    }
-                }
-                if (displayedAccount == null) {
-                    displayedAccount = accounts.get(0);
-                }
+                displayedAccount = accounts.stream()
+                        .filter(acc -> "Tiền mặt".equals(acc.getName()))
+                        .findFirst()
+                        .orElse(accounts.get(0));
                 displayedAccountId = displayedAccount.getId();
                 saveSelectedAccountId(displayedAccountId);
             } else {
@@ -308,13 +276,9 @@ public class MainActivity extends AppCompatActivity {
                     saveSelectedAccountId(displayedAccountId);
                 }
             }
-
             tvAccountName.setText(displayedAccount.getName());
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            currencyFormat.setMinimumFractionDigits(0);
-            currencyFormat.setMaximumFractionDigits(0);
             tvAccountBalance.setText(currencyFormat.format(displayedAccount.getBalance()));
-
         } else {
             tvHeaderMainText.setText("0 đ");
             tvAccountName.setText("Chưa có ví");
@@ -323,7 +287,26 @@ public class MainActivity extends AppCompatActivity {
             saveSelectedAccountId(-1);
         }
 
+        // --- 2. Load Report Data ---
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        String startDate = dateFormat.format(cal.getTime());
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String endDate = dateFormat.format(cal.getTime());
+
+        // Load data for Line Chart (Page 0)
+        double totalMonthlyExpense = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", startDate, endDate);
+        tvTotalSpent.setText(new DecimalFormat("#,### đ").format(totalMonthlyExpense));
+        Cursor dailyExpenseCursor = transactionDAO.getDailyExpensesByDateRange(currentUserId, startDate, endDate);
+        setupLineChart(dailyExpenseCursor);
+
+
+        // --- 3. Load Top Expenses ---
         loadTopExpenses(startDate, endDate);
+
+        // --- 4. Set initial state of report view
+        updateReportView();
     }
 
     private void saveSelectedAccountId(long accountId) {
@@ -334,37 +317,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadTopExpenses(String startDate, String endDate) {
         Cursor cursor = transactionDAO.getTopExpensesByCategory(currentUserId, startDate, endDate, 3);
-        List<TextView> textViews = new ArrayList<>();
-        textViews.add(tvTopExpense1);
-        textViews.add(tvTopExpense2);
-        textViews.add(tvTopExpense3);
-
-        List<ProgressBar> progressBars = new ArrayList<>();
-        progressBars.add(pbTopExpense1);
-        progressBars.add(pbTopExpense2);
-        progressBars.add(pbTopExpense3);
+        List<TextView> textViews = List.of(tvTopExpense1, tvTopExpense2, tvTopExpense3);
+        List<ProgressBar> progressBars = List.of(pbTopExpense1, pbTopExpense2, pbTopExpense3);
 
         if (cursor != null && cursor.moveToFirst()) {
-            double totalExpense = 0;
-            cursor.moveToFirst();
+            double totalExpenseInCursor = 0;
             List<Map<String, Object>> topExpenses = new ArrayList<>();
             do {
-                String categoryName = cursor.getString(cursor.getColumnIndexOrThrow(TransactionDAO.COLUMN_CATEGORY_NAME));
-                double totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("total_amount"));
-                Map<String, Object> expense = new HashMap<>();
-                expense.put("name", categoryName);
-                expense.put("amount", totalAmount);
-                topExpenses.add(expense);
-                totalExpense += totalAmount;
+                double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("total_amount"));
+                topExpenses.add(Map.of(
+                        "name", cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME)),
+                        "amount", amount
+                ));
+                totalExpenseInCursor += amount;
             } while (cursor.moveToNext());
-            cursor.close();
 
             for (int i = 0; i < 3; i++) {
                 if (i < topExpenses.size()) {
                     Map<String, Object> expense = topExpenses.get(i);
                     double amount = (double) expense.get("amount");
                     String name = (String) expense.get("name");
-                    int percentage = (int) ((amount / totalExpense) * 100);
+                    int percentage = totalExpenseInCursor > 0 ? (int) ((amount / totalExpenseInCursor) * 100) : 0;
 
                     textViews.get(i).setText(name + " (" + percentage + "%)");
                     progressBars.get(i).setProgress(percentage);
@@ -375,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
                     progressBars.get(i).setVisibility(View.GONE);
                 }
             }
+            cursor.close();
         } else {
             for (int i = 0; i < 3; i++) {
                 textViews.get(i).setVisibility(View.GONE);
@@ -383,175 +357,213 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateReportGraphView() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
-        String startDateCurrentMonth = currentMonth + "-01";
-        String endDateCurrentMonth = dateFormat.format(new Date());
-
-        if (currentReportGraphPage == 0) {
-            tvReportTrendTitle.setText("Xu hướng chi tiêu tháng này");
+    private void updateReportView() {
+        if (currentReportPage == 0) { // Show Line Chart
             reportSummaryView.setVisibility(View.VISIBLE);
             reportTabView.setVisibility(View.GONE);
+            tvReportTrendTitle.setText("Xu hướng chi tiêu tháng này");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_active);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_inactive);
-
-            Map<String, Double> dailyExpenses = getDailyExpensesForMonth(currentUserId, startDateCurrentMonth, endDateCurrentMonth);
-            showLineChart(dailyExpenses);
-
-        } else {
-            tvReportTrendTitle.setText("So sánh chi tiêu");
+        } else { // Show Bar Chart
             reportSummaryView.setVisibility(View.GONE);
             reportTabView.setVisibility(View.VISIBLE);
+            tvReportTrendTitle.setText("So sánh chi tiêu");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
 
-            Map<String, Double> monthlyComparison = getMonthlyComparisonData(currentUserId);
-            showBarChart(monthlyComparison);
-        }
-    }
-
-    private Map<String, Double> getDailyExpensesForMonth(long userId, String startDate, String endDate) {
-        Map<String, Double> dailyExpenses = new HashMap<>();
-        Cursor cursor = transactionDAO.getDailyExpensesByDateRange(userId, startDate, endDate);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                String date = cursor.getString(cursor.getColumnIndexOrThrow("transaction_day"));
-                double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("total_amount"));
-                dailyExpenses.put(date, amount);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        return dailyExpenses;
-    }
-
-    private void showLineChart(Map<String, Double> dailyExpenses) {
-        if (dailyExpenses.isEmpty()) {
-            tvEmptyReportPrompt.setVisibility(View.VISIBLE);
-            lineChart.setVisibility(View.GONE);
-        } else {
-            tvEmptyReportPrompt.setVisibility(View.GONE);
-            lineChart.setVisibility(View.VISIBLE);
-
-            // BƯỚC 3: Code để tạo và vẽ biểu đồ đường
-            List<Entry> entries = new ArrayList<>();
-            List<String> dates = new ArrayList<>();
-            int i = 0;
-            for (Map.Entry<String, Double> entry : dailyExpenses.entrySet()) {
-                entries.add(new Entry(i++, entry.getValue().floatValue()));
-                dates.add(entry.getKey().substring(5)); // Lấy định dạng MM-dd
+            if (tabLayoutWeekMonthReport.getSelectedTabPosition() == 0) {
+                setupAndLoadWeeklyBarChart();
+            } else {
+                setupAndLoadMonthlyBarChart();
             }
-
-            // Tạo custom formatter cho trục X
-            XAxis xAxis = lineChart.getXAxis();
-            xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
-            xAxis.setGranularity(1f);
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
-            xAxis.setDrawAxisLine(true);
-
-            // Tùy chỉnh trục Y
-            lineChart.getAxisLeft().setDrawGridLines(false);
-            lineChart.getAxisRight().setEnabled(false);
-
-            // Vô hiệu hóa tương tác
-            lineChart.setTouchEnabled(false);
-            lineChart.setDragEnabled(false);
-            lineChart.setScaleEnabled(false);
-            lineChart.setPinchZoom(false);
-
-            // Ẩn legend và description
-            lineChart.getLegend().setEnabled(false);
-            lineChart.getDescription().setEnabled(false);
-
-            LineDataSet dataSet = new LineDataSet(entries, "Chi tiêu hàng ngày");
-            dataSet.setColor(ContextCompat.getColor(this, R.color.expense_item_red));
-            dataSet.setValueTextColor(ContextCompat.getColor(this, R.color.text_dark));
-            dataSet.setDrawFilled(true);
-            dataSet.setFillColor(ContextCompat.getColor(this, R.color.expense_item_red));
-            dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-
-            // Xóa các điểm tròn trên đường
-            dataSet.setDrawCircles(false);
-
-            LineData lineData = new LineData(dataSet);
-            lineChart.setData(lineData);
-            lineChart.invalidate();
         }
     }
 
-    private Map<String, Double> getMonthlyComparisonData(long userId) {
-        Map<String, Double> monthlyComparison = new HashMap<>();
-
-        SimpleDateFormat yearMonthFormat = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
-        String currentMonth = yearMonthFormat.format(new Date());
-        Date prevMonthDate = new Date(System.currentTimeMillis() - 2592000000L);
-        String prevMonth = yearMonthFormat.format(prevMonthDate);
-
-        Cursor cursorCurrent = transactionDAO.getMonthlyTotalExpense(userId, currentMonth + "-01", currentMonth + "-31");
-        if (cursorCurrent != null && cursorCurrent.moveToFirst()) {
-            monthlyComparison.put("Tháng này", cursorCurrent.getDouble(0));
-            cursorCurrent.close();
+    private void setupLineChart(Cursor dailyExpensesCursor) {
+        // Bước 1: Đọc dữ liệu từ Cursor và đưa vào Map để dễ tra cứu
+        Map<Integer, Float> dailyTotalsMap = new HashMap<>();
+        if (dailyExpensesCursor != null) {
+            if(dailyExpensesCursor.moveToFirst()) {
+                do {
+                    String dateString = dailyExpensesCursor.getString(dailyExpensesCursor.getColumnIndexOrThrow("transaction_day"));
+                    int dayOfMonth = Integer.parseInt(dateString.substring(8, 10));
+                    float amount = dailyExpensesCursor.getFloat(dailyExpensesCursor.getColumnIndexOrThrow("total_amount"));
+                    dailyTotalsMap.put(dayOfMonth, amount);
+                } while (dailyExpensesCursor.moveToNext());
+            }
+            dailyExpensesCursor.close();
         }
 
-        Cursor cursorPrev = transactionDAO.getMonthlyTotalExpense(userId, prevMonth + "-01", prevMonth + "-31");
-        if (cursorPrev != null && cursorPrev.moveToFirst()) {
-            monthlyComparison.put("Tháng trước", cursorPrev.getDouble(0));
-            cursorPrev.close();
+        if (dailyTotalsMap.isEmpty()) {
+            tvEmptyReportPrompt.setVisibility(View.VISIBLE);
+            lineChartContainer.setVisibility(View.GONE);
+            return;
+        }
+        tvEmptyReportPrompt.setVisibility(View.GONE);
+        lineChartContainer.setVisibility(View.VISIBLE);
+
+        // Bước 2: Tạo dữ liệu LŨY KẾ cho cả tháng
+        List<Entry> entries = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        float cumulativeTotal = 0f; // Biến lưu tổng chi tiêu tích lũy
+
+        for (int day = 1; day <= daysInMonth; day++) {
+            // Lấy chi tiêu của ngày hôm đó
+            float dailySpending = dailyTotalsMap.getOrDefault(day, 0f);
+            // Cộng dồn vào tổng tích lũy
+            cumulativeTotal += dailySpending;
+            // Thêm điểm dữ liệu mới với giá trị là tổng tích lũy
+            entries.add(new Entry(day - 1, cumulativeTotal));
+            // Tạo nhãn cho trục X
+            labels.add(String.format(Locale.US, "%02d", day));
         }
 
-        return monthlyComparison;
+        // Bước 3: Cấu hình và vẽ biểu đồ
+        XAxis xAxis = lineChartReport.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setTextSize(8f);
+
+        lineChartReport.getAxisLeft().setDrawGridLines(false);
+        lineChartReport.getAxisLeft().setAxisMinimum(0f);
+        lineChartReport.getAxisRight().setEnabled(false);
+
+        lineChartReport.setTouchEnabled(true);
+        lineChartReport.setDragEnabled(true);
+        lineChartReport.setScaleEnabled(true);
+        lineChartReport.setPinchZoom(true);
+
+        lineChartReport.getLegend().setEnabled(false);
+        lineChartReport.getDescription().setEnabled(false);
+
+        LineDataSet dataSet = new LineDataSet(entries, "Chi tiêu hàng ngày");
+        dataSet.setColor(ContextCompat.getColor(this, R.color.expense_item_red));
+        dataSet.setLineWidth(2f);
+        dataSet.setDrawFilled(true);
+        dataSet.setFillColor(ContextCompat.getColor(this, R.color.expense_item_red));
+        dataSet.setFillAlpha(50);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+
+        LineData lineData = new LineData(dataSet);
+        lineChartReport.setData(lineData);
+        lineChartReport.invalidate();
+        lineChartReport.moveViewToX(entries.size());
     }
 
-    private void showBarChart(Map<String, Double> monthlyComparison) {
-        if (monthlyComparison.isEmpty()) {
-            tvCurrentReportValue.setText("0 đ");
-            tvTotalSpentPercentage.setText("Không có dữ liệu");
-            barChart.setVisibility(View.GONE);
+
+    private String[] getWeekDateRange(Calendar cal) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+        String start = dateFormat.format(cal.getTime());
+        cal.add(Calendar.DAY_OF_WEEK, 6);
+        String end = dateFormat.format(cal.getTime());
+        return new String[]{start, end};
+    }
+
+    private void setupAndLoadWeeklyBarChart() {
+        Calendar cal = Calendar.getInstance();
+
+        String[] currentWeekRange = getWeekDateRange((Calendar) cal.clone());
+        double currentWeekTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", currentWeekRange[0], currentWeekRange[1]);
+
+        cal.add(Calendar.WEEK_OF_YEAR, -1);
+        String[] previousWeekRange = getWeekDateRange((Calendar) cal.clone());
+        double previousWeekTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", previousWeekRange[0], previousWeekRange[1]);
+
+        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        tvCurrentReportValue.setText(formatter.format(currentWeekTotal));
+
+        if (previousWeekTotal > 0) {
+            double change = ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
+            String changeText = String.format(Locale.US, "%.1f%% so với tuần trước", change);
+            tvTotalSpentPercentage.setText(changeText);
+            tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : ContextCompat.getColor(this, R.color.primary_green));
         } else {
-            barChart.setVisibility(View.VISIBLE);
-            double currentMonthExpense = monthlyComparison.getOrDefault("Tháng này", 0.0);
-            tvCurrentReportValue.setText(String.format("%,.0f đ", currentMonthExpense));
-            tvTotalSpentPercentage.setText("Tổng đã chi tháng này - 0%");
-
-            List<BarEntry> entries = new ArrayList<>();
-            entries.add(new BarEntry(0, monthlyComparison.getOrDefault("Tháng trước", 0.0).floatValue()));
-            entries.add(new BarEntry(1, monthlyComparison.getOrDefault("Tháng này", 0.0).floatValue()));
-
-            final ArrayList<String> xLabels = new ArrayList<>();
-            xLabels.add("Tháng trước");
-            xLabels.add("Tháng này");
-
-            XAxis xAxis = barChart.getXAxis();
-            xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
-            xAxis.setGranularity(1f);
-            xAxis.setCenterAxisLabels(true);
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
-            xAxis.setDrawAxisLine(false);
-
-            barChart.getAxisLeft().setDrawGridLines(false);
-            barChart.getAxisLeft().setDrawLabels(false);
-            barChart.getAxisRight().setEnabled(false);
-
-            barChart.setTouchEnabled(false);
-            barChart.setDragEnabled(false);
-            barChart.setScaleEnabled(false);
-            barChart.setPinchZoom(false);
-
-            barChart.getLegend().setEnabled(false);
-            barChart.getDescription().setEnabled(false);
-
-            BarDataSet dataSet = new BarDataSet(entries, "So sánh chi tiêu");
-            dataSet.setColors(ContextCompat.getColor(this, R.color.expense_item_red),
-                    ContextCompat.getColor(this, R.color.primary_green));
-            dataSet.setValueTextColor(ContextCompat.getColor(this, R.color.text_dark));
-            dataSet.setDrawValues(true);
-
-            BarData barData = new BarData(dataSet);
-            barData.setBarWidth(0.5f);
-            barChart.setData(barData);
-            barChart.invalidate();
+            tvTotalSpentPercentage.setText(currentWeekTotal > 0 ? "Bắt đầu chi tiêu tuần này" : "Chưa có dữ liệu");
+            tvTotalSpentPercentage.setTextColor(Color.GRAY);
         }
+        setupBarChart(previousWeekTotal, currentWeekTotal, new String[]{"Tuần trước", "Tuần này"});
+    }
+
+    private void setupAndLoadMonthlyBarChart() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        String currentMonthStart = dateFormat.format(cal.getTime());
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String currentMonthEnd = dateFormat.format(cal.getTime());
+        double currentMonthTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", currentMonthStart, currentMonthEnd);
+
+        cal.add(Calendar.MONTH, -1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        String prevMonthStart = dateFormat.format(cal.getTime());
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String prevMonthEnd = dateFormat.format(cal.getTime());
+        double previousMonthTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", prevMonthStart, prevMonthEnd);
+
+        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        tvCurrentReportValue.setText(formatter.format(currentMonthTotal));
+
+        if (previousMonthTotal > 0) {
+            double change = ((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100;
+            String changeText = String.format(Locale.US, "%.1f%% so với tháng trước", change);
+            tvTotalSpentPercentage.setText(changeText);
+            tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : ContextCompat.getColor(this, R.color.primary_green));
+        } else {
+            tvTotalSpentPercentage.setText(currentMonthTotal > 0 ? "Bắt đầu chi tiêu tháng này" : "Chưa có dữ liệu");
+            tvTotalSpentPercentage.setTextColor(Color.GRAY);
+        }
+
+        setupBarChart(previousMonthTotal, currentMonthTotal, new String[]{"Tháng trước", "Tháng này"});
+    }
+
+    private void setupBarChart(double previousValue, double currentValue, String[] labels) {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, (float) previousValue));
+        entries.add(new BarEntry(1, (float) currentValue));
+
+        BarDataSet dataSet = new BarDataSet(entries, "So sánh chi tiêu");
+        dataSet.setColors(ContextCompat.getColor(this, R.color.expense_item_orange), ContextCompat.getColor(this, R.color.primary_green));
+        dataSet.setDrawValues(true);
+        dataSet.setValueTextSize(10f);
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return new DecimalFormat("#,###").format(value);
+            }
+        });
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.5f);
+        barChartReport.setData(barData);
+
+        barChartReport.getDescription().setEnabled(false);
+        barChartReport.getLegend().setEnabled(false);
+        barChartReport.getAxisRight().setEnabled(false);
+        barChartReport.getAxisLeft().setAxisMinimum(0f);
+        barChartReport.getAxisLeft().setDrawAxisLine(false);
+        barChartReport.getAxisLeft().setDrawGridLines(false);
+        barChartReport.getAxisLeft().setDrawLabels(false);
+        barChartReport.setFitBars(true);
+        barChartReport.setTouchEnabled(false);
+
+        XAxis xAxis = barChartReport.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
+
+        barChartReport.animateY(1000);
+        barChartReport.invalidate();
     }
 }

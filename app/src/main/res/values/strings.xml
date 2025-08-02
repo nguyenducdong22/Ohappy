@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">noName</string>
+
+    <string name="select_theme">Chọn giao diện</string>
+    <string name="select_language">Chọn ngôn ngữ</string>
+
+    <string name="total_balance">Tổng số dư</string>
+    <string name="report_this_month">Báo cáo tháng này</string>
+    <string name="see_report">Xem báo cáo</string>
+    <string name="this_month">Tháng này</string>
+    <string name="last_3_months_avg">Trung bình 3 tháng trước</string>
+    <string name="add_new_transaction">Thêm giao dịch mới!</string>
+    <string name="title_overview">Tổng quan</string>
+    <string name="title_transactions">Giao dịch</string>
+    <string name="title_budget">Ngân sách</string>
+    <string name="title_account">Tài khoản</string>
+    <string name="account_and_settings_header">Tài khoản &amp; Cài đặt</string>
+    <string name="account_option_edit_profile">Chỉnh sửa thông tin</string>
+    <string name="account_option_security">Bảo mật</string>
+    <string name="account_option_notifications">Cài đặt thông báo</string>
+    <string name="account_option_theme">Giao diện</string>
+    <string name="account_option_language">Ngôn ngữ</string>
+    <string name="action_logout">Đăng xuất</string>
+    <string name="action_delete_account">Xóa tài khoản</string>
+    <string name="account_option_help_center">Trung tâm trợ giúp</string>
+    <string name="account_option_terms">Nhận Xét &amp; Đánh Giá</string>
+
+    <string name="edit_profile_title">Chỉnh sửa hồ sơ</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="full_name_label">Họ và tên</string>
+    <string name="phone_number_label">Số điện thoại</string>
+    <string name="change_email">Thay đổi Email</string>
+    <string name="new_email_label">Email mới</string>
+    <string name="change_password">Thay đổi Mật khẩu</string>
+    <string name="current_password_label">Mật khẩu hiện tại</string>
+    <string name="new_password_label">Mật khẩu mới</string>
+    <string name="confirm_new_password_label">Xác nhận mật khẩu mới</string>
+    <string name="save_changes_button">Lưu thay đổi</string>
+    <string name="change_photo">Thay đổi ảnh</string>
+    <string name="email_label">Email</string>
+
+    <string name="notification_settings_title">Cài đặt thông báo</string>
+    <string name="all_notifications">Tất cả thông báo</string>
+    <string name="transaction_notifications">Thông báo Giao dịch</string>
+    <string name="budget_notifications">Thông báo Ngân sách</string>
+    <string name="deal_notifications">Thông báo Ưu đãi</string>
+    <string name="open_system_notification_settings">Mở cài đặt thông báo của hệ thống</string>
+
+    <string name="security_title">Bảo mật</string>
+    <string name="security_checkup_title">Kiểm tra Bảo mật</string>
+    <string name="security_tip_1">Mật khẩu của bạn được mã hóa an toàn.</string>
+    <string name="security_tip_2">Hãy thường xuyên thay đổi mật khẩu để tăng cường bảo vệ.</string>
+    <string name="security_tip_3">Không chia sẻ thông tin đăng nhập của bạn cho bất kỳ ai.</string>
+
+    <string name="help_center_title">Trung tâm trợ giúp</string>
+    <string name="faq_q1">Làm thế nào để thay đổi mật khẩu?</string>
+    <string name="faq_a1">Bạn có thể thay đổi mật khẩu trong mục "Chỉnh sửa thông tin". Vui lòng nhập mật khẩu hiện tại và mật khẩu mới để xác nhận.</string>
+    <string name="faq_q2">Làm thế nào để thêm một giao dịch mới?</string>
+    <string name="faq_a2">Từ màn hình chính, nhấn vào nút dấu cộng màu xanh lá cây ở thanh điều hướng dưới cùng để mở màn hình thêm giao dịch.</string>
+    <string name="faq_q3">Dữ liệu của tôi có được an toàn không?</string>
+    <string name="faq_a3">Có. Chúng tôi mã hóa tất cả các thông tin nhạy cảm như mật khẩu của bạn và không chia sẻ dữ liệu của bạn cho bất kỳ bên thứ ba nào.</string>
+    <string name="contact_support_title">Cần trợ giúp thêm?</string>
+    <string name="contact_support_details">Nếu bạn có bất kỳ câu hỏi nào khác, vui lòng liên hệ với chúng tôi qua email: datlecong156@gmail.com</string>
+
+    <string name="terms_and_policy_title">Nhận Xét &amp; Đánh Giá</string>
+
+    <string name="error_fill_all_fields">Vui lòng điền đầy đủ các trường</string>
+    <string name="error_passwords_do_not_match">Mật khẩu không khớp</string>
+    <string name="error_agree_to_terms">Vui lòng đồng ý với Điều khoản &amp; Điều kiện</string>
+    <string name="error_email_exists">Email đã tồn tại. Vui lòng đăng nhập hoặc dùng email khác.</string>
+    <string name="registration_successful">Đăng ký thành công!</string>
+    <string name="registration_failed">Đăng ký thất bại. Vui lòng thử lại.</string>
+    <string name="error_generic_registration">Đã xảy ra lỗi trong quá trình đăng ký.</string>
+
+    <string name="account_option_recurring_expenses" translatable="false">Recurring Expenses</string>
+
+</resources>

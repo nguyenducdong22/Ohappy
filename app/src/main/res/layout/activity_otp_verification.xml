@@ -31,13 +31,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="@string/back_button" />
 
         <TextView
             android:id="@+id/tvTitleOtpVerification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xác minh OTP"
+            android:text="@string/otp_verification_title"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -67,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nhập mã, mật khẩu mới"
+                android:text="@string/otp_enter_code_and_new_password"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"
@@ -76,7 +76,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Một mã xác minh (OTP) đã được hiển thị trên màn hình trước. Vui lòng nhập mã và mật khẩu mới của bạn."
+                android:text="@string/otp_instructions"
                 android:gravity="center"
                 android:textColor="@color/text_secondary_gray"
                 android:textSize="16sp"
@@ -102,7 +102,7 @@
                     android:id="@+id/etOtpCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mã xác minh (OTP)"
+                    android:hint="@string/otp_code_hint"
                     android:inputType="number"
                     android:maxLength="6"
                     android:textColor="@color/text_dark"
@@ -131,7 +131,7 @@
                     android:id="@+id/etNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mật khẩu mới"
+                    android:hint="@string/new_password_hint"
                     android:inputType="textPassword"
                     android:textColor="@color/text_dark"
                     android:textSize="16sp" />
@@ -159,7 +159,7 @@
                     android:id="@+id/etConfirmNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Xác nhận mật khẩu mới"
+                    android:hint="@string/confirm_new_password_hint"
                     android:inputType="textPassword"
                     android:textColor="@color/text_dark"
                     android:textSize="16sp" />
@@ -169,7 +169,7 @@
                 android:id="@+id/btnResetPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Đặt lại mật khẩu"
+                android:text="@string/reset_password_title"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"

@@ -20,7 +20,7 @@
             android:id="@+id/toolbar_recurring_expenses"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Chi Tiêu Định Kỳ"
+            app:title="@string/recurring_expenses_title"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,18 +32,20 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:padding="8dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/item_recurring_expense" /> <TextView
-    android:id="@+id/tv_empty_state_message"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Bạn chưa có khoản chi tiêu định kỳ nào.\nHãy nhấn nút '+' để thêm mới!"
-    android:textColor="@color/text_medium"
-    android:textSize="16sp"
-    android:gravity="center"
-    android:padding="32dp"
-    android:visibility="gone"
-    app:layout_anchor="@id/recyclerViewRecurringExpenses"
-    app:layout_anchorGravity="center" />
+        tools:listitem="@layout/item_recurring_expense" />
+
+    <TextView
+        android:id="@+id/tv_empty_state_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_state_recurring_expenses"
+        android:textColor="@color/text_medium"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/recyclerViewRecurringExpenses"
+        app:layout_anchorGravity="center" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_recurring_expense"
@@ -54,6 +56,7 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/accent_yellow"
         app:tint="@color/white"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        android:contentDescription="@string/add_new_transaction"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

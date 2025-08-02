@@ -4,21 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.noname.R;
-import com.google.android.material.textfield.TextInputEditText;
-
 import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.UserDAO;
 import com.example.noname.utils.PasswordHasher;
+import com.google.android.material.textfield.TextInputEditText;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends BaseActivity {
 
     private TextInputEditText etEditEmail, etEditFullName, etEditPhoneNumber,
             etCurrentPassword, etNewPassword, etConfirmNewPassword;
@@ -44,7 +41,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (currentUserEmail != null) {
             loadCurrentUserData();
         } else {
-            Toast.makeText(this, "Không thể tải thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_loading_user_info), Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -91,11 +88,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void saveProfileChanges() {
-        // --- Lấy dữ liệu mới ---
         String newFullName = etEditFullName.getText().toString().trim();
         String newPhoneNumber = etEditPhoneNumber.getText().toString().trim();
         String newEmail = etEditEmail.getText().toString().trim();
-
         String currentPassword = etCurrentPassword.getText().toString();
         String newPassword = etNewPassword.getText().toString();
         String confirmNewPassword = etConfirmNewPassword.getText().toString();
@@ -104,20 +99,19 @@ public class EditProfileActivity extends AppCompatActivity {
         boolean somethingChanged = !newFullName.equals(originalFullName) || !newPhoneNumber.equals(originalPhoneNumber) || !newEmail.equals(originalEmail) || isPasswordChangeAttempted;
 
         if (!somethingChanged) {
-            Toast.makeText(this, "Không có thay đổi nào để lưu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_changes_to_save), Toast.LENGTH_SHORT).show();
             return;
         }
 
         userDAO.open();
         try {
-            // --- Xử lý đổi mật khẩu ---
             if (isPasswordChangeAttempted) {
                 if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-                    Toast.makeText(this, "Vui lòng điền đủ các trường mật khẩu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_fill_all_password_fields), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!newPassword.equals(confirmNewPassword)) {
-                    etConfirmNewPassword.setError("Mật khẩu mới không khớp");
+                    etConfirmNewPassword.setError(getString(R.string.error_new_passwords_do_not_match));
                     return;
                 }
 
@@ -125,35 +119,31 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (cursor != null && cursor.moveToFirst()) {
                     String storedHash = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PASSWORD_HASH));
                     if (!PasswordHasher.verifyPassword(currentPassword, storedHash)) {
-                        etCurrentPassword.setError("Mật khẩu hiện tại không đúng");
+                        etCurrentPassword.setError(getString(R.string.error_current_password_incorrect));
                         cursor.close();
                         return;
                     }
                     cursor.close();
 
-                    // Băm và cập nhật mật khẩu mới
                     String newHashedPassword = PasswordHasher.hashPassword(newPassword);
                     userDAO.updatePassword(currentUserEmail, newHashedPassword);
                 }
             }
 
-            // --- Xử lý đổi thông tin cá nhân ---
             userDAO.updateUserProfile(currentUserEmail, newFullName, newPhoneNumber);
 
-            // --- Xử lý đổi Email ---
             if (!newEmail.equals(originalEmail)) {
                 int emailUpdateResult = userDAO.updateUserEmail(currentUserEmail, newEmail);
                 if (emailUpdateResult > 0) {
-                    // Cập nhật SharedPreferences nếu email thay đổi thành công
                     SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                     prefs.edit().putString("LOGGED_IN_USER_EMAIL", newEmail).apply();
                 } else if (emailUpdateResult == -1) {
-                    etEditEmail.setError("Email này đã được sử dụng");
-                    return; // Dừng lại nếu email đã tồn tại
+                    etEditEmail.setError(getString(R.string.error_email_already_used));
+                    return;
                 }
             }
 
-            Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.update_successful), Toast.LENGTH_SHORT).show();
             finish();
 
         } finally {

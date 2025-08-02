@@ -23,11 +23,10 @@
             android:id="@+id/toolbar_add_transaction"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Thêm Giao Dịch"
+            app:title="@string/add_transaction_title"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
@@ -66,7 +65,7 @@
                     android:id="@+id/tv_wallet_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tiền mặt"
+                    android:text="@string/wallet_cash"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_dark"
@@ -107,7 +106,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="0"
+                    android:hint="@string/amount_hint_zero"
                     android:textSize="24sp"
                     android:inputType="numberDecimal"
                     android:textColor="@color/text_dark"
@@ -144,7 +143,7 @@
                     android:id="@+id/tv_selected_group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Chọn nhóm"
+                    android:text="@string/select_group"
                     android:textColor="@color/text_medium"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1" />
@@ -182,7 +181,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Ghi chú"
+                    android:hint="@string/note_hint"
                     android:inputType="textMultiLine"
                     android:maxLines="3"
                     android:minLines="1"
@@ -223,7 +222,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Chủ Nhật, 27 tháng 07"
+                    android:text="@string/today_date_placeholder"
                     android:textColor="@color/text_dark" />
 
                 <ImageView
@@ -240,13 +239,17 @@
         android:id="@+id/btn_save"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lưu"
-        android:enabled="false" android:textColor="@color/white"
+        android:text="@string/save"
+        android:enabled="false"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="8dp"
-        app:backgroundTint="@color/primary_green_light" app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@color/primary_green_light"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"
-        tools:backgroundTint="@color/primary_green" /> </androidx.constraintlayout.widget.ConstraintLayout>
+        tools:backgroundTint="@color/primary_green" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

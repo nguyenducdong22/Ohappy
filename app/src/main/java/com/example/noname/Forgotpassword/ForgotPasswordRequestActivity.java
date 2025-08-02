@@ -1,6 +1,4 @@
-package com.example.noname.Forgotpassword; // ĐÃ SỬA: Thêm .Forgotpassword
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.noname.Forgotpassword;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -14,22 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noname.R;
-import com.example.noname.database.DatabaseHelper;
+import com.example.noname.account.BaseActivity;
 import com.example.noname.database.UserDAO;
 
 import java.util.Locale;
 import java.util.Random;
-import android.database.Cursor;
 
-public class ForgotPasswordRequestActivity extends AppCompatActivity {
+public class ForgotPasswordRequestActivity extends BaseActivity {
 
     private EditText etEmailOrPhone;
     private Button btnSendOtpForReset;
-    private ImageButton btnBackForgotPassword;
     private ProgressBar progressBar;
-    private TextView tvOtpDisplayDemo;
     private TextView tvGeneratedOtpCode;
-    private TextView tvOtpInstructionDemo;
 
     private UserDAO userDAO;
 
@@ -38,94 +32,86 @@ public class ForgotPasswordRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password_request);
 
-        etEmailOrPhone = findViewById(R.id.etEmailOrPhone);
-        btnSendOtpForReset = findViewById(R.id.btnSendOtpForReset);
-        btnBackForgotPassword = findViewById(R.id.btnBackForgotPassword);
-        progressBar = findViewById(R.id.progressBarRequest);
-        tvOtpDisplayDemo = findViewById(R.id.tvOtpDisplayDemo);
-        tvGeneratedOtpCode = findViewById(R.id.tvGeneratedOtpCode);
-        tvOtpInstructionDemo = findViewById(R.id.tvOtpInstructionDemo);
+        initializeViews();
+        setupListeners();
 
         userDAO = new UserDAO(this);
+    }
 
-        btnSendOtpForReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestOtp();
-            }
-        });
+    private void initializeViews() {
+        etEmailOrPhone = findViewById(R.id.etEmailOrPhone);
+        btnSendOtpForReset = findViewById(R.id.btnSendOtpForReset);
+        ImageButton btnBackForgotPassword = findViewById(R.id.btnBackForgotPassword);
+        progressBar = findViewById(R.id.progressBarRequest);
+        tvGeneratedOtpCode = findViewById(R.id.tvGeneratedOtpCode);
+    }
 
-        btnBackForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+    private void setupListeners() {
+        btnSendOtpForReset.setOnClickListener(v -> requestOtp());
+        findViewById(R.id.btnBackForgotPassword).setOnClickListener(v -> onBackPressed());
     }
 
     private void requestOtp() {
         String emailOrPhone = etEmailOrPhone.getText().toString().trim();
 
         if (emailOrPhone.isEmpty()) {
-            etEmailOrPhone.setError("Vui lòng nhập email hoặc số điện thoại.");
+            etEmailOrPhone.setError(getString(R.string.error_enter_email_or_phone));
             etEmailOrPhone.requestFocus();
             return;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailOrPhone).matches()) {
-            etEmailOrPhone.setError("Vui lòng nhập định dạng email hợp lệ.");
+            etEmailOrPhone.setError(getString(R.string.error_invalid_email_format));
             etEmailOrPhone.requestFocus();
             return;
         }
 
         showLoading(true);
-
         userDAO.open();
+
         boolean emailExists = userDAO.isEmailExists(emailOrPhone);
-        long userId = -1;
 
         if (emailExists) {
-            Cursor cursor = userDAO.getUserByEmail(emailOrPhone);
-            if (cursor != null && cursor.moveToFirst()) {
-                userId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
-                cursor.close();
-            }
-        }
-        userDAO.close();
-
-        if (userId != -1) {
-            Random random = new Random();
-            String otpCode = String.format(Locale.getDefault(), "%06d", random.nextInt(1000000));
-
-            userDAO.open();
-            long otpRowId = userDAO.createOtpForUser(userId, otpCode, 5);
-            userDAO.close();
-
-            if (otpRowId != -1) {
-                tvOtpDisplayDemo.setVisibility(View.VISIBLE);
-                tvGeneratedOtpCode.setText(otpCode);
-                tvGeneratedOtpCode.setVisibility(View.VISIBLE);
-                tvOtpInstructionDemo.setVisibility(View.VISIBLE);
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Mã OTP DEMO của bạn")
-                        .setMessage("Đây là mã OTP cho mục đích demo. Trong ứng dụng thực, mã này sẽ được gửi qua Email/SMS.\n\nMã OTP: " + otpCode + "\n\n(Mã này sẽ hết hạn sau 5 phút)")
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            Intent intent = new Intent(ForgotPasswordRequestActivity.this, OtpVerificationActivity.class);
-                            intent.putExtra("email", emailOrPhone);
-                            startActivity(intent);
-                        })
-                        .setCancelable(false)
-                        .show();
-
-                Toast.makeText(this, "Mã OTP đã được tạo và hiển thị (DEMO).", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Không thể tạo mã OTP. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
-            }
+            processOtpGeneration(emailOrPhone);
         } else {
-            Toast.makeText(this, "Email hoặc số điện thoại không tồn tại trong hệ thống.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_email_phone_not_exist), Toast.LENGTH_LONG).show();
+            showLoading(false);
         }
 
+        userDAO.close();
+    }
+
+    private void processOtpGeneration(String email) {
+        Random random = new Random();
+        String otpCode = String.format(Locale.getDefault(), "%06d", random.nextInt(1000000));
+
+        // In a real app, you would send this OTP via email/SMS.
+        // For this demo, we show it in a dialog.
+
+        tvGeneratedOtpCode.setText(otpCode);
+        // Make the demo text visible if you want
+        findViewById(R.id.tvOtpDisplayDemo).setVisibility(View.VISIBLE);
+        tvGeneratedOtpCode.setVisibility(View.VISIBLE);
+        findViewById(R.id.tvOtpInstructionDemo).setVisibility(View.VISIBLE);
+
+        showOtpDialog(email, otpCode);
+        Toast.makeText(this, getString(R.string.otp_created_demo), Toast.LENGTH_LONG).show();
         showLoading(false);
+    }
+
+    private void showOtpDialog(String email, String otpCode) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.your_demo_otp_code_title))
+                .setMessage(getString(R.string.your_demo_otp_code_message, otpCode))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                    Intent intent = new Intent(ForgotPasswordRequestActivity.this, OtpVerificationActivity.class);
+                    intent.putExtra("email", email);
+                    // In a real app, you would not pass the OTP code like this for security reasons.
+                    // This is for demo purposes only.
+                    intent.putExtra("otp", otpCode);
+                    startActivity(intent);
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void showLoading(boolean isLoading) {
@@ -134,10 +120,5 @@ public class ForgotPasswordRequestActivity extends AppCompatActivity {
         }
         btnSendOtpForReset.setEnabled(!isLoading);
         etEmailOrPhone.setEnabled(!isLoading);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

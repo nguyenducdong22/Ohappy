@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@null" />
 
     <View
         android:layout_width="match_parent"
@@ -50,13 +50,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="@string/back_button" />
 
         <TextView
             android:id="@+id/tvLogoTextSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Expending Money"
+            android:text="@string/expending_money_logo"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:fontFamily="@font/lobster_regular"
@@ -122,7 +122,7 @@
                         android:id="@+id/etEmailSignUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Email"
+                        android:hint="@string/email_hint"
                         android:inputType="textEmailAddress"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
@@ -130,8 +130,8 @@
                         android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:background="@android:color/transparent" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -154,7 +154,7 @@
                         android:id="@+id/etFullNameSignUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Full Name"
+                        android:hint="@string/full_name_hint"
                         android:inputType="textPersonName|textCapWords"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
@@ -162,8 +162,8 @@
                         android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:background="@android:color/transparent" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -187,15 +187,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:hint="Phone Number"
+                        android:hint="@string/phone_number_hint"
                         android:inputType="phone"
                         android:paddingStart="48dp"
                         android:paddingTop="12dp"
                         android:paddingEnd="16dp"
                         android:paddingBottom="12dp"
                         android:textColor="@color/text_dark_lighter"
-                        android:textColorHint="@color/grey_text_link_lighter"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:textColorHint="@color/grey_text_link_lighter" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -220,7 +220,7 @@
                         android:id="@+id/etPasswordSignUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Password"
+                        android:hint="@string/password_hint"
                         android:inputType="textPassword"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
@@ -228,8 +228,8 @@
                         android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:background="@android:color/transparent" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -254,7 +254,7 @@
                         android:id="@+id/etConfirmPasswordSignUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Confirm Password"
+                        android:hint="@string/confirm_password_hint"
                         android:inputType="textPassword"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
@@ -262,8 +262,8 @@
                         android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:background="@android:color/transparent" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -283,18 +283,18 @@
                         android:id="@+id/tvTermsAndConditions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I agree to all the Terms &amp; Conditions"
+                        android:text="@string/agree_to_terms"
                         android:textColor="@color/grey_text_link_lighter"
                         android:textSize="14sp"
                         android:clickable="true"
-                        android:focusable="true"
-                        /> </LinearLayout>
+                        android:focusable="true" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sign Up"
+                    android:text="@string/sign_up_title"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -315,19 +315,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Already have an account? "
+                        android:text="@string/already_have_account"
                         android:textColor="@color/grey_text_link_lighter"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tvSignInLink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sign_in_button"
+                        android:textColor="@color/button_red"
                         android:textSize="16sp"
-                        /> <TextView
-                    android:id="@+id/tvSignInLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign In"
-                    android:textColor="@color/button_red"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true" />
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </LinearLayout>
 
             </LinearLayout>

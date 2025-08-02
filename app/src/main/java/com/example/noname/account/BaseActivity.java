@@ -3,6 +3,8 @@ package com.example.noname.account;
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noname.database.LocaleHelper;
+
 // Lớp này sẽ tự động áp dụng ngôn ngữ cho mọi Activity kế thừa nó
 public abstract class BaseActivity extends AppCompatActivity {
 

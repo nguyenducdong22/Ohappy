@@ -7,20 +7,30 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.noname.MainActivity;
 import com.example.noname.WelcomeActivity;
-import com.example.noname.utils.GeminiApiManager; // Đảm bảo import này đã có
+import com.example.noname.utils.GeminiApiManager;
 
 import java.util.Locale;
 
-public class LauncherActivity extends AppCompatActivity {
+public class LauncherActivity extends BaseActivity{
 
     private static final String TAG = "LauncherActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // =================== PHẦN MÃ MỚI THÊM VÀO ===================
+        // 1. Đọc và áp dụng Giao diện (Sáng/Tối) đã được lưu
+        SharedPreferences themePrefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE);
+        // Mặc định là chế độ theo hệ thống nếu chưa có lựa chọn nào
+        int savedMode = themePrefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedMode);
+        // =============================================================
+
         // --- PHẦN MÃ MỚI: ÁP DỤNG NGÔN NGỮ ---
         // Phải được gọi trước super.onCreate() để áp dụng cho màn hình đầu tiên
         applySavedLanguage();

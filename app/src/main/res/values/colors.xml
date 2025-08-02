@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="light_gray_bg">#F8F8F8</color>
+    <color name="card_bg_white">#FFFFFF</color>
+    <color name="text_dark">#212121</color>
+    <color name="text_medium">#616161</color>
+    <color name="text_light">#9E9E9E</color>
+    <color name="divider_color">#E0E0E0</color>
+
+    <color name="primary_green">#4CAF50</color>
+    <color name="primary_green_light">#81C784</color>
+    <color name="primary_green_dark">#2E7D32</color>
+    <color name="green_accent">#8BC34A</color>
+    <color name="light_green_background">#E8F5E9</color> <color name="accent_yellow">#FFC107</color>
+    <color name="accent_yellow_light">#FFECB3</color>
+    <color name="accent_yellow_dark">#FF8F00</color>
+
+    <color name="ripple_green_light">#B2DFDB</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <color name="dashboard_background_light">#F5F5F5</color>
+    <color name="text_main_header">#333333</color>
+    <color name="text_secondary_gray">#666666</color>
+    <color name="card_background_white">#FFFFFF</color> <color name="deal_start_color">#FFA07A</color>
+    <color name="deal_end_color">#FF6347</color>
+    <color name="deal_button_bg">#FFEFD5</color>
+    <color name="deal_button_text">#FF6347</color>
+    <color name="expense_item_red">#F44336</color>
+    <color name="expense_item_orange">#FF9800</color>
+    <color name="expense_item_yellow">#FFEB3B</color>
+
+    <color name="text_color_primary">@color/text_dark</color>
+    <color name="text_color_secondary">@color/text_medium</color>
+    <color name="bottom_nav_icon_active">@color/primary_green_dark</color>
+    <color name="bottom_nav_icon_inactive">@color/text_medium</color>
+    <color name="fab_green">@color/primary_green</color>
+    <color name="get_started_button_color">@color/accent_yellow</color>
+    <color name="get_started_button_text_color">@color/white</color>
+
+    <color name="input_border_light">#E0E0E0</color> <color name="or_divider_color">#B0B0B0</color> <color name="grey_text_link">#808080</color> <color name="link_color">@color/primary_green</color>
+
+    <color name="button_red">#F44336</color>
+
+    <color name="bicycle_text_color">@color/white</color> <color name="shop_text_color">@color/accent_yellow</color> <color name="background_light_pink">@color/light_gray_bg</color> <color name="link_color_dark_blue">#1976D2</color> <color name="primary_blue">#1781EB</color> <color name="dashboard_background_dark">#121212</color> <color name="card_background_dark">#1E1E1E</color> <color name="button_dark_gray">#333333</color> <color name="tooltip_background">#2C2C2E</color> <color name="facebook_blue">#3B5998</color>
+    <color name="facebook_icon_bg">#1877F2</color> <color name="google_icon_bg">#4285F4</color> <color name="apple_icon_bg">#000000</color> <color name="dark_background_overlay">#80000000</color> <color name="text_primary">#FFFFFF</color> <color name="text_secondary">#D0D0D0</color> <color name="hint_text">#A0A0A0</color> <color name="input_field_border">#50FFFFFF</color> <color name="facebook_blue_dark">#2C4673</color>
+    <color name="gradient_start_purple">#8A2BE2</color> <color name="gradient_end_blue">#4169E1</color> <color name="gradient_start_orange">#FFA07A</color> <color name="gradient_end_red">#FF6347</color> <color name="theme_red_primary">#D32F2F</color> <color name="theme_red_light_background">#FFEBEE</color> <color name="text_dark_lighter">#FF000066</color> <color name="grey_text_link_lighter">#FF000066</color> <color name="frosted_glass_bg">#A0FFFFFF</color> <color name="frosted_glass_border">#40FFFFFF</color> </resources>

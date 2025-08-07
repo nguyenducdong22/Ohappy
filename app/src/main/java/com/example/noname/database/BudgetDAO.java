@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.noname.Budget.Budget;
-import com.example.noname.models.Category; // Cần import lớp Category để lấy thông tin icon
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,13 +39,17 @@ public class BudgetDAO {
     }
 
     public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-        Log.d(TAG, "Database opened for writing.");
+        if (database == null || !database.isOpen()) {
+            database = dbHelper.getWritableDatabase();
+            Log.d(TAG, "Database opened for writing.");
+        }
     }
 
     public void close() {
-        dbHelper.close();
-        Log.d(TAG, "Database closed.");
+        if (database != null && database.isOpen()) {
+            database.close();
+            Log.d(TAG, "Database closed.");
+        }
     }
 
     /**
@@ -71,10 +74,13 @@ public class BudgetDAO {
 
         long insertId = -1;
         try {
+            open();
             insertId = database.insert(DatabaseHelper.TABLE_BUDGETS, null, values);
             Log.d(TAG, "Budget added with ID: " + insertId);
         } catch (Exception e) {
             Log.e(TAG, "Error adding budget: " + e.getMessage(), e);
+        } finally {
+            close();
         }
         return insertId;
     }
@@ -101,6 +107,7 @@ public class BudgetDAO {
 
         int rowsAffected = 0;
         try {
+            open();
             rowsAffected = database.update(
                     DatabaseHelper.TABLE_BUDGETS,
                     values,
@@ -110,6 +117,8 @@ public class BudgetDAO {
             Log.d(TAG, "Budget updated. Rows affected: " + rowsAffected);
         } catch (Exception e) {
             Log.e(TAG, "Error updating budget: " + e.getMessage(), e);
+        } finally {
+            close();
         }
         return rowsAffected;
     }
@@ -123,6 +132,7 @@ public class BudgetDAO {
     public boolean deleteBudget(long budgetId, long userId) {
         int rowsAffected = 0;
         try {
+            open();
             rowsAffected = database.delete(
                     DatabaseHelper.TABLE_BUDGETS,
                     DatabaseHelper.COLUMN_ID + " = ? AND " + DatabaseHelper.COLUMN_USER_ID_FK + " = ?",
@@ -131,6 +141,8 @@ public class BudgetDAO {
             Log.d(TAG, "Budget deleted. Rows affected: " + rowsAffected);
         } catch (Exception e) {
             Log.e(TAG, "Error deleting budget: " + e.getMessage(), e);
+        } finally {
+            close();
         }
         return rowsAffected > 0;
     }
@@ -145,6 +157,7 @@ public class BudgetDAO {
         List<Budget> budgets = new ArrayList<>();
         Cursor cursor = null;
         try {
+            open();
             String query = "SELECT B.*, C." + DatabaseHelper.COLUMN_CATEGORY_NAME + ", C." + DatabaseHelper.COLUMN_ICON_NAME
                     + " FROM " + DatabaseHelper.TABLE_BUDGETS + " B"
                     + " JOIN " + DatabaseHelper.TABLE_CATEGORIES + " C ON B." + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = C." + DatabaseHelper.COLUMN_ID
@@ -163,6 +176,7 @@ public class BudgetDAO {
             if (cursor != null) {
                 cursor.close();
             }
+            close();
         }
         return budgets;
     }
@@ -179,6 +193,7 @@ public class BudgetDAO {
         double totalSpent = 0.0;
         Cursor cursor = null;
         try {
+            open();
             String query = "SELECT SUM(" + DatabaseHelper.COLUMN_AMOUNT + ")"
                     + " FROM " + DatabaseHelper.TABLE_TRANSACTIONS
                     + " WHERE " + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = ?"
@@ -199,11 +214,42 @@ public class BudgetDAO {
             if (cursor != null) {
                 cursor.close();
             }
+            close();
         }
         return totalSpent;
     }
 
+    // THÊM MỚI: Phương thức để lấy một ngân sách cụ thể cho việc kiểm tra
+    public Budget getActiveBudgetForCategoryAndDate(long userId, long categoryId, String date) {
+        Budget budget = null;
+        Cursor cursor = null;
+        try {
+            open();
+            String query = "SELECT B.*, C." + DatabaseHelper.COLUMN_CATEGORY_NAME + ", C." + DatabaseHelper.COLUMN_ICON_NAME
+                    + " FROM " + DatabaseHelper.TABLE_BUDGETS + " B"
+                    + " JOIN " + DatabaseHelper.TABLE_CATEGORIES + " C ON B." + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = C." + DatabaseHelper.COLUMN_ID
+                    + " WHERE B." + DatabaseHelper.COLUMN_USER_ID_FK + " = ?"
+                    + " AND B." + DatabaseHelper.COLUMN_CATEGORY_ID_FK + " = ?"
+                    + " AND ? BETWEEN B." + DatabaseHelper.COLUMN_START_DATE + " AND B." + DatabaseHelper.COLUMN_END_DATE;
 
+            String[] selectionArgs = {String.valueOf(userId), String.valueOf(categoryId), date};
+            cursor = database.rawQuery(query, selectionArgs);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                budget = cursorToBudget(cursor);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting active budget for category and date: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            close();
+        }
+        return budget;
+    }
+
+    // THÊM MỚI: Phương thức cursorToBudget đã được điều chỉnh để khớp với lớp Budget mới
     private Budget cursorToBudget(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
         long userId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ID_FK));
@@ -213,13 +259,16 @@ public class BudgetDAO {
         String endDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_END_DATE));
         boolean isRecurring = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IS_RECURRING)) == 1;
 
-        // Lấy thông tin từ bảng categories đã được JOIN
-        String groupName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME));
-        String iconName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ICON_NAME));
+        int groupNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORY_NAME);
+        String groupName = (groupNameIndex != -1) ? cursor.getString(groupNameIndex) : null;
+        int iconNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ICON_NAME);
+        String iconName = (iconNameIndex != -1) ? cursor.getString(iconNameIndex) : null;
 
-        // Cần lấy resource ID của icon từ tên icon
-        int groupIconResId = context.getResources().getIdentifier(iconName, "drawable", context.getPackageName());
-
+        int groupIconResId = -1;
+        if (iconName != null) {
+            groupIconResId = context.getResources().getIdentifier(iconName, "drawable", context.getPackageName());
+        }
+        // Giữ nguyên tên biến cũ của bạn để không thay đổi code
         return new Budget(id, userId, categoryId, groupName, groupIconResId, amount, startDate, endDate, isRecurring);
     }
 }

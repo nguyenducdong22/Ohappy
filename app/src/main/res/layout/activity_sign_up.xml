@@ -102,22 +102,20 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/grey_text_link_lighter"
                     app:hintTextColor="@color/text_dark_lighter"
-                    app:boxBackgroundColor="@android:color/transparent"
-                    app:boxStrokeColor="@color/input_border_light"
-                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeColor="@color/button_red"
+                    app:boxStrokeWidthFocused="2dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:startIconDrawable="@drawable/ic_email"
                     app:startIconTint="@color/text_dark_lighter"
-                    android:layout_marginBottom="16dp"
-                    app:boxStrokeWidthFocused="2dp">
-
+                    android:layout_marginBottom="16dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmailSignUp"
                         android:layout_width="match_parent"
@@ -126,30 +124,26 @@
                         android:inputType="textEmailAddress"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
-                        android:paddingStart="48dp"
-                        android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/grey_text_link_lighter"
                     app:hintTextColor="@color/text_dark_lighter"
-                    app:boxBackgroundColor="@android:color/transparent"
-                    app:boxStrokeColor="@color/input_border_light"
-                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeColor="@color/button_red"
+                    app:boxStrokeWidthFocused="2dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:startIconDrawable="@drawable/ic_person"
                     app:startIconTint="@color/text_dark_lighter"
-                    android:layout_marginBottom="16dp"
-                    app:boxStrokeWidthFocused="2dp">
-
+                    android:layout_marginBottom="16dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFullNameSignUp"
                         android:layout_width="match_parent"
@@ -158,53 +152,47 @@
                         android:inputType="textPersonName|textCapWords"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
-                        android:paddingStart="48dp"
-                        android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/grey_text_link_lighter"
                     app:hintTextColor="@color/text_dark_lighter"
-                    app:boxBackgroundColor="@android:color/transparent"
-                    app:boxStrokeColor="@color/input_border_light"
-                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeColor="@color/button_red"
+                    app:boxStrokeWidthFocused="2dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:startIconDrawable="@drawable/ic_phone"
                     app:startIconTint="@color/text_dark_lighter"
-                    android:layout_marginBottom="16dp"
-                    app:boxStrokeWidthFocused="2dp">
-
+                    android:layout_marginBottom="16dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhoneNumberSignUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
                         android:hint="Phone Number"
                         android:inputType="phone"
-                        android:paddingStart="48dp"
-                        android:paddingTop="12dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="12dp"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/grey_text_link_lighter"
                     app:hintTextColor="@color/text_dark_lighter"
-                    app:boxBackgroundColor="@android:color/transparent"
-                    app:boxStrokeColor="@color/input_border_light"
-                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeColor="@color/button_red"
+                    app:boxStrokeWidthFocused="2dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -213,9 +201,7 @@
                     app:startIconTint="@color/text_dark_lighter"
                     app:endIconMode="password_toggle"
                     app:endIconTint="@color/text_dark_lighter"
-                    android:layout_marginBottom="16dp"
-                    app:boxStrokeWidthFocused="2dp">
-
+                    android:layout_marginBottom="16dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPasswordSignUp"
                         android:layout_width="match_parent"
@@ -224,21 +210,19 @@
                         android:inputType="textPassword"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
-                        android:paddingStart="48dp"
-                        android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/grey_text_link_lighter"
                     app:hintTextColor="@color/text_dark_lighter"
-                    app:boxBackgroundColor="@android:color/transparent"
-                    app:boxStrokeColor="@color/input_border_light"
-                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeColor="@color/button_red"
+                    app:boxStrokeWidthFocused="2dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -247,9 +231,7 @@
                     app:startIconTint="@color/text_dark_lighter"
                     app:endIconMode="password_toggle"
                     app:endIconTint="@color/text_dark_lighter"
-                    android:layout_marginBottom="24dp"
-                    app:boxStrokeWidthFocused="2dp">
-
+                    android:layout_marginBottom="24dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etConfirmPasswordSignUp"
                         android:layout_width="match_parent"
@@ -258,12 +240,10 @@
                         android:inputType="textPassword"
                         android:textColor="@color/text_dark_lighter"
                         android:textColorHint="@color/grey_text_link_lighter"
-                        android:paddingStart="48dp"
-                        android:paddingEnd="16dp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:background="@android:color/transparent"
-                        /> </com.google.android.material.textfield.TextInputLayout>
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -288,7 +268,8 @@
                         android:textSize="14sp"
                         android:clickable="true"
                         android:focusable="true"
-                        /> </LinearLayout>
+                        />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnSignUp"
@@ -318,16 +299,17 @@
                         android:text="Already have an account? "
                         android:textColor="@color/grey_text_link_lighter"
                         android:textSize="16sp"
-                        /> <TextView
-                    android:id="@+id/tvSignInLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign In"
-                    android:textColor="@color/button_red"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true" />
+                        />
+                    <TextView
+                        android:id="@+id/tvSignInLink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sign In"
+                        android:textColor="@color/button_red"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log; // Added import for Log
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.example.noname.Budget.Budget;
 import com.example.noname.database.AccountDAO;
+import com.example.noname.database.BudgetDAO;
+import com.example.noname.database.NotificationDAO; // THÊM MỚI
 import com.example.noname.database.TransactionDAO;
 import com.example.noname.models.Category;
 import com.google.android.material.button.MaterialButton;
@@ -51,10 +54,12 @@ public class Addtransaction extends AppCompatActivity {
 
     private TransactionDAO transactionDAO;
     private AccountDAO accountDAO;
+    private BudgetDAO budgetDAO;
+    private NotificationDAO notificationDAO; // THÊM MỚI
     private long currentUserId;
     private Long selectedDateTimestamp = null;
 
-    private static final String TAG = "Addtransaction"; // Define tag for Log
+    private static final String TAG = "Addtransaction";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -75,6 +80,8 @@ public class Addtransaction extends AppCompatActivity {
 
         transactionDAO = new TransactionDAO(this);
         accountDAO = new AccountDAO(this);
+        budgetDAO = new BudgetDAO(this);
+        notificationDAO = new NotificationDAO(this); // THÊM MỚI
 
         Toolbar toolbar = findViewById(R.id.toolbar_add_transaction);
         tvDate = findViewById(R.id.tv_date);
@@ -197,8 +204,6 @@ public class Addtransaction extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.setTimeInMillis(timestamp);
 
-        // You will need to handle localization for "Thứ Ba, dd tháng MM, yyyy"
-        // This is a simplified translation to English.
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd 'of' MMMM, yyyy", Locale.getDefault());
         String selectedDate = sdf.format(calendar.getTime());
         selectedDate = selectedDate.substring(0, 1).toUpperCase() + selectedDate.substring(1);
@@ -264,6 +269,32 @@ public class Addtransaction extends AppCompatActivity {
 
             if (success) {
                 Log.d(TAG, "Account balance updated successfully for account ID: " + selectedAccountId);
+
+                // --- THAY THẾ LOGIC DÙNG TOAST BẰNG LƯU THÔNG BÁO VÀO DATABASE ---
+                if ("Expense".equals(transactionType)) {
+                    Budget budget = budgetDAO.getActiveBudgetForCategoryAndDate(currentUserId, selectedCategoryId, transactionDate);
+
+                    if (budget != null) {
+                        double budgetAmount = budget.getAmount();
+                        double totalSpent = budgetDAO.getTotalSpentForBudgetCategory(
+                                budget.getCategoryId(),
+                                budget.getStartDate(),
+                                budget.getEndDate(),
+                                currentUserId);
+
+                        if (totalSpent >= budgetAmount) {
+                            // Gọi phương thức của NotificationDAO để thêm thông báo
+                            notificationDAO.addNotification(currentUserId,
+                                    "Ngân sách '" + budget.getGroupName() + "' đã hết!", "critical");
+                        } else if (totalSpent >= budgetAmount * 0.9) {
+                            // Gọi phương thức của NotificationDAO để thêm thông báo
+                            notificationDAO.addNotification(currentUserId,
+                                    "Ngân sách '" + budget.getGroupName() + "' sắp hết! Đã chi tiêu hơn 90%.", "warning");
+                        }
+                    }
+                }
+                // --- KẾT THÚC PHẦN THAY THẾ ---
+
                 Toast.makeText(this, "Transaction saved successfully!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -308,9 +339,6 @@ public class Addtransaction extends AppCompatActivity {
                 Log.d(TAG, "Received category selection. ID: " + selectedCategoryId + ", Name: " + categoryName);
                 if (categoryName != null) {
                     tvSelectedCategory.setText(categoryName);
-                    if (categoryIconResId != -1) {
-                        imgCategoryIcon.setImageResource(categoryIconResId);
-                    }
                 }
             }
         } else {

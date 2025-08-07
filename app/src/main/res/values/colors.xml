@@ -18,7 +18,7 @@
     <color name="accent_yellow_dark">#FF8F00</color>
 
     <color name="ripple_green_light">#B2DFDB</color>
-
+    <color name="unread_notification_bg">#F5F5F5</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

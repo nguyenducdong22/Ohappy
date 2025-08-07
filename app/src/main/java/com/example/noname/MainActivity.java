@@ -1,5 +1,7 @@
 package com.example.noname;
 
+import static android.service.controls.ControlsProviderService.TAG;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,10 +20,14 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.noname.adapters.NotificationAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -28,9 +35,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.example.noname.Budget.BudgetOverviewActivity;
 import com.example.noname.database.AccountDAO;
 import com.example.noname.database.DatabaseHelper;
+import com.example.noname.database.NotificationDAO;
 import com.example.noname.database.TransactionDAO;
 import com.example.noname.database.UserDAO;
 import com.example.noname.models.Account;
+import com.example.noname.models.NotificationItem;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -60,12 +69,14 @@ public class MainActivity extends AppCompatActivity {
     private UserDAO userDAO;
     private AccountDAO accountDAO;
     private TransactionDAO transactionDAO;
+    private NotificationDAO notificationDAO; // THÊM MỚI
 
-    private long currentUserId = 1;
+    private long currentUserId; // ĐÃ SỬA: Lấy từ SharedPreferences
 
     private long displayedAccountId;
     private SharedPreferences sharedPreferences;
     private static final String PREF_SELECTED_ACCOUNT_ID = "selected_account_id";
+    private static final String PREF_USER_ID = "LOGGED_IN_USER_ID"; // THÊM MỚI
 
     // Views
     private TextView tvHeaderMainText;
@@ -95,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
     private BarChart barChartReport;
     private TabLayout tabLayoutWeekMonthReport;
 
+    // Notification Views
+    private ImageButton notificationButton; // THÊM MỚI
+    private TextView notificationBadge;     // THÊM MỚI
+
     private int currentReportPage = 0; // 0 for LineChart, 1 for BarChart
 
     private final ActivityResultLauncher<Intent> chooseWalletLauncher = registerForActivityResult(
@@ -123,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         userDAO = new UserDAO(this);
         accountDAO = new AccountDAO(this);
         transactionDAO = new TransactionDAO(this);
+        notificationDAO = new NotificationDAO(this); // THÊM MỚI
 
         userDAO.open();
         accountDAO.open();
@@ -130,6 +146,14 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         displayedAccountId = sharedPreferences.getLong(PREF_SELECTED_ACCOUNT_ID, -1);
+
+        SharedPreferences userPrefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        currentUserId = userPrefs.getLong(PREF_USER_ID, -1);
+        if (currentUserId == -1) {
+            Log.e(TAG, "No logged in user found!");
+            // Tạm thời gán một giá trị mặc định để test nếu chưa có chức năng login
+            currentUserId = 1;
+        }
 
         initializeViews();
         setupListeners();
@@ -170,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
         pbTopExpense1 = findViewById(R.id.progress_top_expense_1);
         pbTopExpense2 = findViewById(R.id.progress_top_expense_2);
         pbTopExpense3 = findViewById(R.id.progress_top_expense_3);
+
+        // THÊM MỚI: Notification Views
+        notificationButton = findViewById(R.id.notification_button);
+        notificationBadge = findViewById(R.id.notification_badge);
     }
 
 
@@ -177,6 +205,11 @@ public class MainActivity extends AppCompatActivity {
         tvSeeAllWallets.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ChooseWalletActivity.class);
             chooseWalletLauncher.launch(intent);
+        });
+
+        // THÊM MỚI: Listener cho nút thông báo
+        notificationButton.setOnClickListener(v -> {
+            showNotificationList();
         });
 
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -239,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadDashboardData();
+        updateNotificationBadge(); // THÊM MỚI
     }
 
     @Override
@@ -565,5 +599,50 @@ public class MainActivity extends AppCompatActivity {
 
         barChartReport.animateY(1000);
         barChartReport.invalidate();
+    }
+
+    // THÊM MỚI: Phương thức cập nhật badge thông báo
+    private void updateNotificationBadge() {
+        int unreadCount = notificationDAO.getUnreadNotificationsCount(currentUserId);
+        if (unreadCount > 0) {
+            notificationBadge.setVisibility(View.VISIBLE);
+            notificationBadge.setText(String.valueOf(unreadCount));
+        } else {
+            notificationBadge.setVisibility(View.GONE);
+        }
+    }
+
+    // THÊM MỚI: Phương thức hiển thị danh sách thông báo
+    // File: com.example.noname.MainActivity.java
+    private void showNotificationList() {
+        // Lấy danh sách thông báo từ database
+        List<NotificationItem> notifications = notificationDAO.getAllNotifications(currentUserId);
+
+        // Nếu không có thông báo nào, hiển thị một Toast và kết thúc
+        if (notifications == null || notifications.isEmpty()) {
+            Toast.makeText(this, "Bạn không có thông báo nào.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Xây dựng AlertDialog để hiển thị danh sách
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_notification_list, null);
+        builder.setView(dialogView);
+
+        RecyclerView recyclerView = dialogView.findViewById(R.id.notification_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Tạo adapter và gán cho RecyclerView
+        NotificationAdapter adapter = new NotificationAdapter(notifications, this);
+        recyclerView.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+
+        // Cập nhật badge khi hộp thoại thông báo đóng
+        dialog.setOnDismissListener(dialogInterface -> {
+            updateNotificationBadge();
+        });
+        dialog.show();
     }
 }

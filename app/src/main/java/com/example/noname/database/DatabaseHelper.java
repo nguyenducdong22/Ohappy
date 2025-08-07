@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_RECURRING_TRANSACTIONS = "recurring_transactions";
     public static final String TABLE_SAVINGS_GOALS = "savings_goals";
     public static final String TABLE_OTP_TOKENS = "otp_tokens";
+    public static final String TABLE_NOTIFICATIONS = "notifications"; // THÊM MỚI
 
     // --- Common Columns ---
     public static final String COLUMN_ID = "id";
@@ -69,7 +70,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FREQUENCY_VALUE = "frequency_value";
     public static final String COLUMN_LAST_GENERATED_DATE = "last_generated_date";
     public static final String COLUMN_NEXT_DATE = "next_date";
-    // Added missing columns to match DAO
     public static final String COLUMN_IS_ACTIVE_RECURRING = "is_active_recurring";
 
     // --- SAVINGS_GOALS Table Columns ---
@@ -83,6 +83,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_OTP_CODE = "otp_code";
     public static final String COLUMN_EXPIRES_AT = "expires_at";
     public static final String COLUMN_IS_USED = "is_used";
+
+    // --- NOTIFICATIONS Table Columns ---
+    public static final String COLUMN_MESSAGE = "message";
+    public static final String COLUMN_NOTIFICATION_TYPE = "type";
+    public static final String COLUMN_IS_READ = "is_read";
 
     // --- Foreign Keys ---
     public static final String COLUMN_USER_ID_FK = "user_id";
@@ -153,7 +158,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORIES + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
-    // Modified to match your Java code
     private static final String CREATE_TABLE_RECURRING_TRANSACTIONS = "CREATE TABLE " + TABLE_RECURRING_TRANSACTIONS + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
@@ -197,6 +201,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
             + ")";
 
+    // THÊM MỚI: Câu lệnh tạo bảng Notifications
+    private static final String CREATE_TABLE_NOTIFICATIONS = "CREATE TABLE " + TABLE_NOTIFICATIONS + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COLUMN_USER_ID_FK + " INTEGER NOT NULL,"
+            + COLUMN_MESSAGE + " TEXT NOT NULL,"
+            + COLUMN_NOTIFICATION_TYPE + " TEXT NOT NULL,"
+            + COLUMN_IS_READ + " INTEGER DEFAULT 0,"
+            + COLUMN_CREATED_AT + " TEXT,"
+            + "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
+            + ")";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d("DatabaseHelper", "DatabaseHelper constructor called.");
@@ -213,6 +228,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECURRING_TRANSACTIONS);
         db.execSQL(CREATE_TABLE_SAVINGS_GOALS);
         db.execSQL(CREATE_TABLE_OTP_TOKENS);
+        db.execSQL(CREATE_TABLE_NOTIFICATIONS); // THÊM MỚI
 
         addDefaultCategories(db);
     }
@@ -405,6 +421,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_OTP_TOKENS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS); // THÊM MỚI
 
         onCreate(db);
     }

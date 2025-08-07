@@ -53,10 +53,10 @@ public class AddEditWalletActivity extends AppCompatActivity {
         accountIdToEdit = intent.getLongExtra("account_id_to_edit", -1);
 
         if (isEditMode && accountIdToEdit != -1) {
-            getSupportActionBar().setTitle("Sửa ví");
+            getSupportActionBar().setTitle("Edit Wallet");
             loadWalletData(accountIdToEdit);
         } else {
-            getSupportActionBar().setTitle("Thêm ví mới");
+            getSupportActionBar().setTitle("Add New Wallet");
         }
 
         btnSave.setOnClickListener(v -> saveWallet());
@@ -70,7 +70,7 @@ public class AddEditWalletActivity extends AppCompatActivity {
             etWalletName.setText(account.getName());
             etInitialBalance.setText(String.valueOf(account.getBalance()));
         } else {
-            Toast.makeText(this, "Không tìm thấy ví để sửa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Wallet to edit not found", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -80,7 +80,7 @@ public class AddEditWalletActivity extends AppCompatActivity {
         String balanceStr = etInitialBalance.getText().toString().trim();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(balanceStr)) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter all the information", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -94,17 +94,17 @@ public class AddEditWalletActivity extends AppCompatActivity {
                 result = 1;
             }
         } else {
-            // Giả sử loại ví là 'Cash' cho đơn giản
+            // Assuming wallet type is 'Cash' for simplicity
             result = accountDAO.createAccount(currentUserId, name, balance, "Cash");
         }
         accountDAO.close();
 
         if (result != -1) {
-            Toast.makeText(this, "Lưu ví thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Wallet saved successfully!", Toast.LENGTH_SHORT).show();
             setResult(Activity.RESULT_OK);
             finish();
         } else {
-            Toast.makeText(this, "Lỗi khi lưu ví, vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error saving wallet, please try again.", Toast.LENGTH_SHORT).show();
         }
     }
 }

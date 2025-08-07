@@ -20,24 +20,25 @@ import java.io.IOException;
 
 public class GeminiApiManager {
 
-    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0"; // API Key của bạn
+    // Your API Key
+    private static final String GEMINI_API_KEY = "AIzaSyDg97ByBjxHFnp6bjSiT_6XW_erulCGwk0";
     private static final String GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final String TAG = "GeminiApiManager";
 
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    // Khởi tạo OkHttpClient một lần duy nhất để tận dụng connection pooling
+    // Initialize OkHttpClient once to leverage connection pooling
     private static OkHttpClient client = new OkHttpClient();
 
-    // <<< ĐỊNH NGHĨA BỐI CẢNH MỚI CHO CHATBOT TẠI ĐÂY >>>
+    // <<< DEFINE NEW CHATBOT CONTEXT HERE >>>
     private static final String SYSTEM_CONTEXT =
-            "Bạn là trợ lý ảo trong ứng dụng quản lý tài chính cá nhân. " +
-                    "Nhiệm vụ chính của bạn là cung cấp lời khuyên, thông tin và hỗ trợ về quản lý tiền bạc, ngân sách, tiết kiệm, đầu tư, và chi tiêu cá nhân. " +
-                    "Tôi cũng có thể trả lời các câu hỏi khác một cách bình thường và thân thiện. " +
-                    "Cuối mỗi câu trả lời, hãy thêm một phần 'Câu hỏi gợi ý:' theo sau là 1-2 câu hỏi cùng chủ đề với câu hỏi mà người dùng vừa hỏi nhưng liên quan đến tài chính, cách nhau bằng dấu phẩy. " +
-                    "Ví dụ: 'Câu hỏi gợi ý: Làm sao để lập ngân sách, Mẹo tiết kiệm tiền'. " + // Đã thêm hướng dẫn cụ thể về định dạng gợi ý
-                    "Hãy giữ câu trả lời ngắn gọn (dưới 150 từ nếu có thể) và hữu ích.";
-    // <<< KẾT THÚC ĐỊNH NGHĨA BỐI CẢNH MỚI >>>
+            "You are a virtual assistant in a personal finance management application. " +
+                    "Your main task is to provide advice, information, and support on money management, budgeting, saving, investing, and personal spending. " +
+                    "You can also answer other questions in a normal and friendly way. " +
+                    "At the end of each answer, please add a section 'Suggested questions:' followed by 1-2 questions on the same topic as the user's question but related to finance, separated by a comma. " +
+                    "Example: 'Suggested questions: How to create a budget, Money-saving tips'. " + // Added specific instructions on the suggestion format
+                    "Keep your answers concise (under 150 words if possible) and helpful.";
+    // <<< END NEW CONTEXT DEFINITION >>>
 
 
     public interface GeminiApiResponseListener {
@@ -49,7 +50,7 @@ public class GeminiApiManager {
         try {
             JSONObject requestBodyJson = new JSONObject();
 
-            String combinedPrompt = SYSTEM_CONTEXT + "\n\nCâu hỏi: " + prompt;
+            String combinedPrompt = SYSTEM_CONTEXT + "\n\nQuestion: " + prompt;
 
             JSONArray contentsArray = new JSONArray();
             JSONObject contentObject = new JSONObject();
@@ -92,7 +93,7 @@ public class GeminiApiManager {
                                 if (content != null) {
                                     JSONArray contentParts = content.optJSONArray("parts");
                                     if (contentParts != null && contentParts.length() > 0) {
-                                        String generatedText = contentParts.getJSONObject(0).optString("text", "Không có nội dung.");
+                                        String generatedText = contentParts.getJSONObject(0).optString("text", "No content available.");
                                         listener.onSuccess(generatedText);
                                     } else {
                                         listener.onFailure("No text part found in response.");

@@ -20,7 +20,7 @@
             android:id="@+id/toolbar_recurring_expenses"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/recurring_expenses_title"
+            app:title="Recurring Expenses"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -33,12 +33,11 @@
         android:padding="8dp"
         android:clipToPadding="false"
         tools:listitem="@layout/item_recurring_expense" />
-
     <TextView
         android:id="@+id/tv_empty_state_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/empty_state_recurring_expenses"
+        android:text="You don't have any recurring expenses yet.\nPress the '+' button to add a new one!"
         android:textColor="@color/text_medium"
         android:textSize="16sp"
         android:gravity="center"
@@ -56,7 +55,6 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/accent_yellow"
         app:tint="@color/white"
-        app:fabSize="normal"
-        android:contentDescription="@string/add_new_transaction"/>
+        app:fabSize="normal" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

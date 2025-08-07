@@ -27,7 +27,7 @@
             android:id="@+id/wallet_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tên ví"
+            android:text="Wallet Name"
             android:textSize="16sp"
             android:textColor="@color/text_dark" />
         <TextView

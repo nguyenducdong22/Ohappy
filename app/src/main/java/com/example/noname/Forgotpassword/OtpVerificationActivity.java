@@ -1,7 +1,10 @@
 package com.example.noname.Forgotpassword;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +14,10 @@ import android.widget.Toast;
 
 import com.example.noname.R;
 import com.example.noname.SignInActivity;
-import com.example.noname.account.BaseActivity;
 import com.example.noname.database.UserDAO;
+import com.example.noname.utils.PasswordHasher;
 
-public class OtpVerificationActivity extends BaseActivity {
+public class OtpVerificationActivity extends AppCompatActivity {
 
     private EditText etOtpCode;
     private EditText etNewPassword;
@@ -31,32 +34,37 @@ public class OtpVerificationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_verification);
 
-        initializeViews();
-        userDAO = new UserDAO(this);
-
-        if (getIntent().hasExtra("email")) {
-            userEmail = getIntent().getStringExtra("email");
-        } else {
-            Toast.makeText(this, getString(R.string.error_email_not_found), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        setupListeners();
-    }
-
-    private void initializeViews() {
         etOtpCode = findViewById(R.id.etOtpCode);
         etNewPassword = findViewById(R.id.etNewPassword);
         etConfirmNewPassword = findViewById(R.id.etConfirmNewPassword);
         btnResetPassword = findViewById(R.id.btnResetPassword);
         progressBar = findViewById(R.id.progressBar);
         btnBackOtpVerification = findViewById(R.id.btnBackOtpVerification);
-    }
 
-    private void setupListeners() {
-        btnResetPassword.setOnClickListener(v -> resetPassword());
-        btnBackOtpVerification.setOnClickListener(v -> onBackPressed());
+        userDAO = new UserDAO(this);
+
+        if (getIntent().hasExtra("email")) {
+            userEmail = getIntent().getStringExtra("email");
+        } else {
+            // Error: Email not found. Please try again.
+            Toast.makeText(this, "Error: Email not found. Please try again.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPassword();
+            }
+        });
+
+        btnBackOtpVerification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void resetPassword() {
@@ -65,48 +73,54 @@ public class OtpVerificationActivity extends BaseActivity {
         String confirmNewPassword = etConfirmNewPassword.getText().toString();
 
         if (otpCode.isEmpty()) {
-            etOtpCode.setError(getString(R.string.error_otp_required));
+            // Please enter the OTP code.
+            etOtpCode.setError("Please enter the OTP code.");
             etOtpCode.requestFocus();
             return;
         }
         if (newPassword.isEmpty()) {
-            etNewPassword.setError(getString(R.string.error_new_password_required));
+            // Please enter a new password.
+            etNewPassword.setError("Please enter a new password.");
             etNewPassword.requestFocus();
             return;
         }
         if (confirmNewPassword.isEmpty()) {
-            etConfirmNewPassword.setError(getString(R.string.error_confirm_password_required));
+            // Please confirm the new password.
+            etConfirmNewPassword.setError("Please confirm the new password.");
             etConfirmNewPassword.requestFocus();
             return;
         }
         if (!newPassword.equals(confirmNewPassword)) {
-            etConfirmNewPassword.setError(getString(R.string.error_passwords_do_not_match));
+            // The confirmation password does not match.
+            etConfirmNewPassword.setError("The confirmation password does not match.");
             etConfirmNewPassword.requestFocus();
             return;
         }
         if (newPassword.length() < 6) {
-            etNewPassword.setError(getString(R.string.error_password_too_short));
+            // Password must be at least 6 characters long.
+            etNewPassword.setError("Password must be at least 6 characters long.");
             etNewPassword.requestFocus();
             return;
         }
 
         showLoading(true);
 
-        // This is a placeholder for the actual logic which should be in UserDAO
-        // For now, we will simulate success. Replace this with your actual DAO call.
-        // boolean success = userDAO.verifyOtpAndResetPassword(userEmail, otpCode, newPassword);
-        boolean success = true; // Placeholder for successful OTP verification
+        userDAO.open();
+        boolean success = userDAO.verifyOtpAndResetPassword(userEmail, otpCode, newPassword);
+        userDAO.close();
 
         showLoading(false);
 
         if (success) {
-            Toast.makeText(this, getString(R.string.password_reset_success), Toast.LENGTH_LONG).show();
+            // Password has been reset successfully!
+            Toast.makeText(this, "Password has been reset successfully!", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(OtpVerificationActivity.this, SignInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, getString(R.string.error_otp_invalid_or_expired), Toast.LENGTH_LONG).show();
+            // Invalid OTP, expired, or an error occurred.
+            Toast.makeText(this, "Invalid OTP, expired, or an error occurred.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -118,5 +132,10 @@ public class OtpVerificationActivity extends BaseActivity {
         etOtpCode.setEnabled(!isLoading);
         etNewPassword.setEnabled(!isLoading);
         etConfirmNewPassword.setEnabled(!isLoading);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

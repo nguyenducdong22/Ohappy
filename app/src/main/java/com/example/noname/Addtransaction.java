@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log; // Thêm import cho Log
+import android.util.Log; // Added import for Log
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -36,14 +36,14 @@ import java.util.TimeZone;
 
 public class Addtransaction extends AppCompatActivity {
 
-    private TextView tvDate, tvWalletName, tvSelectedGroup;
-    private LinearLayout layoutChooseWallet, layoutSelectGroup, layoutSelectDate;
-    private ImageView imgGroupIcon;
+    private TextView tvDate, tvWalletName, tvSelectedCategory;
+    private LinearLayout layoutChooseWallet, layoutSelectCategory, layoutSelectDate;
+    private ImageView imgCategoryIcon;
     private EditText edtAmount, edtNote;
     private MaterialButton btnSave;
 
     private static final int REQUEST_CHOOSE_WALLET = 1001;
-    private static final int CHOOSE_GROUP_REQUEST_CODE = 100;
+    private static final int CHOOSE_CATEGORY_REQUEST_CODE = 100;
 
     private long selectedAccountId = -1;
     private long selectedCategoryId = -1;
@@ -54,7 +54,7 @@ public class Addtransaction extends AppCompatActivity {
     private long currentUserId;
     private Long selectedDateTimestamp = null;
 
-    private static final String TAG = "Addtransaction"; // Định nghĩa tag cho Log
+    private static final String TAG = "Addtransaction"; // Define tag for Log
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,7 +67,7 @@ public class Addtransaction extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: No user information found", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Current User ID is -1. Finishing activity.");
             finish();
             return;
@@ -82,9 +82,9 @@ public class Addtransaction extends AppCompatActivity {
         layoutChooseWallet = findViewById(R.id.layout_choose_wallet);
         edtAmount = findViewById(R.id.edt_amount);
         edtNote = findViewById(R.id.edt_note);
-        layoutSelectGroup = findViewById(R.id.layout_select_group);
-        tvSelectedGroup = findViewById(R.id.tv_selected_group);
-        imgGroupIcon = findViewById(R.id.img_group_icon);
+        layoutSelectCategory = findViewById(R.id.layout_select_group);
+        tvSelectedCategory = findViewById(R.id.tv_selected_group);
+        imgCategoryIcon = findViewById(R.id.img_group_icon);
         layoutSelectDate = findViewById(R.id.layout_select_date);
         btnSave = findViewById(R.id.btn_save);
 
@@ -107,10 +107,10 @@ public class Addtransaction extends AppCompatActivity {
             Intent intent = new Intent(Addtransaction.this, ChooseWalletActivity.class);
             startActivityForResult(intent, REQUEST_CHOOSE_WALLET);
         });
-        layoutSelectGroup.setOnClickListener(v -> {
-            Log.d(TAG, "Choose group clicked.");
+        layoutSelectCategory.setOnClickListener(v -> {
+            Log.d(TAG, "Choose category clicked.");
             Intent intent = new Intent(Addtransaction.this, ChooseGroupActivity.class);
-            startActivityForResult(intent, CHOOSE_GROUP_REQUEST_CODE);
+            startActivityForResult(intent, CHOOSE_CATEGORY_REQUEST_CODE);
         });
         layoutSelectDate.setOnClickListener(v -> {
             Log.d(TAG, "Choose date clicked.");
@@ -175,7 +175,7 @@ public class Addtransaction extends AppCompatActivity {
 
     private void showDatePicker() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("Chọn Ngày");
+        builder.setTitleText("Select Date");
         if (selectedDateTimestamp != null) {
             builder.setSelection(selectedDateTimestamp);
         } else {
@@ -197,7 +197,9 @@ public class Addtransaction extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.setTimeInMillis(timestamp);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd 'tháng' MM, yyyy", new Locale("vi"));
+        // You will need to handle localization for "Thứ Ba, dd tháng MM, yyyy"
+        // This is a simplified translation to English.
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd 'of' MMMM, yyyy", Locale.getDefault());
         String selectedDate = sdf.format(calendar.getTime());
         selectedDate = selectedDate.substring(0, 1).toUpperCase() + selectedDate.substring(1);
 
@@ -208,11 +210,11 @@ public class Addtransaction extends AppCompatActivity {
         String amountText = edtAmount.getText().toString();
         boolean isAmountEntered = !amountText.trim().isEmpty();
         boolean isWalletSelected = selectedAccountId != -1;
-        boolean isGroupSelected = selectedCategoryId != -1;
+        boolean isCategorySelected = selectedCategoryId != -1;
 
-        boolean canSave = isAmountEntered && isWalletSelected && isGroupSelected;
+        boolean canSave = isAmountEntered && isWalletSelected && isCategorySelected;
         btnSave.setEnabled(canSave);
-        Log.d(TAG, "Updating save button state. Amount: " + isAmountEntered + ", Wallet: " + isWalletSelected + ", Group: " + isGroupSelected + ", Can Save: " + canSave);
+        Log.d(TAG, "Updating save button state. Amount: " + isAmountEntered + ", Wallet: " + isWalletSelected + ", Category: " + isCategorySelected + ", Can Save: " + canSave);
 
         if (canSave) {
             btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.primary_green));
@@ -226,12 +228,12 @@ public class Addtransaction extends AppCompatActivity {
         Log.d(TAG, "Attempting to save transaction...");
 
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: No user information found", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (edtAmount.getText().toString().trim().isEmpty() || selectedAccountId == -1 || selectedCategoryId == -1) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all the information", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Validation failed: Missing amount, wallet or category.");
             return;
         }
@@ -239,7 +241,7 @@ public class Addtransaction extends AppCompatActivity {
         double amount = Double.parseDouble(edtAmount.getText().toString());
         String transactionDate = getSelectedDateForDatabase(selectedDateTimestamp);
         String note = edtNote.getText().toString();
-        String description = tvSelectedGroup.getText().toString();
+        String description = tvSelectedCategory.getText().toString();
 
         transactionDAO.open();
         long newTransactionId = transactionDAO.addTransaction(
@@ -262,18 +264,18 @@ public class Addtransaction extends AppCompatActivity {
 
             if (success) {
                 Log.d(TAG, "Account balance updated successfully for account ID: " + selectedAccountId);
-                Toast.makeText(this, "Đã lưu giao dịch thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Transaction saved successfully!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             } else {
                 Log.e(TAG, "Failed to update account balance for account ID: " + selectedAccountId);
-                Toast.makeText(this, "Lỗi khi cập nhật số dư tài khoản.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error updating account balance.", Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e(TAG, "Failed to add transaction to database.");
-            Toast.makeText(this, "Lỗi khi lưu giao dịch.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error saving transaction.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -299,15 +301,15 @@ public class Addtransaction extends AppCompatActivity {
                 if (walletName != null) {
                     tvWalletName.setText(walletName);
                 }
-            } else if (requestCode == CHOOSE_GROUP_REQUEST_CODE) {
+            } else if (requestCode == CHOOSE_CATEGORY_REQUEST_CODE) {
                 selectedCategoryId = data.getLongExtra("selected_category_id", -1);
-                String groupName = data.getStringExtra("selected_group_name");
-                int groupIconResId = data.getIntExtra("selected_group_icon", -1);
-                Log.d(TAG, "Received group selection. ID: " + selectedCategoryId + ", Name: " + groupName);
-                if (groupName != null) {
-                    tvSelectedGroup.setText(groupName);
-                    if (groupIconResId != -1) {
-                        imgGroupIcon.setImageResource(groupIconResId);
+                String categoryName = data.getStringExtra("selected_group_name");
+                int categoryIconResId = data.getIntExtra("selected_group_icon", -1);
+                Log.d(TAG, "Received category selection. ID: " + selectedCategoryId + ", Name: " + categoryName);
+                if (categoryName != null) {
+                    tvSelectedCategory.setText(categoryName);
+                    if (categoryIconResId != -1) {
+                        imgCategoryIcon.setImageResource(categoryIconResId);
                     }
                 }
             }

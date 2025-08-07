@@ -1,6 +1,5 @@
 package com.example.noname; // Đảm bảo đúng package của bạn
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.Intent;
@@ -26,7 +25,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.noname.account.BaseActivity;
-import com.example.noname.database.LocaleHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import com.example.noname.database.UserDAO;
@@ -48,9 +46,6 @@ public class SignInActivity extends BaseActivity {
 
     private VideoView videoBackground;
 
-    private ImageButton btnChangeLanguage;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +63,9 @@ public class SignInActivity extends BaseActivity {
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
         tvSignUpLink = findViewById(R.id.tvSignUpLink);
-        btnChangeLanguage = findViewById(R.id.btnChangeLanguage);
 
         // Khởi tạo UserDAO
         userDAO = new UserDAO(this);
-
 
         applyStyledLogoText(tvLogoTextSignIn);
 
@@ -114,7 +107,6 @@ public class SignInActivity extends BaseActivity {
 
             videoBackground.setLayoutParams(layoutParams);
         });
-
         // --- KHỞI TẠO VÀ CẤU HÌNH VIDEOVIEW KẾT THÚC ---
 
 
@@ -189,24 +181,6 @@ public class SignInActivity extends BaseActivity {
         });
 
         tvSignUpLink.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
-
-        btnChangeLanguage.setOnClickListener(v -> showLanguageSelectionDialog());
-
-
-
-    }
-
-    private void showLanguageSelectionDialog() {
-        final String[] languages = {"Tiếng Việt", "English"};
-        final String[] languageCodes = {"vi", "en"};
-
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.select_language))
-                .setItems(languages, (dialog, which) -> {
-                    LocaleHelper.setLocale(this, languageCodes[which]);
-                    recreate();
-                })
-                .show();
     }
 
     // --- QUẢN LÝ VÒNG ĐỜI CỦA VIDEOVIEW BẮT ĐẦU ---

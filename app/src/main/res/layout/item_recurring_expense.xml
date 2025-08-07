@@ -46,7 +46,7 @@
                 android:id="@+id/tv_recurring_expense_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Học phí hàng tháng"
+                tools:text="Monthly tuition fee"
                 android:textSize="16sp"
                 android:textColor="@color/text_dark"
                 android:textStyle="bold"
@@ -63,13 +63,14 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_calendar_recurring" app:tint="@color/text_medium" />
+                    android:src="@drawable/ic_calendar_recurring"
+                    app:tint="@color/text_medium" />
 
                 <TextView
                     android:id="@+id/tv_recurring_expense_frequency_next_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Hàng tháng (Ngày 15)"
+                    tools:text="Monthly (Day 15)"
                     android:textSize="13sp"
                     android:textColor="@color/text_medium"
                     android:layout_marginStart="4dp" />
@@ -81,7 +82,7 @@
             android:id="@+id/tv_recurring_expense_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="5.000.000 VND"
+            tools:text="5,000,000 ₫"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/button_red" />

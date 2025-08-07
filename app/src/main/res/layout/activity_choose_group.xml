@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray_bg" tools:context=".ChooseGroupActivity">
+    android:background="@color/light_gray_bg"
+    tools:context=".ChooseGroupActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Chọn Nhóm Chi Tiêu"
+            app:title="Choose Spending Group"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -37,7 +38,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp" style="@style/Widget.App.CardView"
+                android:layout_marginBottom="24dp"
+                style="@style/Widget.App.CardView"
                 app:cardBackgroundColor="@color/card_bg_white">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -47,7 +49,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nhu Cầu Thiết Yếu"
+                        android:text="Essential Needs"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_green_dark"
@@ -88,7 +90,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giải Trí, Cá Nhân"
+                        android:text="Entertainment, Personal"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_green_dark"
@@ -130,7 +132,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Học Tập, Phát Triển"
+                        android:text="Learning, Development"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_green_dark"
@@ -170,7 +172,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chi Phí Khác"
+                        android:text="Other Expenses"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_green_dark"
@@ -180,7 +182,8 @@
                         android:id="@+id/gridLayoutOther"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:columnCount="3" android:alignmentMode="alignMargins"
+                        android:columnCount="3"
+                        android:alignmentMode="alignMargins"
                         android:columnOrderPreserved="false"
                         android:layout_marginTop="8dp">
 

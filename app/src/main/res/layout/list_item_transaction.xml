@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@android:color/transparent">
+
     <LinearLayout
         android:id="@+id/header_date_layout"
         android:layout_width="match_parent"
@@ -29,7 +30,7 @@
             android:id="@+id/tv_month_and_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Hôm nay\ntháng 8 2025"
+            tools:text="Today\nAugust 2025"
             android:textSize="14sp"
             android:textColor="@color/text_secondary_gray"/>
 
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
-                tools:text="Ăn uống"
+                tools:text="Food &amp; Drink"
                 android:textColor="@color/text_dark"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -81,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="2dp"
-                tools:text="Hóa đơn nước"
+                tools:text="Water bill"
                 android:textColor="@color/text_secondary_gray"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@id/iv_category_icon"
@@ -93,7 +94,7 @@
                 android:id="@+id/tv_transaction_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="-50,000.00 đ"
+                tools:text="-50,000.00 ₫"
                 android:textColor="@color/expense_item_red"
                 android:textSize="16sp"
                 android:textStyle="bold"

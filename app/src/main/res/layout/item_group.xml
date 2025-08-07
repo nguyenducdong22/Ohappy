@@ -18,13 +18,12 @@
         android:src="@drawable/ic_food"
         android:scaleType="fitCenter"
         app:tint="@color/purple_500" />
-
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/category_name_placeholder"
+        android:text="Category Name"
         android:textSize="12sp"
         android:textColor="#333333"
         android:maxLines="2"

@@ -60,7 +60,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
     private Budget selectedBudgetForOverview = null;
     private long currentUserId;
 
-    // Các biến để lưu giá trị tổng đã tính toán
+    // Variables to store pre-calculated totals
     private double totalAllBudgetsAmount = 0.0;
     private double totalAllSpentAmount = 0.0;
 
@@ -69,19 +69,19 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget_overview);
 
-        // Lấy User ID từ SharedPreferences
+        // Get User ID from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
-            // TODO: Chuyển hướng về màn hình đăng nhập
+            Toast.makeText(this, "Error: User information not found. Please log in again.", Toast.LENGTH_LONG).show();
+            // TODO: Redirect to login screen
             finish();
             return;
         }
 
         budgetDAO = new BudgetDAO(this);
 
-        // --- Ánh xạ các thành phần UI ---
+        // --- Map UI components ---
         btnBackBudgetOverview = findViewById(R.id.btn_back_budget_overview);
         btnCreateBudget = findViewById(R.id.btn_create_budget);
         tvRemainingSpendableAmount = findViewById(R.id.tv_remaining_spendable_amount);
@@ -93,26 +93,26 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fabAddTransaction = findViewById(R.id.fab_add_transaction);
 
-        // --- Thiết lập RecyclerView và Adapter ---
+        // --- Set up RecyclerView and Adapter ---
         recyclerViewBudgets.setLayoutManager(new LinearLayoutManager(this));
-        currentBudgetsList = new ArrayList<>(); // Khởi tạo danh sách
+        currentBudgetsList = new ArrayList<>(); // Initialize the list
         budgetAdapter = new BudgetAdapter(new ArrayList<>(), this);
         recyclerViewBudgets.setAdapter(budgetAdapter);
 
-        // Thiết lập mục "Ngân sách" là mục được chọn trên Bottom Navigation
+        // Set "Budget" as the selected item on the Bottom Navigation
         bottomNavigationView.setSelectedItemId(R.id.navigation_budget);
 
-        // --- Thiết lập các trình lắng nghe sự kiện click ---
+        // --- Set up click listeners ---
         btnBackBudgetOverview.setOnClickListener(v -> finish());
         btnCreateBudget.setOnClickListener(v -> {
             Intent intent = new Intent(BudgetOverviewActivity.this, AddBudgetActivity.class);
             startActivityForResult(intent, REQUEST_CODE_ADD_BUDGET);
         });
 
-        // Thiết lập listeners cho thanh điều hướng và các nút nổi
+        // Set up listeners for the navigation bar and floating action button
         setupNavigationListeners();
 
-        // Tải dữ liệu ban đầu
+        // Load initial data
         loadBudgetsAndDisplay();
     }
 
@@ -120,18 +120,18 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_overview) {
-                // Chuyển đến màn hình chính
+                // Navigate to the main screen
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_transactions) {
-                // Chuyển đến màn hình lịch sử giao dịch
+                // Navigate to the transaction history screen
                 startActivity(new Intent(this, TransactionHistoryActivity.class));
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                // Đang ở màn hình này, không làm gì cả
+                // Already on this screen, do nothing
                 return true;
             } else if (itemId == R.id.navigation_account) {
-                // Chuyển đến màn hình tài khoản
+                // Navigate to the account screen
                 startActivity(new Intent(this, AccountActivity.class));
                 return true;
             }
@@ -139,7 +139,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         });
 
         fabAddTransaction.setOnClickListener(v -> {
-            // Mở màn hình thêm giao dịch
+            // Open the add transaction screen
             startActivity(new Intent(this, Addtransaction.class));
         });
     }
@@ -148,7 +148,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ADD_BUDGET && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "Ngân sách đã được lưu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Budget saved successfully!", Toast.LENGTH_SHORT).show();
             loadBudgetsAndDisplay();
         }
     }
@@ -161,7 +161,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
 
     private void loadBudgetsAndDisplay() {
         if (currentUserId == -1) {
-            Log.e(TAG, "Không thể tải ngân sách: User ID không hợp lệ.");
+            Log.e(TAG, "Cannot load budgets: Invalid User ID.");
             return;
         }
 
@@ -184,7 +184,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             totalAllSpentAmount += spentAmount;
         }
 
-        // Gán danh sách ngân sách cho biến thành viên
+        // Assign the list of budgets to the member variable
         currentBudgetsList = loadedBudgets;
 
         budgetAdapter.setBudgetItems(budgetItems);
@@ -203,7 +203,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             }
         }
 
-        // Cập nhật giao diện tổng quan lần đầu
+        // Update the overview UI for the first time
         displayOverview(selectedBudgetForOverview);
 
         budgetDAO.close();
@@ -215,17 +215,17 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         currencyFormat.setMaximumFractionDigits(0);
 
         if (budget == null) {
-            tvOverviewTitle.setText("Ngân sách Đang áp dụng");
-            // Hiển thị các giá trị tổng đã được tính toán sẵn
+            tvOverviewTitle.setText("Active Budgets");
+            // Display the pre-calculated total values
             tvRemainingSpendableAmount.setText(currencyFormat.format(totalAllBudgetsAmount - totalAllSpentAmount));
-            tvTotalBudgetAmount.setText(String.format(Locale.getDefault(), "%,.0f Tr", totalAllBudgetsAmount / 1_000_000.0));
-            tvTotalSpentAmount.setText(String.format(Locale.getDefault(), "%,.0f Ng", totalAllSpentAmount / 1_000.0));
-            tvDaysToEndOfMonth.setText(getDaysToEndOfCurrentMonth() + " ngày");
+            tvTotalBudgetAmount.setText(String.format(Locale.getDefault(), "%,.0f M", totalAllBudgetsAmount / 1_000_000.0));
+            tvTotalSpentAmount.setText(String.format(Locale.getDefault(), "%,.0f K", totalAllSpentAmount / 1_000.0));
+            tvDaysToEndOfMonth.setText(getDaysToEndOfCurrentMonth() + " days");
         } else {
-            tvOverviewTitle.setText("Ngân sách cho " + budget.getGroupName());
+            tvOverviewTitle.setText("Budget for " + budget.getGroupName());
 
             double spentAmountForThisBudget = 0.0;
-            // Tìm số tiền đã chi của ngân sách này trong danh sách items của adapter
+            // Find the spent amount for this budget in the adapter's items list
             for (BudgetAdapter.BudgetItem item : budgetAdapter.getBudgetItems()) {
                 if (item.budget.getId() == budget.getId()) {
                     spentAmountForThisBudget = item.spentAmount;
@@ -239,7 +239,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
             tvRemainingSpendableAmount.setText(currencyFormat.format(remainingAmountForThisBudget));
             tvTotalBudgetAmount.setText(currencyFormat.format(budget.getAmount()));
             tvTotalSpentAmount.setText(currencyFormat.format(spentAmountForThisBudget));
-            tvDaysToEndOfMonth.setText(daysRemainingForThisBudget + " ngày");
+            tvDaysToEndOfMonth.setText(daysRemainingForThisBudget + " days");
         }
     }
 
@@ -256,19 +256,20 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         boolean success = budgetDAO.deleteBudget(budget.getId(), currentUserId);
         budgetDAO.close();
         if (success) {
-            Toast.makeText(this, "Đã xóa ngân sách: " + budget.getGroupName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Budget deleted: " + budget.getGroupName(), Toast.LENGTH_SHORT).show();
             if (selectedBudgetForOverview != null && selectedBudgetForOverview.getId() == budget.getId()) {
                 selectedBudgetForOverview = null;
             }
             loadBudgetsAndDisplay();
         } else {
-            Toast.makeText(this, "Lỗi khi xóa ngân sách: " + budget.getGroupName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error deleting budget: " + budget.getGroupName(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onBudgetClick(Budget budget) {
-        // Cập nhật giao diện tổng quan với ngân sách được chọn
+        // Update the overview UI with the selected budget
+        selectedBudgetForOverview = budget;
         displayOverview(budget);
     }
 
@@ -297,7 +298,7 @@ public class BudgetOverviewActivity extends AppCompatActivity implements BudgetA
         try {
             return dateFormat.parse(dateString);
         } catch (ParseException e) {
-            Log.e(TAG, "Lỗi phân tích chuỗi ngày: " + dateString + " - " + e.getMessage());
+            Log.e(TAG, "Error parsing date string: " + dateString + " - " + e.getMessage());
             return null;
         }
     }

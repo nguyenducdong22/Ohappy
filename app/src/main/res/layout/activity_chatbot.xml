@@ -28,12 +28,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/back_button" />
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/chatbot_ai_title"
+            android:text="AI Chatbot"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -57,7 +57,6 @@
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_chat_message_bot" />
-
     <LinearLayout
         android:id="@+id/chat_input_layout"
         android:layout_width="match_parent"
@@ -75,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/type_a_message_hint"
+            android:hint="Enter your message..."
             android:inputType="textLongMessage"
             android:maxLines="5"
             android:padding="12dp"
@@ -91,7 +90,7 @@
             android:background="@drawable/circular_button_background_green"
             android:src="@drawable/ic_send"
             app:tint="@color/white"
-            android:contentDescription="@string/send_button" />
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 

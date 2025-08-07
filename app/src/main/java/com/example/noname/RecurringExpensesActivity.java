@@ -45,7 +45,7 @@ public class RecurringExpensesActivity extends AppCompatActivity implements Recu
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy người dùng.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: User not found.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }

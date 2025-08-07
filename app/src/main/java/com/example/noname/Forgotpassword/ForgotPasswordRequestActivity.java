@@ -1,5 +1,7 @@
 package com.example.noname.Forgotpassword;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,18 +14,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noname.R;
-import com.example.noname.account.BaseActivity;
+import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.UserDAO;
 
 import java.util.Locale;
 import java.util.Random;
+import android.database.Cursor;
 
-public class ForgotPasswordRequestActivity extends BaseActivity {
+public class ForgotPasswordRequestActivity extends AppCompatActivity {
 
     private EditText etEmailOrPhone;
     private Button btnSendOtpForReset;
+    private ImageButton btnBackForgotPassword;
     private ProgressBar progressBar;
+    private TextView tvOtpDisplayDemo;
     private TextView tvGeneratedOtpCode;
+    private TextView tvOtpInstructionDemo;
 
     private UserDAO userDAO;
 
@@ -32,86 +38,94 @@ public class ForgotPasswordRequestActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password_request);
 
-        initializeViews();
-        setupListeners();
-
-        userDAO = new UserDAO(this);
-    }
-
-    private void initializeViews() {
         etEmailOrPhone = findViewById(R.id.etEmailOrPhone);
         btnSendOtpForReset = findViewById(R.id.btnSendOtpForReset);
-        ImageButton btnBackForgotPassword = findViewById(R.id.btnBackForgotPassword);
+        btnBackForgotPassword = findViewById(R.id.btnBackForgotPassword);
         progressBar = findViewById(R.id.progressBarRequest);
+        tvOtpDisplayDemo = findViewById(R.id.tvOtpDisplayDemo);
         tvGeneratedOtpCode = findViewById(R.id.tvGeneratedOtpCode);
-    }
+        tvOtpInstructionDemo = findViewById(R.id.tvOtpInstructionDemo);
 
-    private void setupListeners() {
-        btnSendOtpForReset.setOnClickListener(v -> requestOtp());
-        findViewById(R.id.btnBackForgotPassword).setOnClickListener(v -> onBackPressed());
+        userDAO = new UserDAO(this);
+
+        btnSendOtpForReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestOtp();
+            }
+        });
+
+        btnBackForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void requestOtp() {
         String emailOrPhone = etEmailOrPhone.getText().toString().trim();
 
         if (emailOrPhone.isEmpty()) {
-            etEmailOrPhone.setError(getString(R.string.error_enter_email_or_phone));
+            etEmailOrPhone.setError("Please enter your email or phone number.");
             etEmailOrPhone.requestFocus();
             return;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailOrPhone).matches()) {
-            etEmailOrPhone.setError(getString(R.string.error_invalid_email_format));
+            etEmailOrPhone.setError("Please enter a valid email format.");
             etEmailOrPhone.requestFocus();
             return;
         }
 
         showLoading(true);
-        userDAO.open();
 
+        userDAO.open();
         boolean emailExists = userDAO.isEmailExists(emailOrPhone);
+        long userId = -1;
 
         if (emailExists) {
-            processOtpGeneration(emailOrPhone);
+            Cursor cursor = userDAO.getUserByEmail(emailOrPhone);
+            if (cursor != null && cursor.moveToFirst()) {
+                userId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
+                cursor.close();
+            }
+        }
+        userDAO.close();
+
+        if (userId != -1) {
+            Random random = new Random();
+            String otpCode = String.format(Locale.getDefault(), "%06d", random.nextInt(1000000));
+
+            userDAO.open();
+            long otpRowId = userDAO.createOtpForUser(userId, otpCode, 5);
+            userDAO.close();
+
+            if (otpRowId != -1) {
+                tvOtpDisplayDemo.setVisibility(View.VISIBLE);
+                tvGeneratedOtpCode.setText(otpCode);
+                tvGeneratedOtpCode.setVisibility(View.VISIBLE);
+                tvOtpInstructionDemo.setVisibility(View.VISIBLE);
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Your DEMO OTP Code")
+                        .setMessage("This is a demo OTP code. In a real application, this code would be sent via Email/SMS.\n\nOTP Code: " + otpCode + "\n\n(This code will expire in 5 minutes)")
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            Intent intent = new Intent(ForgotPasswordRequestActivity.this, OtpVerificationActivity.class);
+                            intent.putExtra("email", emailOrPhone);
+                            startActivity(intent);
+                        })
+                        .setCancelable(false)
+                        .show();
+
+                Toast.makeText(this, "OTP code has been generated and displayed (DEMO).", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Failed to create OTP code. Please try again.", Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(this, getString(R.string.error_email_phone_not_exist), Toast.LENGTH_LONG).show();
-            showLoading(false);
+            Toast.makeText(this, "Email or phone number does not exist in the system.", Toast.LENGTH_LONG).show();
         }
 
-        userDAO.close();
-    }
-
-    private void processOtpGeneration(String email) {
-        Random random = new Random();
-        String otpCode = String.format(Locale.getDefault(), "%06d", random.nextInt(1000000));
-
-        // In a real app, you would send this OTP via email/SMS.
-        // For this demo, we show it in a dialog.
-
-        tvGeneratedOtpCode.setText(otpCode);
-        // Make the demo text visible if you want
-        findViewById(R.id.tvOtpDisplayDemo).setVisibility(View.VISIBLE);
-        tvGeneratedOtpCode.setVisibility(View.VISIBLE);
-        findViewById(R.id.tvOtpInstructionDemo).setVisibility(View.VISIBLE);
-
-        showOtpDialog(email, otpCode);
-        Toast.makeText(this, getString(R.string.otp_created_demo), Toast.LENGTH_LONG).show();
         showLoading(false);
-    }
-
-    private void showOtpDialog(String email, String otpCode) {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.your_demo_otp_code_title))
-                .setMessage(getString(R.string.your_demo_otp_code_message, otpCode))
-                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-                    Intent intent = new Intent(ForgotPasswordRequestActivity.this, OtpVerificationActivity.class);
-                    intent.putExtra("email", email);
-                    // In a real app, you would not pass the OTP code like this for security reasons.
-                    // This is for demo purposes only.
-                    intent.putExtra("otp", otpCode);
-                    startActivity(intent);
-                })
-                .setCancelable(false)
-                .show();
     }
 
     private void showLoading(boolean isLoading) {
@@ -120,5 +134,10 @@ public class ForgotPasswordRequestActivity extends BaseActivity {
         }
         btnSendOtpForReset.setEnabled(!isLoading);
         etEmailOrPhone.setEnabled(!isLoading);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_edit_budget"
-        android:title="Sửa" />
+        android:title="Edit" />
     <item
         android:id="@+id/action_delete_budget"
-        android:title="Xóa" />
+        android:title="Delete" />
 </menu>

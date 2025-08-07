@@ -39,7 +39,7 @@
                     android:id="@+id/tv_header_main_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00 đ"
+                    android:text="0.00 ₫"
                     android:textColor="@color/text_main_header"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -60,7 +60,7 @@
                         android:id="@+id/tv_sub_header_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" Tổng số dư"
+                        android:text=" Total balance"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="14sp" />
                     <ImageView
@@ -134,13 +134,17 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="100dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/wallet_summary_card"
@@ -165,14 +169,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ví của tôi"
+                            android:text="My wallet"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
                         <TextView
+                            android:id="@+id/tv_see_all_wallets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem tất cả"
+                            android:text="See all"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -195,16 +200,18 @@
                             android:layout_marginEnd="16dp"
                             tools:ignore="ContentDescription" />
                         <TextView
+                            android:id="@+id/tv_account_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tiền mặt"
+                            android:text="Cash"
                             android:textColor="@color/text_dark"
                             android:textSize="18sp" />
                         <TextView
+                            android:id="@+id/tv_account_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0.00 đ"
+                            android:text="0.00 ₫"
                             android:textColor="@color/text_dark"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -220,6 +227,7 @@
                 app:cardElevation="0dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/white">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -237,7 +245,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Báo cáo tháng này"
+                            android:text="This month's report"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -245,7 +253,7 @@
                             android:id="@+id/tv_see_report_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem báo cáo"
+                            android:text="View report"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -256,72 +264,52 @@
                         android:id="@+id/report_summary_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="24dp">
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_empty_report_prompt"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:text="Enter transactions to view the report"
+                            android:gravity="center"
+                            android:textColor="@color/text_secondary_gray"
+                            android:textSize="16sp"
+                            android:paddingVertical="40dp"
+                            android:visibility="gone"/>
+
+                        <LinearLayout
+                            android:id="@+id/line_chart_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:gravity="center">
+                            android:visibility="visible">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng đã chi"
+                                android:text="This month's total spending"
                                 android:textColor="@color/text_secondary_gray"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                android:layout_gravity="center_horizontal"/>
+
                             <TextView
                                 android:id="@+id/tv_total_spent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:textColor="@color/expense_item_red"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                            <View
-                                android:layout_width="60dp"
-                                android:layout_height="2dp"
-                                android:background="@color/expense_item_red"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tổng thu"
-                                android:textColor="@color/primary_green"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:id="@+id/tv_total_income"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:textColor="@color/primary_green"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                            <View
-                                android:layout_width="60dp"
-                                android:layout_height="2dp"
-                                android:background="@color/primary_green"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                    </LinearLayout>
+                                android:layout_gravity="center_horizontal"
+                                android:textColor="@color/text_main_header"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:text="5,000,000 ₫"
+                                android:layout_marginBottom="16dp"/>
 
-                    <TextView
-                        android:id="@+id/tv_empty_report_prompt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Nhập giao dịch để xem báo cáo"
-                        android:gravity="center"
-                        android:textColor="@color/text_secondary_gray"
-                        android:textSize="16sp"
-                        android:paddingVertical="40dp" />
+                            <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/line_chart_report"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/report_tab_view"
@@ -345,18 +333,18 @@
                             <com.google.android.material.tabs.TabItem
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tuần" />
+                                android:text="Week" />
                             <com.google.android.material.tabs.TabItem
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tháng" />
+                                android:text="Month" />
                         </com.google.android.material.tabs.TabLayout>
 
                         <TextView
                             android:id="@+id/tv_current_report_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0.00 đ"
+                            tools:text="5,000,000 ₫"
                             android:textColor="@color/text_main_header"
                             android:textSize="24sp"
                             android:textStyle="bold"
@@ -367,56 +355,17 @@
                             android:id="@+id/tv_total_spent_percentage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng đã chi tháng này - 0%"
+                            tools:text="+25.5% compared to previous period"
                             android:textColor="@color/text_secondary_gray"
                             android:textSize="14sp"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginBottom="24dp"/>
 
-                        <LinearLayout
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/bar_chart_report"
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
-                            android:background="@color/dashboard_background_light"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:layout_marginBottom="16dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Biểu đồ sẽ hiển thị ở đây"
-                                android:textColor="@color/text_secondary_gray"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="16dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tháng trước"
-                                android:textColor="@color/text_secondary_gray" />
-                            <View
-                                android:id="@+id/dot_active_chart"
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:background="@drawable/dot_active"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginEnd="8dp" />
-                            <View
-                                android:id="@+id/dot_inactive_chart"
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:background="@drawable/dot_inactive" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tháng này"
-                                android:textColor="@color/text_secondary_gray"
-                                android:layout_marginStart="8dp" />
-                        </LinearLayout>
-
+                            android:layout_marginBottom="16dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -439,13 +388,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Báo cáo xu hướng"
+                            android:text="Trend report"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:clickable="true"
-                            android:focusable="true" />
+                            android:textStyle="bold" />
                         <ImageButton
                             android:id="@+id/btn_report_next"
                             android:layout_width="wrap_content"
@@ -456,6 +403,7 @@
                             app:tint="@color/primary_green"
                             tools:ignore="ContentDescription" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/report_page_indicators"
                         android:layout_width="wrap_content"
@@ -496,7 +444,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ưu đãi bạn mới"
+                        android:text="New user offer"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -536,7 +484,7 @@
                         android:id="@+id/btn_upgrade_now"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nâng cấp ngay"
+                        android:text="Upgrade now"
                         android:textColor="@color/deal_button_text"
                         android:textSize="14sp"
                         android:background="@drawable/deal_button_background"
@@ -576,14 +524,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Chi tiêu nhiều nhất"
+                            android:text="Highest spending"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem chi tiết"
+                            android:text="View details"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -606,11 +554,11 @@
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tuần" />
+                            android:text="Week" />
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tháng" />
+                            android:text="Month" />
                     </com.google.android.material.tabs.TabLayout>
 
                     <LinearLayout
@@ -631,10 +579,11 @@
                                 android:layout_marginEnd="16dp"
                                 tools:ignore="ContentDescription" />
                             <TextView
+                                android:id="@+id/tv_top_expense_1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Ăn uống"
+                                android:text="Food &amp; Drink"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -646,7 +595,7 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                         <ProgressBar
-                            android:id="@+id/progress_food"
+                            android:id="@+id/progress_top_expense_1"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
@@ -672,10 +621,11 @@
                                 android:layout_marginEnd="16dp"
                                 tools:ignore="ContentDescription" />
                             <TextView
+                                android:id="@+id/tv_top_expense_2"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Thuê nhà"
+                                android:text="Rent"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -687,7 +637,7 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                         <ProgressBar
-                            android:id="@+id/progress_house"
+                            android:id="@+id/progress_top_expense_2"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
@@ -713,10 +663,11 @@
                                 android:layout_marginEnd="16dp"
                                 tools:ignore="ContentDescription" />
                             <TextView
+                                android:id="@+id/tv_top_expense_3"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Mua sắm"
+                                android:text="Shopping"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -728,7 +679,7 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                         <ProgressBar
-                            android:id="@+id/progress_shopping"
+                            android:id="@+id/progress_top_expense_3"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
@@ -743,53 +694,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/recent_transactions_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                android:backgroundTint="@color/white">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Giao dịch gần đây"
-                            android:textColor="@color/text_main_header"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Xem tất cả"
-                            android:textColor="@color/primary_green"
-                            android:textSize="16sp"
-                            android:clickable="true"
-                            android:focusable="true" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Giao dịch đã thêm sẽ hiển thị ở đây 👋"
-                        android:textColor="@color/text_secondary_gray"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:paddingVertical="40dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

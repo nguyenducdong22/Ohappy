@@ -34,7 +34,7 @@ public class RecurringExpenseAdapter extends RecyclerView.Adapter<RecurringExpen
     private Context context;
     private NumberFormat currencyFormat;
     private SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private SimpleDateFormat uiDateFormat = new SimpleDateFormat("dd", Locale.getDefault()); // Lấy ngày
+    private SimpleDateFormat uiDateFormat = new SimpleDateFormat("dd", Locale.getDefault()); // Get day of month
 
     public interface OnItemClickListener {
         void onItemClick(RecurringExpense expense);
@@ -97,13 +97,15 @@ public class RecurringExpenseAdapter extends RecyclerView.Adapter<RecurringExpen
             tvAmount.setText(currencyFormat.format(expense.getAmount()));
 
             try {
-                // Sửa lỗi: Gọi phương thức getStartDate() thay vì getNextDate()
+                // Fix: Call getStartDate() instead of getNextDate()
                 Date nextDate = dbDateFormat.parse(expense.getStartDate());
                 String dayOfMonth = uiDateFormat.format(nextDate);
-                String frequencyText = String.format(Locale.getDefault(), "%s (Ngày %s)", expense.getFrequency(), dayOfMonth);
+                // The frequency text format now needs to be adjusted in the strings.xml if used for localization.
+                // For direct string, we use the translated text.
+                String frequencyText = String.format(Locale.getDefault(), "%s (Day %s)", expense.getFrequency(), dayOfMonth);
                 tvFrequencyNextDate.setText(frequencyText);
             } catch (ParseException e) {
-                Log.e(TAG, "Lỗi phân tích ngày: " + e.getMessage());
+                Log.e(TAG, "Error parsing date: " + e.getMessage());
                 tvFrequencyNextDate.setText(String.format(Locale.getDefault(), "%s (N/A)", expense.getFrequency()));
             }
 

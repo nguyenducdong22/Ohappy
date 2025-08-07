@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,7 +80,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: No user information found", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -119,7 +120,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Tải dữ liệu cho tab đang được chọn
+        // Load data for the currently selected tab
         loadTransactionsAndBalances();
     }
 
@@ -161,11 +162,11 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             int iconResId = getIconResIdForWallet(firstAccount.getName());
             ivWalletIcon.setImageResource(iconResId);
         } else {
-            tvWalletName.setText("Không có ví");
+            tvWalletName.setText("No wallets");
             ivWalletIcon.setImageResource(R.drawable.ic_wallet);
             currentAccountId = -1;
         }
-        // Sau khi có ví, tải dữ liệu giao dịch
+        // After getting the wallet, load transaction data
         loadTransactionsAndBalances();
     }
 
@@ -178,15 +179,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             return;
         }
 
-        // === THAY ĐỔI LỚN: TÍNH TOÁN NGÀY THÁNG DỰA VÀO TAB ĐÃ CHỌN ===
+        // === BIG CHANGE: CALCULATE DATES BASED ON SELECTED TAB ===
         Calendar cal = Calendar.getInstance();
         int selectedTabPosition = tabLayoutMonths.getSelectedTabPosition();
 
-        // Vị trí 0 là "THÁNG TRƯỚC", vị trí 1 là "THÁNG NÀY"
+        // Position 0 is "LAST MONTH", position 1 is "THIS MONTH"
         if (selectedTabPosition == 0) {
-            cal.add(Calendar.MONTH, -1); // Lùi lại 1 tháng
+            cal.add(Calendar.MONTH, -1); // Go back one month
         }
-        // Nếu là tab "THÁNG NÀY" (vị trí 1), không cần thay đổi `cal`
+        // If it's the "THIS MONTH" tab (position 1), no need to change `cal`
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -228,24 +229,24 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private int getIconResIdForWallet(String walletName) {
-        // (Giữ nguyên không đổi)
+        // (Unchanged)
         switch (walletName) {
-            case "Tiền mặt": return R.drawable.ic_wallet_cash;
-            case "Ví Momo": return R.drawable.ic_wallet_momo;
-            case "Ngân hàng": return R.drawable.ic_wallet_bank;
+            case "Cash": return R.drawable.ic_wallet_cash;
+            case "Momo Wallet": return R.drawable.ic_wallet_momo;
+            case "Bank": return R.drawable.ic_wallet_bank;
             default: return R.drawable.ic_wallet;
         }
     }
 
     private void setupTabs() {
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG TRƯỚC"));
-        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THÁNG NÀY"), true);
+        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("LAST MONTH"));
+        tabLayoutMonths.addTab(tabLayoutMonths.newTab().setText("THIS MONTH"), true);
 
-        // === THAY ĐỔI LỚN: THÊM LISTENER ĐỂ XỬ LÝ KHI CHỌN TAB ===
+        // === BIG CHANGE: ADD LISTENER TO HANDLE TAB SELECTION ===
         tabLayoutMonths.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                // Mỗi khi một tab được chọn, gọi lại hàm tải dữ liệu
+                // Each time a tab is selected, reload the data
                 loadTransactionsAndBalances();
             }
 
@@ -301,7 +302,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private void showTooltip(View tooltipView) {
-        // (Giữ nguyên không đổi)
+        // (Unchanged)
         if (hideTooltipRunnable != null) tooltipHandler.removeCallbacks(hideTooltipRunnable);
         tooltipAddTransaction.setVisibility(View.GONE);
         tooltipCreateBudget.setVisibility(View.GONE);

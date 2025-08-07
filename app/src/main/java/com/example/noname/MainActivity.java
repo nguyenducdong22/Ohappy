@@ -1,5 +1,7 @@
 package com.example.noname;
 
+import static android.service.controls.ControlsProviderService.TAG;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,10 +20,14 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.noname.adapters.NotificationAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -28,9 +35,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.example.noname.Budget.BudgetOverviewActivity;
 import com.example.noname.database.AccountDAO;
 import com.example.noname.database.DatabaseHelper;
+import com.example.noname.database.NotificationDAO;
 import com.example.noname.database.TransactionDAO;
 import com.example.noname.database.UserDAO;
 import com.example.noname.models.Account;
+import com.example.noname.models.NotificationItem;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -60,12 +69,14 @@ public class MainActivity extends AppCompatActivity {
     private UserDAO userDAO;
     private AccountDAO accountDAO;
     private TransactionDAO transactionDAO;
+    private NotificationDAO notificationDAO; // THÊM MỚI
 
-    private long currentUserId = 1;
+    private long currentUserId; // ĐÃ SỬA: Lấy từ SharedPreferences
 
     private long displayedAccountId;
     private SharedPreferences sharedPreferences;
     private static final String PREF_SELECTED_ACCOUNT_ID = "selected_account_id";
+    private static final String PREF_USER_ID = "LOGGED_IN_USER_ID"; // THÊM MỚI
 
     // Views
     private TextView tvHeaderMainText;
@@ -80,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar pbTopExpense1, pbTopExpense2, pbTopExpense3;
 
     // Report Card Views
-    private LinearLayout reportSummaryView; // Chứa LineChart
-    private LinearLayout reportTabView;     // Chứa BarChart và TabLayout
+    private LinearLayout reportSummaryView; // Contains the LineChart
+    private LinearLayout reportTabView;     // Contains the BarChart and TabLayout
     private TextView tvSeeReportDetails;
     private TextView tvEmptyReportPrompt;
     private TextView tvReportTrendTitle;
@@ -95,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
     private BarChart barChartReport;
     private TabLayout tabLayoutWeekMonthReport;
 
+    // Notification Views
+    private ImageButton notificationButton; // THÊM MỚI
+    private TextView notificationBadge;     // THÊM MỚI
+
     private int currentReportPage = 0; // 0 for LineChart, 1 for BarChart
 
     private final ActivityResultLauncher<Intent> chooseWalletLauncher = registerForActivityResult(
@@ -107,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         saveSelectedAccountId(displayedAccountId);
                     }
                     loadDashboardData();
-                    Toast.makeText(this, "Đã cập nhật ví chính.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Main wallet updated.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -123,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         userDAO = new UserDAO(this);
         accountDAO = new AccountDAO(this);
         transactionDAO = new TransactionDAO(this);
+        notificationDAO = new NotificationDAO(this); // THÊM MỚI
 
         userDAO.open();
         accountDAO.open();
@@ -130,6 +146,14 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         displayedAccountId = sharedPreferences.getLong(PREF_SELECTED_ACCOUNT_ID, -1);
+
+        SharedPreferences userPrefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        currentUserId = userPrefs.getLong(PREF_USER_ID, -1);
+        if (currentUserId == -1) {
+            Log.e(TAG, "No logged in user found!");
+            // Tạm thời gán một giá trị mặc định để test nếu chưa có chức năng login
+            currentUserId = 1;
+        }
 
         initializeViews();
         setupListeners();
@@ -170,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
         pbTopExpense1 = findViewById(R.id.progress_top_expense_1);
         pbTopExpense2 = findViewById(R.id.progress_top_expense_2);
         pbTopExpense3 = findViewById(R.id.progress_top_expense_3);
+
+        // THÊM MỚI: Notification Views
+        notificationButton = findViewById(R.id.notification_button);
+        notificationBadge = findViewById(R.id.notification_badge);
     }
 
 
@@ -177,6 +205,11 @@ public class MainActivity extends AppCompatActivity {
         tvSeeAllWallets.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ChooseWalletActivity.class);
             chooseWalletLauncher.launch(intent);
+        });
+
+        // THÊM MỚI: Listener cho nút thông báo
+        notificationButton.setOnClickListener(v -> {
+            showNotificationList();
         });
 
         tabLayoutWeekMonthReport.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -239,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadDashboardData();
+        updateNotificationBadge(); // THÊM MỚI
     }
 
     @Override
@@ -258,12 +292,12 @@ public class MainActivity extends AppCompatActivity {
             for (Account account : accounts) {
                 totalBalance += account.getBalance();
             }
-            tvHeaderMainText.setText(String.format(Locale.GERMANY, "%,.0f đ", totalBalance));
+            tvHeaderMainText.setText(String.format(Locale.GERMANY, "%,.0f ₫", totalBalance));
 
             Account displayedAccount;
             if (displayedAccountId == -1) {
                 displayedAccount = accounts.stream()
-                        .filter(acc -> "Tiền mặt".equals(acc.getName()))
+                        .filter(acc -> "Cash".equals(acc.getName()))
                         .findFirst()
                         .orElse(accounts.get(0));
                 displayedAccountId = displayedAccount.getId();
@@ -280,9 +314,9 @@ public class MainActivity extends AppCompatActivity {
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             tvAccountBalance.setText(currencyFormat.format(displayedAccount.getBalance()));
         } else {
-            tvHeaderMainText.setText("0 đ");
-            tvAccountName.setText("Chưa có ví");
-            tvAccountBalance.setText("0 đ");
+            tvHeaderMainText.setText("0 ₫");
+            tvAccountName.setText("No wallets yet");
+            tvAccountBalance.setText("0 ₫");
             displayedAccountId = -1;
             saveSelectedAccountId(-1);
         }
@@ -297,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Load data for Line Chart (Page 0)
         double totalMonthlyExpense = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", startDate, endDate);
-        tvTotalSpent.setText(new DecimalFormat("#,### đ").format(totalMonthlyExpense));
+        tvTotalSpent.setText(new DecimalFormat("#,### ₫").format(totalMonthlyExpense));
         Cursor dailyExpenseCursor = transactionDAO.getDailyExpensesByDateRange(currentUserId, startDate, endDate);
         setupLineChart(dailyExpenseCursor);
 
@@ -361,13 +395,13 @@ public class MainActivity extends AppCompatActivity {
         if (currentReportPage == 0) { // Show Line Chart
             reportSummaryView.setVisibility(View.VISIBLE);
             reportTabView.setVisibility(View.GONE);
-            tvReportTrendTitle.setText("Xu hướng chi tiêu tháng này");
+            tvReportTrendTitle.setText("This Month's Spending Trend");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_active);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_inactive);
         } else { // Show Bar Chart
             reportSummaryView.setVisibility(View.GONE);
             reportTabView.setVisibility(View.VISIBLE);
-            tvReportTrendTitle.setText("So sánh chi tiêu");
+            tvReportTrendTitle.setText("Spending Comparison");
             findViewById(R.id.report_dot1).setBackgroundResource(R.drawable.dot_inactive);
             findViewById(R.id.report_dot2).setBackgroundResource(R.drawable.dot_active);
 
@@ -380,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupLineChart(Cursor dailyExpensesCursor) {
-        // Bước 1: Đọc dữ liệu từ Cursor và đưa vào Map để dễ tra cứu
+        // Step 1: Read data from the Cursor and put it into a Map for easy lookup
         Map<Integer, Float> dailyTotalsMap = new HashMap<>();
         if (dailyExpensesCursor != null) {
             if(dailyExpensesCursor.moveToFirst()) {
@@ -402,26 +436,26 @@ public class MainActivity extends AppCompatActivity {
         tvEmptyReportPrompt.setVisibility(View.GONE);
         lineChartContainer.setVisibility(View.VISIBLE);
 
-        // Bước 2: Tạo dữ liệu LŨY KẾ cho cả tháng
+        // Step 2: Create CUMULATIVE data for the entire month
         List<Entry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        float cumulativeTotal = 0f; // Biến lưu tổng chi tiêu tích lũy
+        float cumulativeTotal = 0f; // Variable to store the cumulative spending total
 
         for (int day = 1; day <= daysInMonth; day++) {
-            // Lấy chi tiêu của ngày hôm đó
+            // Get the spending for that day
             float dailySpending = dailyTotalsMap.getOrDefault(day, 0f);
-            // Cộng dồn vào tổng tích lũy
+            // Add it to the cumulative total
             cumulativeTotal += dailySpending;
-            // Thêm điểm dữ liệu mới với giá trị là tổng tích lũy
+            // Add a new data point with the cumulative total value
             entries.add(new Entry(day - 1, cumulativeTotal));
-            // Tạo nhãn cho trục X
+            // Create a label for the X-axis
             labels.add(String.format(Locale.US, "%02d", day));
         }
 
-        // Bước 3: Cấu hình và vẽ biểu đồ
+        // Step 3: Configure and draw the chart
         XAxis xAxis = lineChartReport.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         xAxis.setGranularity(1f);
@@ -442,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
         lineChartReport.getLegend().setEnabled(false);
         lineChartReport.getDescription().setEnabled(false);
 
-        LineDataSet dataSet = new LineDataSet(entries, "Chi tiêu hàng ngày");
+        LineDataSet dataSet = new LineDataSet(entries, "Daily Spending");
         dataSet.setColor(ContextCompat.getColor(this, R.color.expense_item_red));
         dataSet.setLineWidth(2f);
         dataSet.setDrawFilled(true);
@@ -478,19 +512,19 @@ public class MainActivity extends AppCompatActivity {
         String[] previousWeekRange = getWeekDateRange((Calendar) cal.clone());
         double previousWeekTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", previousWeekRange[0], previousWeekRange[1]);
 
-        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        DecimalFormat formatter = new DecimalFormat("#,### ₫");
         tvCurrentReportValue.setText(formatter.format(currentWeekTotal));
 
         if (previousWeekTotal > 0) {
             double change = ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
-            String changeText = String.format(Locale.US, "%.1f%% so với tuần trước", change);
+            String changeText = String.format(Locale.US, "%.1f%% compared to last week", change);
             tvTotalSpentPercentage.setText(changeText);
             tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : ContextCompat.getColor(this, R.color.primary_green));
         } else {
-            tvTotalSpentPercentage.setText(currentWeekTotal > 0 ? "Bắt đầu chi tiêu tuần này" : "Chưa có dữ liệu");
+            tvTotalSpentPercentage.setText(currentWeekTotal > 0 ? "Started spending this week" : "No data yet");
             tvTotalSpentPercentage.setTextColor(Color.GRAY);
         }
-        setupBarChart(previousWeekTotal, currentWeekTotal, new String[]{"Tuần trước", "Tuần này"});
+        setupBarChart(previousWeekTotal, currentWeekTotal, new String[]{"Last Week", "This Week"});
     }
 
     private void setupAndLoadMonthlyBarChart() {
@@ -510,20 +544,20 @@ public class MainActivity extends AppCompatActivity {
         String prevMonthEnd = dateFormat.format(cal.getTime());
         double previousMonthTotal = transactionDAO.getTotalAmountByTypeAndDateRange(currentUserId, "Expense", prevMonthStart, prevMonthEnd);
 
-        DecimalFormat formatter = new DecimalFormat("#,### đ");
+        DecimalFormat formatter = new DecimalFormat("#,### ₫");
         tvCurrentReportValue.setText(formatter.format(currentMonthTotal));
 
         if (previousMonthTotal > 0) {
             double change = ((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100;
-            String changeText = String.format(Locale.US, "%.1f%% so với tháng trước", change);
+            String changeText = String.format(Locale.US, "%.1f%% compared to last month", change);
             tvTotalSpentPercentage.setText(changeText);
             tvTotalSpentPercentage.setTextColor(change >= 0 ? Color.RED : ContextCompat.getColor(this, R.color.primary_green));
         } else {
-            tvTotalSpentPercentage.setText(currentMonthTotal > 0 ? "Bắt đầu chi tiêu tháng này" : "Chưa có dữ liệu");
+            tvTotalSpentPercentage.setText(currentMonthTotal > 0 ? "Started spending this month" : "No data yet");
             tvTotalSpentPercentage.setTextColor(Color.GRAY);
         }
 
-        setupBarChart(previousMonthTotal, currentMonthTotal, new String[]{"Tháng trước", "Tháng này"});
+        setupBarChart(previousMonthTotal, currentMonthTotal, new String[]{"Last Month", "This Month"});
     }
 
     private void setupBarChart(double previousValue, double currentValue, String[] labels) {
@@ -531,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
         entries.add(new BarEntry(0, (float) previousValue));
         entries.add(new BarEntry(1, (float) currentValue));
 
-        BarDataSet dataSet = new BarDataSet(entries, "So sánh chi tiêu");
+        BarDataSet dataSet = new BarDataSet(entries, "Spending Comparison");
         dataSet.setColors(ContextCompat.getColor(this, R.color.expense_item_orange), ContextCompat.getColor(this, R.color.primary_green));
         dataSet.setDrawValues(true);
         dataSet.setValueTextSize(10f);
@@ -565,5 +599,50 @@ public class MainActivity extends AppCompatActivity {
 
         barChartReport.animateY(1000);
         barChartReport.invalidate();
+    }
+
+    // THÊM MỚI: Phương thức cập nhật badge thông báo
+    private void updateNotificationBadge() {
+        int unreadCount = notificationDAO.getUnreadNotificationsCount(currentUserId);
+        if (unreadCount > 0) {
+            notificationBadge.setVisibility(View.VISIBLE);
+            notificationBadge.setText(String.valueOf(unreadCount));
+        } else {
+            notificationBadge.setVisibility(View.GONE);
+        }
+    }
+
+    // THÊM MỚI: Phương thức hiển thị danh sách thông báo
+    // File: com.example.noname.MainActivity.java
+    private void showNotificationList() {
+        // Lấy danh sách thông báo từ database
+        List<NotificationItem> notifications = notificationDAO.getAllNotifications(currentUserId);
+
+        // Nếu không có thông báo nào, hiển thị một Toast và kết thúc
+        if (notifications == null || notifications.isEmpty()) {
+            Toast.makeText(this, "Bạn không có thông báo nào.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Xây dựng AlertDialog để hiển thị danh sách
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_notification_list, null);
+        builder.setView(dialogView);
+
+        RecyclerView recyclerView = dialogView.findViewById(R.id.notification_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Tạo adapter và gán cho RecyclerView
+        NotificationAdapter adapter = new NotificationAdapter(notifications, this);
+        recyclerView.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+
+        // Cập nhật badge khi hộp thoại thông báo đóng
+        dialog.setOnDismissListener(dialogInterface -> {
+            updateNotificationBadge();
+        });
+        dialog.show();
     }
 }

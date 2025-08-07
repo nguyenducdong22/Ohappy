@@ -37,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số dư"
+                    android:text="Balance"
                     android:textColor="@color/text_secondary_gray"
                     android:textSize="14sp" />
 
@@ -45,7 +45,7 @@
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00 đ"
+                    android:text="0.00 ₫"
                     android:textColor="@color/text_main_header"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -74,7 +74,7 @@
                         android:id="@+id/tv_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tiền mặt"
+                        android:text="Cash"
                         android:textColor="@color/text_dark"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -156,13 +156,13 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:contentDescription="Đóng hướng dẫn"/>
+                        android:contentDescription="Close onboarding"/>
 
                     <TextView
                         android:id="@+id/tv_onboarding_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Bạn vẫn còn băn khoăn chưa biết bắt đầu từ đâu? Chúng mình sẽ giúp bạn!"
+                        android:text="Are you unsure where to start? We're here to help!"
                         android:textColor="@color/text_main_header"
                         android:textSize="16sp"
                         android:layout_marginEnd="8dp"
@@ -184,7 +184,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Đầu tiên, hãy tạo ví"
+                        android:text="First, create a wallet"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/iv_step1_icon"
@@ -210,7 +210,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Thêm một giao dịch"
+                        android:text="Add a transaction"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step2_icon"
@@ -223,7 +223,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:backgroundTint="@color/primary_green"
-                        android:text="Thêm"
+                        android:text="Add"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         app:rippleColor="#4DFFFFFF"
@@ -248,7 +248,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Tạo ngân sách đầu tiên"
+                        android:text="Create your first budget"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/tv_step3_icon"
@@ -261,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:backgroundTint="@color/primary_green"
-                        android:text="Tạo"
+                        android:text="Create"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         app:rippleColor="#4DFFFFFF"
@@ -327,7 +327,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Không có giao dịch"
+                    android:text="No transactions"
                     android:textColor="@color/text_secondary_gray"
                     android:textSize="18sp"/>
             </LinearLayout>
@@ -347,7 +347,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="16dp"
         android:paddingBottom="22dp"
-        android:text="💲 Ấn vào đây để thêm giao dịch"
+        android:text="💲 Tap here to add a transaction"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone" />
@@ -366,7 +366,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="16dp"
         android:paddingBottom="22dp"
-        android:text="🎯\nĐặt giới hạn cho khoản chi tiêu của bạn bằng tính năng Ngân sách."
+        android:text="🎯\nSet limits for your spending with the Budget feature."
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone" />

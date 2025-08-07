@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chatbot AI"
+            android:text="AI Chatbot"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -56,41 +56,42 @@
         android:paddingVertical="4dp"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_chat_message_bot" /> <LinearLayout
-    android:id="@+id/chat_input_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="@color/white"
-    android:gravity="center_vertical"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/et_chat_input"
-        android:layout_width="0dp"
+        tools:listitem="@layout/item_chat_message_bot" />
+    <LinearLayout
+        android:id="@+id/chat_input_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="Nhập tin nhắn..."
-        android:inputType="textLongMessage"
-        android:maxLines="5"
-        android:padding="12dp"
-        android:background="@drawable/chat_input_background"
-        android:textColor="@color/text_dark"
-        android:textColorHint="@color/grey_text_link"
-        android:layout_marginEnd="8dp"/>
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/btn_send_chat"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/circular_button_background_green"
-        android:src="@drawable/ic_send"
-        app:tint="@color/white"
-        tools:ignore="ContentDescription" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_chat_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter your message..."
+            android:inputType="textLongMessage"
+            android:maxLines="5"
+            android:padding="12dp"
+            android:background="@drawable/chat_input_background"
+            android:textColor="@color/text_dark"
+            android:textColorHint="@color/grey_text_link"
+            android:layout_marginEnd="8dp"/>
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btn_send_chat"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circular_button_background_green"
+            android:src="@drawable/ic_send"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

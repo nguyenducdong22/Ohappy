@@ -23,7 +23,7 @@
     android:id="@+id/category_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Thêm"
+    android:text="Add"
     android:textSize="12sp"
     android:textColor="@color/accent_yellow"
     android:gravity="center"

@@ -54,12 +54,12 @@ public class AccountDAO {
     }
 
     /**
-     * Tạo một tài khoản mới cho người dùng.
-     * @param userId ID của người dùng sở hữu tài khoản.
-     * @param accountName Tên tài khoản (ví dụ: "Tiền mặt", "Ví Momo").
-     * @param initialBalance Số dư ban đầu.
-     * @param accountType Loại tài khoản.
-     * @return ID của tài khoản mới được tạo, hoặc -1 nếu có lỗi.
+     * Creates a new account for a user.
+     * @param userId The ID of the user who owns the account.
+     * @param accountName The name of the account (e.g., "Cash", "Momo Wallet").
+     * @param initialBalance The initial balance.
+     * @param accountType The type of account.
+     * @return The ID of the newly created account, or -1 if an error occurred.
      */
     public long createAccount(long userId, String accountName, double initialBalance, String accountType) {
         ContentValues values = new ContentValues();
@@ -82,11 +82,11 @@ public class AccountDAO {
     }
 
     /**
-     * Cập nhật thông tin của một tài khoản hiện có.
-     * @param accountId ID của tài khoản cần cập nhật.
-     * @param newName Tên mới của ví.
-     * @param newBalance Số dư mới.
-     * @return Số hàng bị ảnh hưởng.
+     * Updates the information of an existing account.
+     * @param accountId The ID of the account to update.
+     * @param newName The new name for the account.
+     * @param newBalance The new balance.
+     * @return The number of affected rows.
      */
     public int updateAccount(long accountId, String newName, double newBalance) {
         ContentValues values = new ContentValues();
@@ -147,7 +147,7 @@ public class AccountDAO {
         ContentValues values = new ContentValues();
         Account currentAccount = getAccountById(accountId);
         if (currentAccount == null) {
-            Log.e(TAG, "Tài khoản không tồn tại.");
+            Log.e(TAG, "Account does not exist.");
             return false;
         }
 
@@ -157,7 +157,7 @@ public class AccountDAO {
         } else if ("Expense".equals(transactionType)) {
             newBalance -= amount;
         } else {
-            Log.e(TAG, "Loại giao dịch không hợp lệ: " + transactionType);
+            Log.e(TAG, "Invalid transaction type: " + transactionType);
             return false;
         }
 

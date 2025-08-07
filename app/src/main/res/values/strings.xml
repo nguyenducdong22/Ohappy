@@ -72,6 +72,304 @@
     <string name="registration_failed">Đăng ký thất bại. Vui lòng thử lại.</string>
     <string name="error_generic_registration">Đã xảy ra lỗi trong quá trình đăng ký.</string>
 
-    <string name="account_option_recurring_expenses" translatable="false">Recurring Expenses</string>
+
+    <string name="account_option_recurring_expenses">Chi phí định kỳ</string>
+    <string name="my_wallet">Ví của tôi</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="cash">Tiền mặt</string>
+    <string name="total_spent">Tổng đã chi</string>
+    <string name="total_income">Tổng thu</string>
+    <string name="enter_transaction_prompt">Nhập giao dịch để xem báo cáo</string>
+    <string name="week">Tuần</string>
+    <string name="month">Tháng</string>
+    <string name="chart_placeholder">Biểu đồ sẽ hiển thị ở đây</string>
+    <string name="previous_month">Tháng trước</string>
+    <string name="trend_report">Báo cáo xu hướng</string>
+    <string name="deal_new_member">Ưu đãi bạn mới</string>
+    <string name="upgrade_now">Nâng cấp ngay</string>
+    <string name="top_spending">Chi tiêu nhiều nhất</string>
+    <string name="view_details">Xem chi tiết</string>
+    <string name="category_eating">Ăn uống</string>
+    <string name="category_rent">Thuê nhà</string>
+    <string name="category_shopping">Mua sắm</string>
+    <string name="recent_transactions">Giao dịch gần đây</string>
+    <string name="transactions_will_appear_here">Giao dịch đã thêm sẽ hiển thị ở đây 👋</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="notifications">Thông báo</string>
+
+    <string name="week_selected">Đã chọn Tuần</string>
+    <string name="month_selected">Đã chọn Tháng</string>
+    <string name="total_spent_this_week">Tổng đã chi tuần này - %1$s%%</string>
+    <string name="total_spent_this_month_format">Tổng đã chi tháng này - %1$s%%</string>
+
+
+
+    <string name="add_budget_title">Thêm ngân sách</string>
+    <string name="cancel">Hủy</string>
+    <string name="select_group">Chọn nhóm</string>
+    <string name="total">Tổng cộng</string>
+    <string name="repeat_this_budget">Lặp lại ngân sách này</string>
+    <string name="repeat_budget_description">Ngân sách được tự động lặp lại ở kỳ hạn tiếp theo.</string>
+    <string name="save">Lưu</string>
+    <string name="error_please_enter_amount">Vui lòng nhập số tiền</string>
+    <string name="error_invalid_amount">Số tiền không hợp lệ</string>
+    <string name="error_please_select_group">Vui lòng chọn một nhóm</string>
+    <string name="budget_saved_for">Đã lưu ngân sách cho: %s</string>
+
+    <string name="add_recurring_expense_title">Thêm Chi Tiêu Định Kỳ</string>
+    <string name="expense_name_hint">Tên khoản chi</string>
+    <string name="amount_hint">Số tiền</string>
+    <string name="group_name_hint">Tên nhóm (ví dụ: Ăn Uống, Học phí)</string>
+    <string name="frequency_label">Tần suất</string>
+    <string name="frequency_monthly">Hàng tháng</string>
+    <string name="frequency_weekly">Hàng tuần</string>
+    <string name="frequency_yearly">Hàng năm</string>
+    <string name="next_date_label">Ngày tiếp theo</string>
+    <string name="status_label">Trạng thái</string>
+    <string name="activate_recurring_expense_label">Kích hoạt chi tiêu định kỳ</string>
+    <string name="delete_this_expense_button">Xóa khoản chi tiêu này</string>
+
+    <string name="add_transaction_title">Thêm Giao Dịch</string>
+    <string name="wallet_cash">Tiền mặt</string>
+    <string name="amount_hint_zero">0</string>
+
+    <string name="note_hint">Ghi chú</string>
+    <string name="today_date_placeholder">Chủ Nhật, 27 tháng 07</string>
+
+    <string name="budget_overview_title">Ngân sách Đang áp dụng</string>
+    <string name="amount_you_can_spend">Số tiền bạn có thể chi</string>
+    <string name="total_budget">Tổng ngân sách</string>
+    <string name="days_until_month_end">Đến cuối tháng</string>
+    <string name="create_budget">Tạo Ngân sách</string>
+    <string name="your_budgets">Các ngân sách của bạn</string>
+    <string name="days_unit">ngày</string>
+
+    <string name="back_button">Nút Quay lại</string>
+
+    <string name="type_a_message_hint">Nhập tin nhắn...</string>
+    <string name="send_button">Nút Gửi</string>
+    <string name="chatbot_ai_title">Chatbot AI</string>
+
+    <string name="choose_spending_group_title">Chọn Nhóm Chi Tiêu</string>
+    <string name="category_header_essential">Nhu Cầu Thiết Yếu</string>
+    <string name="category_header_entertainment">Giải Trí, Cá Nhân</string>
+    <string name="category_header_learning">Học Tập, Phát Triển</string>
+    <string name="category_header_other">Chi Phí Khác</string>
+
+    <string name="choose_wallet_title">Chọn Ví</string>
+    <string name="wallet_type_label">Loại ví</string>
+    <string name="wallet_momo">Ví Momo</string>
+    <string name="wallet_bank">Ngân hàng</string>
+
+    <string name="forgot_password_title">Quên mật khẩu</string>
+    <string name="reset_password_title">Đặt lại mật khẩu</string>
+    <string name="forgot_password_instructions">Vui lòng nhập email hoặc số điện thoại đã đăng ký để chúng tôi có thể xác minh danh tính của bạn.</string>
+    <string name="enter_email_hint">Nhập Email</string>
+    <string name="send_verification_code_button">Gửi mã xác minh</string>
+    <string name="your_demo_otp_code">Mã OTP DEMO của bạn:</string>
+    <string name="otp_instructions_demo">Trong ứng dụng thực, mã này sẽ được gửi qua Email/SMS. Vui lòng nhập mã này vào màn hình tiếp theo.</string>
+
+    <string name="close">Đóng</string>
+    <string name="my_wallet_title">Ví Của Tôi</string>
+    <string name="edit">Sửa</string>
+
+    <string name="included_in_total">TÍNH VÀO TỔNG</string>
+    <string name="add_wallet">Thêm ví</string>
+    <string name="link_service">Liên kết dịch vụ</string>
+
+    <string name="otp_verification_title">Xác minh OTP</string>
+    <string name="otp_enter_code_and_new_password">Nhập mã, mật khẩu mới</string>
+    <string name="otp_instructions">Một mã xác minh (OTP) đã được hiển thị trên màn hình trước. Vui lòng nhập mã và mật khẩu mới của bạn.</string>
+    <string name="otp_code_hint">Mã xác minh (OTP)</string>
+    <string name="new_password_hint">Mật khẩu mới</string>
+    <string name="confirm_new_password_hint">Xác nhận mật khẩu mới</string>
+
+    <string name="recurring_expenses_title">Chi Tiêu Định Kỳ</string>
+    <string name="empty_state_recurring_expenses">Bạn chưa có khoản chi tiêu định kỳ nào.\nHãy nhấn nút \'+\' để thêm mới!</string>
+
+    <string name="sign_in_welcome">Chào mừng!</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Mật khẩu</string>
+    <string name="forgot_password_link">Quên mật khẩu?</string>
+    <string name="or_divider">hoặc</string>
+    <string name="no_account_prompt">Chưa có tài khoản?</string>
+    <string name="sign_up_link">Đăng ký</string>
+    <string name="sign_in_button">Đăng nhập</string>
+    <string name="expending_money_logo">Expending money</string>
+
+
+    <string name="sign_up_title">Đăng ký</string>
+    <string name="full_name_hint">Họ và tên</string>
+    <string name="phone_number_hint">Số điện thoại</string>
+    <string name="confirm_password_hint">Xác nhận Mật khẩu</string>
+    <string name="agree_to_terms">Tôi đồng ý với tất cả các Điều khoản &amp; Điều kiện</string>
+    <string name="already_have_account">Đã có tài khoản?</string>
+
+    <string name="balance">Số dư</string>
+    <string name="onboarding_close_button">Đóng hướng dẫn</string>
+    <string name="onboarding_title">Bạn vẫn còn băn khoăn chưa biết bắt đầu từ đâu? Chúng mình sẽ giúp bạn!</string>
+    <string name="onboarding_step1">Đầu tiên, hãy tạo ví</string>
+    <string name="onboarding_step2">Thêm một giao dịch</string>
+    <string name="onboarding_step3">Tạo ngân sách đầu tiên</string>
+    <string name="add_button">Thêm</string>
+    <string name="create_button">Tạo</string>
+    <string name="no_transactions">Không có giao dịch</string>
+    <string name="tooltip_add_transaction">💲 Ấn vào đây để thêm giao dịch</string>
+    <string name="tooltip_create_budget">🎯\nĐặt giới hạn cho khoản chi tiêu của bạn bằng tính năng Ngân sách.</string>
+
+    <string name="more_options">Tùy chọn khác</string>
+    <string name="add_more">Thêm</string>
+
+    <string name="budget_name_placeholder">Tên Ngân sách</string>
+    <string name="budget_remaining">Còn lại %s</string>
+
+    <string name="budget_category_icon_desc">Biểu tượng danh mục ngân sách</string>
+
+    <string name="chatbot_response_placeholder">Chatbot: Đây là phản hồi của chatbot.</string>
+
+    <string name="user_message_placeholder">Bạn: Đây là tin nhắn của tôi.</string>
+
+    <string name="category_name_placeholder">Tên Nhóm</string>
+
+    <string name="recurring_expense_name_placeholder">Tiền thuê nhà</string>
+    <string name="recurring_expense_frequency_placeholder">Hàng tháng (Ngày 15)</string>
+    <string name="recurring_expense_icon_desc">Biểu tượng chi tiêu định kỳ</string>
+
+
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+    <string name="theme_system">Hệ thống</string>
+
+    <string name="error_cannot_identify_user">Không thể xác định người dùng!</string>
+    <string name="error_user_not_found">Lỗi: Không tìm thấy thông tin người dùng.</string>
+    <string name="logout_successful">Đăng xuất thành công!</string>
+    <string name="delete_account_confirm_title">Xác nhận xóa tài khoản</string>
+    <string name="delete_account_confirm_message">Bạn có chắc chắn muốn xóa tài khoản của mình không? Hành động này không thể hoàn tác.</string>
+    <string name="delete">Xóa</string>
+
+    <string name="error_cannot_identify_account">Lỗi: Không thể xác định tài khoản.</string>
+    <string name="account_deleted_successfully">Tài khoản đã được xóa.</string>
+    <string name="account_delete_failed">Xóa tài khoản thất bại. Vui lòng thử lại.</string>
+    <string name="error_occurred_during_deletion">Đã xảy ra lỗi trong quá trình xóa.</string>
+    <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="language_english">English</string>
+
+    <string name="edit_recurring_expense_title">Sửa Chi Tiêu Định Kỳ</string>
+    <string name="update">Cập nhật</string>
+    <string name="select_next_date_title">Chọn Ngày Tiếp Theo</string>
+    <string name="toast_add_new_success">Thêm mới: %1$s - %2$s - Nhóm: %3$s</string>
+    <string name="toast_update_success">Cập nhật: ID %1$d - %2$s - Nhóm: %3$s</string>
+    <string name="delete_confirmation_title">Xác nhận xóa</string>
+    <string name="delete_confirmation_message">Bạn có chắc chắn muốn xóa khoản chi tiêu định kỳ này không?</string>
+    <string name="toast_deleted_demo">Đã xóa (mẫu) ID: %1$d</string>
+
+    <string name="date_format_long">EEEE, dd \'tháng\' MM</string>
+    <string name="select_date_title">Chọn Ngày</string>
+    <string name="date_selection_cancelled">Hủy chọn ngày</string>
+    <string name="error_group_not_selected">Vui lòng chọn nhóm</string>
+    <string name="toast_transaction_saved_details">Đã lưu: %1$s VND\nVí: %2$s\nNhóm: %3$s\nNgày: %4$s\nGhi chú: %5$s</string>
+    <string name="no_note">Không có</string>
+
+
+    <string name="group_selected">Nhóm đã chọn: %s</string>
+
+    <string name="error_please_enter_message">Vui lòng nhập tin nhắn!</string>
+    <string name="chatbot_welcome_message">Chào bạn! Tôi có thể giúp gì cho bạn?</string>
+    <string name="chatbot_responding">Đang phản hồi...</string>
+    <string name="chatbot_response_received">Đã nhận phản hồi từ AI!</string>
+    <string name="chatbot_error_prefix">Lỗi: %s</string>
+    <string name="chatbot_connection_error">Lỗi kết nối AI: %s</string>
+
+    <string name="category_dining">Ăn Uống</string>
+    <string name="category_home_utilities">Nhà cửa &amp; Tiện ích</string>
+    <string name="category_transportation">Di Chuyển</string>
+    <string name="category_shopping_items">Sắm Sửa</string>
+    <string name="category_health">Sức Khỏe</string>
+    <string name="category_communication">Giao Tiếp</string>
+    <string name="category_entertainment">Giải Trí</string>
+    <string name="category_sports">Thể Thao</string>
+    <string name="category_beauty">Làm Đẹp</string>
+    <string name="category_gifts">Quà Tặng</string>
+    <string name="category_travel">Du Lịch</string>
+    <string name="category_friends">Bạn Bè</string>
+    <string name="category_education">Học Tập</string>
+    <string name="category_books">Sách vở</string>
+    <string name="category_courses">Khóa Học</string>
+    <string name="category_study_tools">Dụng Cụ Học Tập</string>
+    <string name="category_investment">Đầu Tư</string>
+    <string name="category_savings">Tiết kiệm</string>
+    <string name="category_emergency_fund">Quỹ Khẩn Cấp</string>
+    <string name="category_other">Khác</string>
+
+    <string name="open_edit_wallet_screen">Mở màn hình chỉnh sửa ví</string>
+    <string name="open_add_new_wallet_screen">Mở màn hình thêm ví mới</string>
+    <string name="open_link_service_screen">Mở màn hình liên kết dịch vụ</string>
+
+    <string name="recurring_expense_updated_deleted_toast">Khoản chi định kỳ đã được cập nhật/xóa (mẫu)</string>
+    <string name="new_item_placeholder">Khoản mới (mẫu)</string>
+    <string name="next_date_placeholder">Ngày ?</string>
+    <string name="data_refreshed_no_db">Dữ liệu được làm mới (chưa có DB)</string>
+
+    <string name="tab_previous_month">THÁNG TRƯỚC</string>
+    <string name="tab_this_month">THÁNG NÀY</string>
+    <string name="tab_future">TƯƠNG LAI</string>
+    <string name="open_add_transaction_screen">Mở màn hình Thêm Giao Dịch</string>
+    <string name="switch_to_overview">Chuyển về Tổng quan</string>
+    <string name="switch_to_budget">Chuyển đến Ngân sách</string>
+    <string name="switch_to_account">Chuyển đến Tài khoản</string>
+
+    <string name="error_email_not_found">Lỗi: Không tìm thấy email. Vui lòng thử lại.</string>
+    <string name="error_otp_required">Vui lòng nhập mã OTP.</string>
+    <string name="error_new_password_required">Vui lòng nhập mật khẩu mới.</string>
+    <string name="error_confirm_password_required">Vui lòng xác nhận mật khẩu mới.</string>
+    <string name="error_password_too_short">Mật khẩu phải có ít nhất 6 ký tự.</string>
+    <string name="password_reset_success">Mật khẩu đã được đặt lại thành công!</string>
+    <string name="error_otp_invalid_or_expired">Mã OTP không hợp lệ, đã hết hạn hoặc có lỗi.</string>
+
+    <string name="error_enter_email_or_phone">Vui lòng nhập email hoặc số điện thoại.</string>
+    <string name="error_invalid_email_format">Vui lòng nhập định dạng email hợp lệ.</string>
+    <string name="your_demo_otp_code_title">Mã OTP DEMO của bạn</string>
+    <string name="your_demo_otp_code_message">Đây là mã OTP cho mục đích demo. Trong ứng dụng thực, mã này sẽ được gửi qua Email/SMS.\n\nMã OTP: %1$s\n\n(Mã này sẽ hết hạn sau 5 phút)</string>
+    <string name="ok">OK</string>
+    <string name="otp_created_demo">Mã OTP đã được tạo và hiển thị (DEMO).</string>
+    <string name="error_cannot_create_otp">Không thể tạo mã OTP. Vui lòng thử lại.</string>
+    <string name="error_email_phone_not_exist">Email hoặc số điện thoại không tồn tại trong hệ thống.</string>
+
+    <string name="open_transactions_screen">Mở màn hình giao dịch!</string>
+    <string name="open_account_screen">Mở màn hình tài khoản!</string>
+    <string name="add_transaction_from_budget_screen">Thêm giao dịch mới từ màn hình Ngân sách!</string>
+    <string name="new_budget_created">Ngân sách mới đã được tạo!</string>
+    <string name="create_budget_cancelled">Tạo ngân sách đã bị hủy.</string>
+    <string name="days_unit_format">%d ngày</string>
+
+    <string name="budget_remaining_format">Còn lại %s</string>
+
+    <string name="error_loading_user_info">Không thể tải thông tin người dùng</string>
+    <string name="no_changes_to_save">Không có thay đổi nào để lưu</string>
+    <string name="error_fill_all_password_fields">Vui lòng điền đủ các trường mật khẩu</string>
+    <string name="error_new_passwords_do_not_match">Mật khẩu mới không khớp</string>
+    <string name="error_current_password_incorrect">Mật khẩu hiện tại không đúng</string>
+    <string name="error_email_already_used">Email này đã được sử dụng</string>
+    <string name="update_successful">Cập nhật thành công!</string>
+    <string name="update_failed">Cập nhật thất bại. Vui lòng thử lại.</string>
+    <string name="error_full_name_empty">Tên không được để trống</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </resources>

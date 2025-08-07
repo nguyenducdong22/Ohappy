@@ -32,7 +32,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private List<Transaction> transactions;
     private final SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.getDefault());
     private final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", new Locale("vi"));
+    private final SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", new Locale("en")); // Changed to English locale
     private String lastHeaderDate = "";
 
     public TransactionAdapter(Context context) {
@@ -60,16 +60,19 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         try {
             Date transactionDate = fullDateFormat.parse(transaction.getTransactionDate());
 
-            // Lấy chuỗi ngày để so sánh header
+            // Get day string for header comparison
             String currentHeaderDate = dayFormat.format(transactionDate);
             String monthAndYear = monthFormat.format(transactionDate);
 
+            // Show header only if the date has changed or it's the first item
             if (!currentHeaderDate.equals(lastHeaderDate) || position == 0) {
                 holder.headerLayout.setVisibility(View.VISIBLE);
                 holder.tvDay.setText(currentHeaderDate);
-                // Cần thêm logic để kiểm tra "Hôm nay"
+
+                // Add logic to check for "Today"
                 if (isToday(transactionDate)) {
-                    holder.tvMonth.setText("Hôm nay\n" + monthAndYear);
+                    // You'll need to update "Hôm nay" in your strings or locale
+                    holder.tvMonth.setText("Today\n" + monthAndYear);
                 } else {
                     holder.tvMonth.setText(monthAndYear);
                 }
@@ -78,11 +81,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 holder.headerLayout.setVisibility(View.GONE);
             }
         } catch (ParseException e) {
-            Log.e(TAG, "Lỗi phân tích chuỗi ngày: " + transaction.getTransactionDate(), e);
+            Log.e(TAG, "Error parsing date string: " + transaction.getTransactionDate(), e);
             holder.headerLayout.setVisibility(View.GONE);
         }
 
-        // Lấy tên icon từ Transaction và tìm resource ID
+        // Get icon name from Transaction and find resource ID
         int iconResId = context.getResources().getIdentifier(transaction.getIconName(), "drawable", context.getPackageName());
         if (iconResId != 0) {
             holder.ivCategoryIcon.setImageResource(iconResId);
@@ -90,17 +93,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.ivCategoryIcon.setImageResource(R.drawable.ic_other);
         }
 
-        // Hiển thị tên danh mục và ghi chú
+        // Display category name and description
         holder.tvCategoryName.setText(transaction.getCategoryName());
         holder.tvDescription.setText(transaction.getDescription());
 
-        // Định dạng và hiển thị số tiền
+        // Format and display the amount
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         currencyFormat.setMinimumFractionDigits(0);
         currencyFormat.setMaximumFractionDigits(0);
         String formattedAmount = currencyFormat.format(transaction.getAmount());
 
-        // Thay đổi màu số tiền tùy thuộc vào loại giao dịch
+        // Change amount color based on transaction type
         if ("Income".equals(transaction.getType())) {
             holder.tvAmount.setText("+" + formattedAmount);
             holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.primary_green_dark));

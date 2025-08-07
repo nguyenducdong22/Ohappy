@@ -1,4 +1,4 @@
-package com.example.noname.Forgotpassword; // ĐÃ SỬA: Thêm .Forgotpassword
+package com.example.noname.Forgotpassword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -67,12 +67,12 @@ public class ForgotPasswordRequestActivity extends AppCompatActivity {
         String emailOrPhone = etEmailOrPhone.getText().toString().trim();
 
         if (emailOrPhone.isEmpty()) {
-            etEmailOrPhone.setError("Vui lòng nhập email hoặc số điện thoại.");
+            etEmailOrPhone.setError("Please enter your email or phone number.");
             etEmailOrPhone.requestFocus();
             return;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailOrPhone).matches()) {
-            etEmailOrPhone.setError("Vui lòng nhập định dạng email hợp lệ.");
+            etEmailOrPhone.setError("Please enter a valid email format.");
             etEmailOrPhone.requestFocus();
             return;
         }
@@ -107,8 +107,8 @@ public class ForgotPasswordRequestActivity extends AppCompatActivity {
                 tvOtpInstructionDemo.setVisibility(View.VISIBLE);
 
                 new AlertDialog.Builder(this)
-                        .setTitle("Mã OTP DEMO của bạn")
-                        .setMessage("Đây là mã OTP cho mục đích demo. Trong ứng dụng thực, mã này sẽ được gửi qua Email/SMS.\n\nMã OTP: " + otpCode + "\n\n(Mã này sẽ hết hạn sau 5 phút)")
+                        .setTitle("Your DEMO OTP Code")
+                        .setMessage("This is a demo OTP code. In a real application, this code would be sent via Email/SMS.\n\nOTP Code: " + otpCode + "\n\n(This code will expire in 5 minutes)")
                         .setPositiveButton("OK", (dialog, which) -> {
                             Intent intent = new Intent(ForgotPasswordRequestActivity.this, OtpVerificationActivity.class);
                             intent.putExtra("email", emailOrPhone);
@@ -117,12 +117,12 @@ public class ForgotPasswordRequestActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .show();
 
-                Toast.makeText(this, "Mã OTP đã được tạo và hiển thị (DEMO).", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "OTP code has been generated and displayed (DEMO).", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Không thể tạo mã OTP. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Failed to create OTP code. Please try again.", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "Email hoặc số điện thoại không tồn tại trong hệ thống.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Email or phone number does not exist in the system.", Toast.LENGTH_LONG).show();
         }
 
         showLoading(false);

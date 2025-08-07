@@ -1,4 +1,4 @@
-package com.example.noname; // Đảm bảo đúng package của bạn
+package com.example.noname; // Ensure your package is correct
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.noname.database.CategoryDAO;
 import com.example.noname.models.Category;
-import com.example.noname.R; // Đảm bảo import R.class của bạn
+import com.example.noname.R; // Ensure your R.class is imported
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
         if (currentUserId == -1) {
             Log.e(TAG, "Current User ID is -1. Cannot load categories.");
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: User information not found", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -96,7 +96,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
         LinearLayout categoryContainer = findViewById(R.id.category_container);
         if (categoryContainer == null) {
             Log.e(TAG, "Layout container not found with ID R.id.category_container");
-            Toast.makeText(this, "Lỗi: Không tìm thấy container danh mục", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: Category container not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -104,7 +104,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
         Log.d(TAG, "Removed all existing views from category container.");
 
         if (categories.isEmpty()) {
-            Toast.makeText(this, "Không có danh mục nào được tìm thấy.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No categories found.", Toast.LENGTH_LONG).show();
             Log.w(TAG, "Category list is empty.");
         } else {
             for (Category category : categories) {
@@ -157,7 +157,7 @@ public class ChooseGroupActivity extends AppCompatActivity {
         ImageView iconView = itemView.findViewById(R.id.category_icon);
         TextView nameView = itemView.findViewById(R.id.category_name);
 
-        nameView.setText("Thêm danh mục mới");
+        nameView.setText("Add New Category");
         iconView.setImageResource(R.drawable.ic_add_circle);
         iconView.setColorFilter(ContextCompat.getColor(this, R.color.accent_yellow));
 
@@ -165,8 +165,8 @@ public class ChooseGroupActivity extends AppCompatActivity {
 
         itemView.setOnClickListener(v -> {
             Log.d(TAG, "Add new category button clicked.");
-            // TODO: Điều hướng đến màn hình thêm mới danh mục
-            Toast.makeText(this, "Chức năng thêm danh mục đang phát triển.", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to the add new category screen
+            Toast.makeText(this, "The 'add new category' function is under development.", Toast.LENGTH_SHORT).show();
         });
 
         parentLayout.addView(itemView);

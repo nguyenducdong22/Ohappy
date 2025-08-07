@@ -20,14 +20,14 @@
             android:id="@+id/toolbar_add_budget"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Thêm Ngân sách"
+            app:title="Add Budget"
             app:titleTextColor="@color/black">
 
             <TextView
                 android:id="@+id/btn_cancel_add_budget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hủy"
+                android:text="Cancel"
                 android:textColor="@color/primary_green"
                 android:textSize="16sp"
                 android:layout_gravity="start"
@@ -78,7 +78,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Chọn nhóm"
+                    android:text="Select a category"
                     android:textColor="@color/text_medium"
                     android:textSize="16sp"
                     android:layout_marginStart="16dp"/>
@@ -153,7 +153,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tháng này (01/07 - 31/07)"
+                    android:text="This month (01/07 - 31/07)"
                     android:textColor="@color/text_dark"
                     android:textSize="16sp"
                     android:layout_marginStart="16dp"/>
@@ -185,7 +185,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lặp lại ngân sách này"
+            android:text="Repeat this budget"
             android:textColor="@color/text_dark"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -202,7 +202,7 @@
         android:id="@+id/btn_save_budget"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lưu"
+        android:text="Save"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"

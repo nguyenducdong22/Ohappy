@@ -36,14 +36,14 @@ public class ChooseWalletActivity extends AppCompatActivity {
 
     private static final String TAG = "ChooseWalletActivity";
 
-    // Khai báo ActivityResultLauncher để nhận kết quả từ màn hình thêm/sửa ví
+    // Declare ActivityResultLauncher to receive results from the add/edit wallet screen
     private final ActivityResultLauncher<Intent> addEditWalletLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Log.d(TAG, "Add/Edit wallet activity returned with OK result. Reloading data.");
-                    Toast.makeText(this, "Đã cập nhật danh sách ví", Toast.LENGTH_SHORT).show();
-                    loadWallets(); // Tải lại danh sách ví sau khi có thay đổi
+                    Toast.makeText(this, "Wallet list updated", Toast.LENGTH_SHORT).show();
+                    loadWallets(); // Reload the wallet list after a change
                 } else {
                     Log.d(TAG, "Add/Edit wallet activity cancelled.");
                 }
@@ -81,7 +81,7 @@ public class ChooseWalletActivity extends AppCompatActivity {
         Log.d(TAG, "Retrieved currentUserId: " + currentUserId);
 
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: User information not found", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Current User ID is -1. Finishing activity.");
             finish();
             return;
@@ -90,10 +90,10 @@ public class ChooseWalletActivity extends AppCompatActivity {
         accountDAO = new AccountDAO(this);
         walletContainer = findViewById(R.id.wallet_container);
 
-        // Gắn sự kiện cho nút Thêm ví mới (nếu có trong layout)
-        // Dòng này giả định có một FloatingActionButton với ID 'fab_add_wallet'
-        // trong layout activity_choose_wallet.xml
-        // Nếu layout của bạn không có, hãy bỏ dòng này.
+        // Attach event for the "Add new wallet" button (if it exists in the layout)
+        // This line assumes there is a FloatingActionButton with ID 'fab_add_wallet'
+        // in your activity_choose_wallet.xml layout.
+        // If your layout does not have one, please remove this line.
         // FloatingActionButton fabAddWallet = findViewById(R.id.fab_add_wallet);
         // if (fabAddWallet != null) {
         //     fabAddWallet.setOnClickListener(v -> {
@@ -135,7 +135,7 @@ public class ChooseWalletActivity extends AppCompatActivity {
         walletContainer.removeAllViews();
         Log.d(TAG, "Removed all existing views from wallet container.");
 
-        // Thêm nút "Thêm ví mới" ở đầu danh sách
+        // Add the "Add new wallet" button at the beginning of the list
         setupAddWalletButton(walletContainer);
 
         if (accounts.isEmpty()) {
@@ -150,15 +150,15 @@ public class ChooseWalletActivity extends AppCompatActivity {
 
     private String getWalletIconName(String walletName) {
         Map<String, String> walletIconMap = new HashMap<>();
-        walletIconMap.put("Tiền mặt", "ic_money");
-        walletIconMap.put("Ví Momo", "ic_wallet_momo");
-        walletIconMap.put("Ngân hàng", "ic_wallet_bank");
+        walletIconMap.put("Cash", "ic_money");
+        walletIconMap.put("Momo Wallet", "ic_wallet_momo");
+        walletIconMap.put("Bank", "ic_wallet_bank");
         return walletIconMap.getOrDefault(walletName, "ic_wallet");
     }
 
     private void setupWalletItem(LinearLayout parentLayout, Account account, String iconName) {
         LayoutInflater inflater = getLayoutInflater();
-        View itemView = inflater.inflate(R.layout.item_wallet, parentLayout, false); // Sửa thành item_wallet_editable
+        View itemView = inflater.inflate(R.layout.item_wallet, parentLayout, false); // Changed to item_wallet_editable
         Log.d(TAG, "Inflated new view for account: " + account.getName());
 
         ImageView iconView = itemView.findViewById(R.id.wallet_icon);
@@ -223,6 +223,6 @@ public class ChooseWalletActivity extends AppCompatActivity {
             intent.putExtra("user_id", currentUserId);
             addEditWalletLauncher.launch(intent);
         });
-        parentLayout.addView(addView, 0); // Thêm vào vị trí đầu tiên của container
+        parentLayout.addView(addView, 0); // Add to the first position of the container
     }
 }

@@ -23,7 +23,7 @@
             android:id="@+id/toolbar_choose_wallet"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Chọn Ví"
+            app:title="Select Wallet"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,7 +32,7 @@
         android:id="@+id/tv_wallet_type_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Loại ví"
+        android:text="Wallet Type"
         android:textSize="14sp"
         android:textColor="@color/text_medium"
         android:layout_marginStart="24dp"

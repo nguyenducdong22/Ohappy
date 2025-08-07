@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_search"
+                app:layout_constraintEnd_toStartOf="@+id/notification_button"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:gravity="center_vertical"
@@ -39,7 +39,7 @@
                     android:id="@+id/tv_header_main_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00 đ"
+                    android:text="0.00 ₫"
                     android:textColor="@color/text_main_header"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -60,7 +60,7 @@
                         android:id="@+id/tv_sub_header_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" Tổng số dư"
+                        android:text=" Total balance"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="14sp" />
                     <ImageView
@@ -98,24 +98,10 @@
                         android:layout_height="6dp"
                         android:background="@drawable/dot_inactive" />
                 </LinearLayout>
-
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/btn_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/text_main_header"
-                app:layout_constraintEnd_toStartOf="@+id/btn_notifications"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:ignore="ContentDescription" />
-
-            <ImageButton
-                android:id="@+id/btn_notifications"
+                android:id="@+id/notification_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -126,6 +112,26 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/notification_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="16dp"
+                android:minHeight="16dp"
+                android:layout_alignTop="@id/notification_button"
+                android:layout_alignEnd="@id/notification_button"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/notification_badge_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:padding="2dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/notification_button"
+                app:layout_constraintTop_toTopOf="@id/notification_button"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,7 +175,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ví của tôi"
+                            android:text="My wallet"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -177,7 +183,7 @@
                             android:id="@+id/tv_see_all_wallets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem tất cả"
+                            android:text="See all"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -204,14 +210,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tiền mặt"
+                            android:text="Cash"
                             android:textColor="@color/text_dark"
                             android:textSize="18sp" />
                         <TextView
                             android:id="@+id/tv_account_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0.00 đ"
+                            android:text="0.00 ₫"
                             android:textColor="@color/text_dark"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -245,7 +251,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Báo cáo tháng này"
+                            android:text="This month's report"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -253,7 +259,7 @@
                             android:id="@+id/tv_see_report_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem báo cáo"
+                            android:text="View report"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -270,7 +276,7 @@
                             android:id="@+id/tv_empty_report_prompt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Nhập giao dịch để xem báo cáo"
+                            android:text="Enter transactions to view the report"
                             android:gravity="center"
                             android:textColor="@color/text_secondary_gray"
                             android:textSize="16sp"
@@ -287,7 +293,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng chi tháng này"
+                                android:text="This month's total spending"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="14sp"
                                 android:layout_gravity="center_horizontal"/>
@@ -300,7 +306,7 @@
                                 android:textColor="@color/text_main_header"
                                 android:textSize="22sp"
                                 android:textStyle="bold"
-                                tools:text="5.000.000 đ"
+                                tools:text="5,000,000 ₫"
                                 android:layout_marginBottom="16dp"/>
 
                             <com.github.mikephil.charting.charts.LineChart
@@ -333,18 +339,18 @@
                             <com.google.android.material.tabs.TabItem
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tuần" />
+                                android:text="Week" />
                             <com.google.android.material.tabs.TabItem
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tháng" />
+                                android:text="Month" />
                         </com.google.android.material.tabs.TabLayout>
 
                         <TextView
                             android:id="@+id/tv_current_report_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="5.000.000 đ"
+                            tools:text="5,000,000 ₫"
                             android:textColor="@color/text_main_header"
                             android:textSize="24sp"
                             android:textStyle="bold"
@@ -355,7 +361,7 @@
                             android:id="@+id/tv_total_spent_percentage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="+25.5% so với kỳ trước"
+                            tools:text="+25.5% compared to previous period"
                             android:textColor="@color/text_secondary_gray"
                             android:textSize="14sp"
                             android:layout_gravity="center_horizontal"
@@ -388,7 +394,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Báo cáo xu hướng"
+                            android:text="Trend report"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:gravity="center"
@@ -444,7 +450,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ưu đãi bạn mới"
+                        android:text="New user offer"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -484,7 +490,7 @@
                         android:id="@+id/btn_upgrade_now"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nâng cấp ngay"
+                        android:text="Upgrade now"
                         android:textColor="@color/deal_button_text"
                         android:textSize="14sp"
                         android:background="@drawable/deal_button_background"
@@ -524,14 +530,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Chi tiêu nhiều nhất"
+                            android:text="Highest spending"
                             android:textColor="@color/text_main_header"
                             android:textSize="18sp"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem chi tiết"
+                            android:text="View details"
                             android:textColor="@color/primary_green"
                             android:textSize="16sp"
                             android:clickable="true"
@@ -554,11 +560,11 @@
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tuần" />
+                            android:text="Week" />
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tháng" />
+                            android:text="Month" />
                     </com.google.android.material.tabs.TabLayout>
 
                     <LinearLayout
@@ -583,7 +589,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Ăn uống"
+                                android:text="Food &amp; Drink"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -625,7 +631,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Thuê nhà"
+                                android:text="Rent"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -667,7 +673,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Mua sắm"
+                                android:text="Shopping"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp" />
                             <TextView
@@ -694,9 +700,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

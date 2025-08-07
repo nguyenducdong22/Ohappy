@@ -3,11 +3,11 @@
     <item
         android:id="@+id/navigation_overview"
         android:icon="@drawable/ic_home_outline"
-        android:title="Tổng quan" />
+        android:title="Overview" />
     <item
         android:id="@+id/navigation_transactions"
         android:icon="@drawable/ic_transaction_history"
-        android:title="Số giao dịch" />
+        android:title="Transactions" />
     <item
         android:id="@+id/navigation_placeholder"
         android:title=""
@@ -15,9 +15,9 @@
     <item
         android:id="@+id/navigation_budget"
         android:icon="@drawable/ic_budget"
-        android:title="Ngân sách" />
+        android:title="Budget" />
     <item
         android:id="@+id/navigation_account"
         android:icon="@drawable/ic_account"
-        android:title="Tài khoản" />
+        android:title="Account" />
 </menu>

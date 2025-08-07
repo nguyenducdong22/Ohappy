@@ -189,7 +189,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" hoặc "
+                    android:text=" or "
                     android:textColor="@color/or_divider_color"
                     android:textSize="16sp"
                     android:paddingStart="8dp"
@@ -210,7 +210,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chưa có tài khoản? "
+                    android:text="Don't have an account yet? "
                     android:textColor="@color/grey_text_link"
                     android:textSize="16sp" />
 
@@ -218,7 +218,7 @@
                     android:id="@+id/tvSignUpLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng ký"
+                    android:text="Sign up"
                     android:textColor="@color/button_red"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -233,7 +233,7 @@
         android:id="@+id/btnSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Đăng nhập"
+        android:text="Sign In"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -242,7 +242,8 @@
         android:elevation="4dp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:layout_marginBottom="46dp" android:layout_marginStart="32dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

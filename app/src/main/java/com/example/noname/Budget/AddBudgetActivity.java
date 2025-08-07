@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log; // Thêm import cho Log
+import android.util.Log; // Added import for Log
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,9 +41,9 @@ public class AddBudgetActivity extends AppCompatActivity {
     // UI elements
     private Toolbar toolbar;
     private TextView btnCancel;
-    private LinearLayout layoutChooseGroup;
-    private ImageView ivGroupIcon;
-    private TextView tvGroupName;
+    private LinearLayout layoutChooseCategory; // Renamed from layoutChooseGroup
+    private ImageView ivCategoryIcon;           // Renamed from ivGroupIcon
+    private TextView tvCategoryName;            // Renamed from tvGroupName
     private EditText etAmount;
     private LinearLayout layoutDateRange;
     private TextView tvDateRange;
@@ -60,7 +60,7 @@ public class AddBudgetActivity extends AppCompatActivity {
     private Calendar startDateCalendar = Calendar.getInstance();
     private Calendar endDateCalendar = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM", new Locale("vi", "VN"));
+    private SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM", Locale.US); // Changed locale for display
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,8 @@ public class AddBudgetActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy người dùng.", Toast.LENGTH_LONG).show();
+            // Error: User not found.
+            Toast.makeText(this, "Error: User not found.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -82,9 +83,9 @@ public class AddBudgetActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar_add_budget);
         btnCancel = findViewById(R.id.btn_cancel_add_budget);
-        layoutChooseGroup = findViewById(R.id.layout_choose_group);
-        ivGroupIcon = findViewById(R.id.iv_group_icon);
-        tvGroupName = findViewById(R.id.tv_group_name);
+        layoutChooseCategory = findViewById(R.id.layout_choose_group); // Keep ID, but rename variable
+        ivCategoryIcon = findViewById(R.id.iv_group_icon);             // Keep ID, but rename variable
+        tvCategoryName = findViewById(R.id.tv_group_name);             // Keep ID, but rename variable
         etAmount = findViewById(R.id.et_amount);
         layoutDateRange = findViewById(R.id.layout_date_range);
         tvDateRange = findViewById(R.id.tv_date_range);
@@ -97,7 +98,7 @@ public class AddBudgetActivity extends AppCompatActivity {
         }
         btnCancel.setOnClickListener(v -> finish());
         btnSaveBudget.setOnClickListener(v -> saveBudget());
-        layoutChooseGroup.setOnClickListener(v -> chooseCategory());
+        layoutChooseCategory.setOnClickListener(v -> chooseCategory());
         layoutDateRange.setOnClickListener(v -> showDateRangePicker());
 
         etAmount.addTextChangedListener(textWatcher);
@@ -108,6 +109,7 @@ public class AddBudgetActivity extends AppCompatActivity {
             budgetToEdit = (Budget) intent.getSerializableExtra(EXTRA_BUDGET_TO_EDIT);
             updateUiForEditMode();
         } else {
+            // Set default date range to the current month
             startDateCalendar.set(Calendar.DAY_OF_MONTH, 1);
             endDateCalendar.set(Calendar.DAY_OF_MONTH, endDateCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             updateDateRangeDisplay();
@@ -145,7 +147,8 @@ public class AddBudgetActivity extends AppCompatActivity {
                             (view2, year2, month2, dayOfMonth2) -> {
                                 endDateCalendar.set(year2, month2, dayOfMonth2);
                                 if (endDateCalendar.before(startDateCalendar)) {
-                                    Toast.makeText(this, "Ngày kết thúc phải sau ngày bắt đầu.", Toast.LENGTH_SHORT).show();
+                                    // End date must be after start date.
+                                    Toast.makeText(this, "End date must be after start date.", Toast.LENGTH_SHORT).show();
                                     endDateCalendar.setTime(startDateCalendar.getTime());
                                 }
                                 updateDateRangeDisplay();
@@ -175,14 +178,15 @@ public class AddBudgetActivity extends AppCompatActivity {
 
     private void updateUiForEditMode() {
         if (budgetToEdit != null) {
-            toolbar.setTitle("Sửa Ngân sách");
+            // "Edit Budget"
+            toolbar.setTitle("Edit Budget");
             categoryDAO.open();
             CategoryDAO.CategoryWithIcon categoryWithIcon = categoryDAO.getCategoryByIdWithIcon(budgetToEdit.getCategoryId());
             if (categoryWithIcon != null) {
                 selectedCategory = categoryWithIcon.category;
-                ivGroupIcon.setImageResource(categoryWithIcon.iconResId);
-                tvGroupName.setText(categoryWithIcon.category.getName());
-                tvGroupName.setTextColor(getResources().getColor(R.color.text_dark));
+                ivCategoryIcon.setImageResource(categoryWithIcon.iconResId);
+                tvCategoryName.setText(categoryWithIcon.category.getName());
+                tvCategoryName.setTextColor(getResources().getColor(R.color.text_dark));
             }
             categoryDAO.close();
 
@@ -201,7 +205,8 @@ public class AddBudgetActivity extends AppCompatActivity {
 
     private void saveBudget() {
         if (selectedCategory == null) {
-            Toast.makeText(this, "Vui lòng chọn nhóm.", Toast.LENGTH_SHORT).show();
+            // "Please choose a category."
+            Toast.makeText(this, "Please choose a category.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -209,11 +214,13 @@ public class AddBudgetActivity extends AppCompatActivity {
         try {
             amount = Double.parseDouble(etAmount.getText().toString());
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Số tiền không hợp lệ.", Toast.LENGTH_SHORT).show();
+            // "Invalid amount."
+            Toast.makeText(this, "Invalid amount.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (amount <= 0) {
-            Toast.makeText(this, "Số tiền phải lớn hơn 0.", Toast.LENGTH_SHORT).show();
+            // "Amount must be greater than 0."
+            Toast.makeText(this, "Amount must be greater than 0.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -224,6 +231,7 @@ public class AddBudgetActivity extends AppCompatActivity {
         budgetDAO.open();
         long result;
         if (budgetToEdit == null) {
+            // Adding a new budget
             result = budgetDAO.addBudget(
                     currentUserId,
                     selectedCategory.getId(),
@@ -233,6 +241,7 @@ public class AddBudgetActivity extends AppCompatActivity {
                     isRecurring
             );
         } else {
+            // Updating an existing budget
             result = budgetDAO.updateBudget(
                     budgetToEdit.getId(),
                     currentUserId,
@@ -249,7 +258,8 @@ public class AddBudgetActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK);
             finish();
         } else {
-            Toast.makeText(this, "Lưu ngân sách thất bại.", Toast.LENGTH_SHORT).show();
+            // "Failed to save budget."
+            Toast.makeText(this, "Failed to save budget.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -264,11 +274,11 @@ public class AddBudgetActivity extends AppCompatActivity {
             Log.d("AddBudgetActivity", "onActivityResult: categoryId = " + categoryId + ", categoryName = " + categoryName + ", categoryIcon = " + categoryIcon);
 
             if (categoryId != -1) {
-                // Tạo một đối tượng Category từ dữ liệu trả về và gán cho selectedCategory
+                // Create a Category object from the returned data and assign it to selectedCategory
                 selectedCategory = new Category(categoryId, categoryName, categoryIcon);
-                ivGroupIcon.setImageResource(selectedCategory.getIconResId());
-                tvGroupName.setText(selectedCategory.getName());
-                tvGroupName.setTextColor(ContextCompat.getColor(this, R.color.text_dark));
+                ivCategoryIcon.setImageResource(selectedCategory.getIconResId());
+                tvCategoryName.setText(selectedCategory.getName());
+                tvCategoryName.setTextColor(ContextCompat.getColor(this, R.color.text_dark));
                 checkInputs();
             }
         }

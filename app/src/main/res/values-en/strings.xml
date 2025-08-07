@@ -70,7 +70,296 @@
     <string name="error_email_exists">Email already exists. Please sign in or use another email.</string>
     <string name="registration_successful">Registration successful!</string>
     <string name="registration_failed">Registration failed. Please try again.</string>
+
     <string name="error_generic_registration">An error occurred during registration.</string>
+    <string name="my_wallet">My Wallet</string>
+    <string name="view_all">View All</string>
+    <string name="cash">Cash</string>
+    <string name="total_spent">Total Spent</string>
+    <string name="total_income">Total Income</string>
+    <string name="enter_transaction_prompt">Enter a transaction to see the report</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="chart_placeholder">Chart will be displayed here</string>
+    <string name="previous_month">Previous Month</string>
+    <string name="trend_report">Trend Report</string>
+    <string name="deal_new_member">New Member Deal</string>
+    <string name="upgrade_now">Upgrade Now</string>
+    <string name="top_spending">Top Spending</string>
+    <string name="view_details">View Details</string>
+    <string name="category_eating">Eating</string>
+    <string name="category_rent">Rent</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="transactions_will_appear_here">Added transactions will appear here 👋</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="search">Search</string>
+    <string name="notifications">Notifications</string>
+
+    <string name="week_selected">Week Selected</string>
+    <string name="month_selected">Month Selected</string>
+    <string name="total_spent_this_week">Total spent this week - %1$s%%</string>
+    <string name="total_spent_this_month_format">Total spent this month - %1$s%%</string>
+
+    <string name="add_budget_title">Add Budget</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_group">Select Group</string>
+    <string name="total">Total</string>
+    <string name="repeat_this_budget">Repeat this budget</string>
+    <string name="repeat_budget_description">The budget is automatically repeated for the next period.</string>
+    <string name="save">Save</string>
+    <string name="error_please_enter_amount">Please enter an amount</string>
+    <string name="error_invalid_amount">Invalid amount</string>
+    <string name="error_please_select_group">Please select a group</string>
+    <string name="budget_saved_for">Budget saved for: %s</string>
+
+
+    <string name="add_recurring_expense_title">Add Recurring Expense</string>
+    <string name="expense_name_hint">Expense Name</string>
+    <string name="amount_hint">Amount</string>
+    <string name="group_name_hint">Group Name (e.g., Dining, Tuition)</string>
+    <string name="frequency_label">Frequency</string>
+    <string name="frequency_monthly">Monthly</string>
+    <string name="frequency_weekly">Weekly</string>
+    <string name="frequency_yearly">Yearly</string>
+    <string name="next_date_label">Next Date</string>
+    <string name="status_label">Status</string>
+    <string name="activate_recurring_expense_label">Activate recurring expense</string>
+    <string name="delete_this_expense_button">Delete This Expense</string>
+
+    <string name="add_transaction_title">Add Transaction</string>
+    <string name="wallet_cash">Cash</string>
+    <string name="amount_hint_zero">0</string>
+
+    <string name="note_hint">Note</string>
+    <string name="today_date_placeholder">Sunday, July 27</string>
+
+    <string name="budget_overview_title">Active Budgets</string>
+    <string name="amount_you_can_spend">Amount you can spend</string>
+    <string name="total_budget">Total Budget</string>
+    <string name="days_until_month_end">Until month-end</string>
+    <string name="create_budget">Create Budget</string>
+    <string name="your_budgets">Your Budgets</string>
+    <string name="days_unit">days</string>
+
+    <string name="back_button">Back Button</string>
+    <string name="type_a_message_hint">Type a message...</string>
+    <string name="send_button">Send Button</string>
+    <string name="chatbot_ai_title">Chatbot AI</string>
+
+    <string name="choose_spending_group_title">Choose Spending Group</string>
+    <string name="category_header_essential">Essential Needs</string>
+    <string name="category_header_entertainment">Entertainment, Personal</string>
+    <string name="category_header_learning">Learning, Development</string>
+    <string name="category_header_other">Other Expenses</string>
+
+    <string name="choose_wallet_title">Choose Wallet</string>
+    <string name="wallet_type_label">Wallet Type</string>
+    <string name="wallet_momo">Momo Wallet</string>
+    <string name="wallet_bank">Bank</string>
+
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="forgot_password_instructions">Please enter your registered email or phone number so we can verify your identity.</string>
+    <string name="enter_email_hint">Enter Email</string>
+    <string name="send_verification_code_button">Send Verification Code</string>
+    <string name="your_demo_otp_code">Your DEMO OTP Code:</string>
+    <string name="otp_instructions_demo">In a real app, this code would be sent via Email/SMS. Please enter this code on the next screen.</string>
+
+    <string name="close">Close</string>
+    <string name="my_wallet_title">My Wallet</string>
+    <string name="edit">Edit</string>
+    <string name="included_in_total">INCLUDED IN TOTAL</string>
+    <string name="add_wallet">Add Wallet</string>
+    <string name="link_service">Link Service</string>
+
+    <string name="otp_verification_title">OTP Verification</string>
+    <string name="otp_enter_code_and_new_password">Enter Code, New Password</string>
+    <string name="otp_instructions">A verification code (OTP) was displayed on the previous screen. Please enter the code and your new password.</string>
+    <string name="otp_code_hint">Verification Code (OTP)</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="confirm_new_password_hint">Confirm New Password</string>
+
+    <string name="recurring_expenses_title">Recurring Expenses</string>
+    <string name="empty_state_recurring_expenses">You don\'t have any recurring expenses yet.\nPress the \'+\' button to add one!</string>
+
+    <string name="sign_in_welcome">Welcome!</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password_link">Forgot Password?</string>
+    <string name="or_divider">or</string>
+    <string name="no_account_prompt">Don\'t have an account?</string>
+    <string name="sign_up_link">Sign Up</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="expending_money_logo">Expending money</string>
+
+    <string name="sign_up_title">Sign Up</string>
+    <string name="full_name_hint">Full Name</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="agree_to_terms">I agree to all the Terms &amp; Conditions</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <string name="balance">Balance</string>
+    <string name="onboarding_close_button">Close tutorial</string>
+    <string name="onboarding_title">Still wondering where to start? We will help you!</string>
+    <string name="onboarding_step1">First, create a wallet</string>
+    <string name="onboarding_step2">Add a transaction</string>
+    <string name="onboarding_step3">Create your first budget</string>
+    <string name="add_button">Add</string>
+    <string name="create_button">Create</string>
+    <string name="no_transactions">No transactions</string>
+    <string name="tooltip_add_transaction">💲 Tap here to add a transaction</string>
+    <string name="tooltip_create_budget">🎯\nSet a limit for your spending with the Budget feature.</string>
+
+    <string name="more_options">More options</string>
+    <string name="add_more">Add More</string>
+
+    <string name="budget_name_placeholder">Budget Name</string>
+    <string name="budget_remaining">Remaining %s</string>
+
+    <string name="budget_category_icon_desc">Budget category icon</string>
+
+    <string name="chatbot_response_placeholder">Chatbot: This is the chatbot\'s response.</string>
+
+    <string name="user_message_placeholder">You: This is my message.</string>
+
+    <string name="category_name_placeholder">Group Name</string>
+
+    <string name="recurring_expense_name_placeholder">House Rent</string>
+    <string name="recurring_expense_frequency_placeholder">Monthly (Day 15)</string>
+    <string name="recurring_expense_icon_desc">Recurring expense icon</string>
+
+    <string name="account_option_recurring_expenses">Recurring Expenses</string>
+
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
+
+    <string name="error_cannot_identify_user">Could not identify user!</string>
+    <string name="error_user_not_found">Error: User information not found.</string>
+    <string name="logout_successful">Logout successful!</string>
+    <string name="delete_account_confirm_title">Confirm Account Deletion</string>
+    <string name="delete_account_confirm_message">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+
+    <string name="error_cannot_identify_account">Error: Cannot identify account.</string>
+    <string name="account_deleted_successfully">Account has been deleted.</string>
+    <string name="account_delete_failed">Failed to delete account. Please try again.</string>
+    <string name="error_occurred_during_deletion">An error occurred during deletion.</string>
+    <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="language_english">English</string>
+
+    <string name="edit_recurring_expense_title">Edit Recurring Expense</string>
+    <string name="update">Update</string>
+    <string name="select_next_date_title">Select Next Date</string>
+    <string name="toast_add_new_success">Added new: %1$s - %2$s - Group: %3$s</string>
+    <string name="toast_update_success">Updated: ID %1$d - %2$s - Group: %3$s</string>
+    <string name="delete_confirmation_title">Confirm Deletion</string>
+    <string name="delete_confirmation_message">Are you sure you want to delete this recurring expense?</string>
+    <string name="toast_deleted_demo">Deleted (demo) ID: %1$d</string>
+
+    <string name="date_format_long">EEEE, MMMM dd</string>
+    <string name="select_date_title">Select Date</string>
+    <string name="date_selection_cancelled">Date selection cancelled</string>
+    <string name="error_group_not_selected">Please select a group</string>
+    <string name="toast_transaction_saved_details">Saved: %1$s VND\nWallet: %2$s\nGroup: %3$s\nDate: %4$s\nNote: %5$s</string>
+    <string name="no_note">None</string>
+
+
+    <string name="group_selected">Group selected: %s</string>
+
+    <string name="error_please_enter_message">Please enter a message!</string>
+    <string name="chatbot_welcome_message">Hello! How can I help you?</string>
+    <string name="chatbot_responding">Responding...</string>
+    <string name="chatbot_response_received">Received response from AI!</string>
+    <string name="chatbot_error_prefix">Error: %s</string>
+    <string name="chatbot_connection_error">AI connection error: %s</string>
+
+    <string name="category_dining">Dining</string>
+    <string name="category_home_utilities">Home &amp; Utilities</string>
+    <string name="category_transportation">Transportation</string>
+    <string name="category_shopping_items">Shopping</string>
+    <string name="category_health">Health</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_beauty">Beauty</string>
+    <string name="category_gifts">Gifts</string>
+    <string name="category_travel">Travel</string>
+    <string name="category_friends">Friends</string>
+    <string name="category_education">Education</string>
+    <string name="category_books">Books</string>
+    <string name="category_courses">Courses</string>
+    <string name="category_study_tools">Study Tools</string>
+    <string name="category_investment">Investment</string>
+    <string name="category_savings">Savings</string>
+    <string name="category_emergency_fund">Emergency Fund</string>
+    <string name="category_other">Other</string>
+
+    <string name="open_edit_wallet_screen">Open edit wallet screen</string>
+    <string name="open_add_new_wallet_screen">Open add new wallet screen</string>
+    <string name="open_link_service_screen">Open link service screen</string>
+
+    <string name="recurring_expense_updated_deleted_toast">Recurring expense has been updated/deleted (demo)</string>
+    <string name="new_item_placeholder">New Item (demo)</string>
+    <string name="next_date_placeholder">Date ?</string>
+    <string name="data_refreshed_no_db">Data refreshed (no DB yet)</string>
+
+    <string name="tab_previous_month">LAST MONTH</string>
+    <string name="tab_this_month">THIS MONTH</string>
+    <string name="tab_future">FUTURE</string>
+    <string name="open_add_transaction_screen">Open Add Transaction screen</string>
+    <string name="switch_to_overview">Switching to Overview</string>
+    <string name="switch_to_budget">Switching to Budget</string>
+    <string name="switch_to_account">Switching to Account</string>
+
+    <string name="error_email_not_found">Error: Email not found. Please try again.</string>
+    <string name="error_otp_required">Please enter the OTP code.</string>
+    <string name="error_new_password_required">Please enter a new password.</string>
+    <string name="error_confirm_password_required">Please confirm the new password.</string>
+    <string name="error_password_too_short">Password must be at least 6 characters long.</string>
+    <string name="password_reset_success">Password has been reset successfully!</string>
+    <string name="error_otp_invalid_or_expired">Invalid or expired OTP, or an error occurred.</string>
+
+    <string name="error_enter_email_or_phone">Please enter an email or phone number.</string>
+    <string name="error_invalid_email_format">Please enter a valid email format.</string>
+    <string name="your_demo_otp_code_title">Your DEMO OTP Code</string>
+    <string name="your_demo_otp_code_message">This is the OTP code for demo purposes. In a real app, this code would be sent via Email/SMS.\n\nOTP Code: %1$s\n\n(This code will expire in 5 minutes)</string>
+    <string name="ok">OK</string>
+    <string name="otp_created_demo">OTP code has been generated and displayed (DEMO).</string>
+    <string name="error_cannot_create_otp">Could not create OTP. Please try again.</string>
+    <string name="error_email_phone_not_exist">Email or phone number does not exist in the system.</string>
+
+    <string name="open_transactions_screen">Open transactions screen!</string>
+    <string name="open_account_screen">Open account screen!</string>
+    <string name="add_transaction_from_budget_screen">Add new transaction from Budget screen!</string>
+    <string name="new_budget_created">New budget has been created!</string>
+    <string name="create_budget_cancelled">Budget creation was cancelled.</string>
+    <string name="days_unit_format">%d days</string>
+
+    <string name="budget_remaining_format">Remaining %s</string>
+
+    <string name="error_loading_user_info">Could not load user information</string>
+    <string name="no_changes_to_save">No changes to save</string>
+    <string name="error_fill_all_password_fields">Please fill all password fields</string>
+    <string name="error_new_passwords_do_not_match">New passwords do not match</string>
+    <string name="error_current_password_incorrect">Current password is incorrect</string>
+    <string name="error_email_already_used">This email is already in use</string>
+    <string name="update_successful">Update successful!</string>
+    <string name="update_failed">Update failed. Please try again.</string>
+    <string name="error_full_name_empty">Name cannot be empty</string>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

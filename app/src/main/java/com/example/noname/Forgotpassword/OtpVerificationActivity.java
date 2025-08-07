@@ -1,4 +1,4 @@
-package com.example.noname.Forgotpassword; // ĐÃ SỬA: Thêm .Forgotpassword
+package com.example.noname.Forgotpassword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,7 +46,8 @@ public class OtpVerificationActivity extends AppCompatActivity {
         if (getIntent().hasExtra("email")) {
             userEmail = getIntent().getStringExtra("email");
         } else {
-            Toast.makeText(this, "Lỗi: Không tìm thấy email. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+            // Error: Email not found. Please try again.
+            Toast.makeText(this, "Error: Email not found. Please try again.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -72,27 +73,32 @@ public class OtpVerificationActivity extends AppCompatActivity {
         String confirmNewPassword = etConfirmNewPassword.getText().toString();
 
         if (otpCode.isEmpty()) {
-            etOtpCode.setError("Vui lòng nhập mã OTP.");
+            // Please enter the OTP code.
+            etOtpCode.setError("Please enter the OTP code.");
             etOtpCode.requestFocus();
             return;
         }
         if (newPassword.isEmpty()) {
-            etNewPassword.setError("Vui lòng nhập mật khẩu mới.");
+            // Please enter a new password.
+            etNewPassword.setError("Please enter a new password.");
             etNewPassword.requestFocus();
             return;
         }
         if (confirmNewPassword.isEmpty()) {
-            etConfirmNewPassword.setError("Vui lòng xác nhận mật khẩu mới.");
+            // Please confirm the new password.
+            etConfirmNewPassword.setError("Please confirm the new password.");
             etConfirmNewPassword.requestFocus();
             return;
         }
         if (!newPassword.equals(confirmNewPassword)) {
-            etConfirmNewPassword.setError("Mật khẩu xác nhận không khớp.");
+            // The confirmation password does not match.
+            etConfirmNewPassword.setError("The confirmation password does not match.");
             etConfirmNewPassword.requestFocus();
             return;
         }
         if (newPassword.length() < 6) {
-            etNewPassword.setError("Mật khẩu phải có ít nhất 6 ký tự.");
+            // Password must be at least 6 characters long.
+            etNewPassword.setError("Password must be at least 6 characters long.");
             etNewPassword.requestFocus();
             return;
         }
@@ -106,13 +112,15 @@ public class OtpVerificationActivity extends AppCompatActivity {
         showLoading(false);
 
         if (success) {
-            Toast.makeText(this, "Mật khẩu đã được đặt lại thành công!", Toast.LENGTH_LONG).show();
+            // Password has been reset successfully!
+            Toast.makeText(this, "Password has been reset successfully!", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(OtpVerificationActivity.this, SignInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "Mã OTP không hợp lệ, đã hết hạn hoặc có lỗi.", Toast.LENGTH_LONG).show();
+            // Invalid OTP, expired, or an error occurred.
+            Toast.makeText(this, "Invalid OTP, expired, or an error occurred.", Toast.LENGTH_LONG).show();
         }
     }
 

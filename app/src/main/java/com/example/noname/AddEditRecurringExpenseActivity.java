@@ -73,7 +73,7 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getLong("LOGGED_IN_USER_ID", -1);
         if (currentUserId == -1) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy người dùng.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: User not found.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -115,11 +115,11 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
             if (expenseToEdit != null) {
                 updateUiForEditMode(expenseToEdit);
             } else {
-                Toast.makeText(this, "Không tìm thấy khoản chi tiêu định kỳ.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Recurring expense not found.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else {
-            toolbar.setTitle("Thêm Chi Tiêu Định Kỳ");
+            toolbar.setTitle("Add Recurring Expense");
             btnDeleteRecurringExpense.setVisibility(View.GONE);
             setupDefaultNextDate();
         }
@@ -141,8 +141,8 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
     }
 
     private void updateUiForEditMode(RecurringExpense expense) {
-        toolbar.setTitle("Sửa Chi Tiêu Định Kỳ");
-        btnSaveRecurringExpense.setText("Cập nhật");
+        toolbar.setTitle("Edit Recurring Expense");
+        btnSaveRecurringExpense.setText("Update");
         btnDeleteRecurringExpense.setVisibility(View.VISIBLE);
 
         edtRecurringName.setText(expense.getName());
@@ -159,9 +159,9 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         categoryDAO.close();
 
         String frequency = expense.getFrequency();
-        if ("Hàng tháng".equals(frequency)) radioMonthly.setChecked(true);
-        else if ("Hàng tuần".equals(frequency)) radioWeekly.setChecked(true);
-        else if ("Hàng năm".equals(frequency)) radioYearly.setChecked(true);
+        if ("Monthly".equals(frequency)) radioMonthly.setChecked(true);
+        else if ("Weekly".equals(frequency)) radioWeekly.setChecked(true);
+        else if ("Yearly".equals(frequency)) radioYearly.setChecked(true);
 
         switchRecurringStatus.setChecked(expense.isActive());
 
@@ -169,7 +169,7 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
             Date startDate = dbDateFormat.parse(expense.getStartDate());
             tvRecurringNextDate.setText(uiDateFormat.format(startDate));
         } catch (ParseException e) {
-            Log.e("AddEditRecurringExpense", "Lỗi phân tích ngày: " + e.getMessage());
+            Log.e("AddEditRecurringExpense", "Error parsing date: " + e.getMessage());
         }
     }
 
@@ -180,7 +180,7 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
 
     private void showDatePicker() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("Chọn Ngày Tiếp Theo");
+        builder.setTitleText("Select Next Date");
         builder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
 
         final MaterialDatePicker<Long> materialDatePicker = builder.build();
@@ -198,16 +198,16 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         String name = edtRecurringName.getText().toString().trim();
         String amountStr = edtRecurringAmount.getText().toString().trim();
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(amountStr) || selectedCategory == null) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all the information!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         double amount = Double.parseDouble(amountStr);
         String frequency = "";
-        int frequencyValue = 1; // Giả định giá trị mặc định là 1
-        if (radioMonthly.isChecked()) frequency = "Hàng tháng";
-        else if (radioWeekly.isChecked()) frequency = "Hàng tuần";
-        else if (radioYearly.isChecked()) frequency = "Hàng năm";
+        int frequencyValue = 1; // Assuming default value is 1
+        if (radioMonthly.isChecked()) frequency = "Monthly";
+        else if (radioWeekly.isChecked()) frequency = "Weekly";
+        else if (radioYearly.isChecked()) frequency = "Yearly";
 
         boolean isActive = switchRecurringStatus.isChecked();
 
@@ -220,8 +220,8 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         try {
             startDate = uiDateFormat.parse(tvRecurringNextDate.getText().toString());
         } catch (ParseException e) {
-            Log.e("AddEditRecurringExpense", "Lỗi phân tích ngày để lưu: " + e.getMessage());
-            Toast.makeText(this, "Ngày không hợp lệ.", Toast.LENGTH_SHORT).show();
+            Log.e("AddEditRecurringExpense", "Error parsing date for saving: " + e.getMessage());
+            Toast.makeText(this, "Invalid date.", Toast.LENGTH_SHORT).show();
             return;
         }
         String startDateDb = dbDateFormat.format(startDate);
@@ -236,31 +236,31 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
         recurringExpenseDAO.close();
 
         if (result > 0) {
-            Toast.makeText(this, (expenseToEdit == null ? "Đã thêm mới" : "Đã cập nhật") + " thành công!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, (expenseToEdit == null ? "Added successfully" : "Updated successfully") + "!", Toast.LENGTH_LONG).show();
             setResult(Activity.RESULT_OK);
             finish();
         } else {
-            Toast.makeText(this, "Thao tác thất bại.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Operation failed.", Toast.LENGTH_LONG).show();
         }
     }
 
     private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc chắn muốn xóa khoản chi tiêu định kỳ này không?")
-                .setPositiveButton("Xóa", (dialog, which) -> {
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure you want to delete this recurring expense?")
+                .setPositiveButton("Delete", (dialog, which) -> {
                     recurringExpenseDAO.open();
                     boolean success = recurringExpenseDAO.deleteRecurringExpense(expenseToEdit.getId(), currentUserId);
                     recurringExpenseDAO.close();
                     if (success) {
-                        Toast.makeText(AddEditRecurringExpenseActivity.this, "Đã xóa thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecurringExpenseActivity.this, "Successfully deleted!", Toast.LENGTH_SHORT).show();
                         setResult(Activity.RESULT_OK);
                         finish();
                     } else {
-                        Toast.makeText(AddEditRecurringExpenseActivity.this, "Lỗi khi xóa.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecurringExpenseActivity.this, "Error during deletion.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Hủy", null)
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -277,7 +277,7 @@ public class AddEditRecurringExpenseActivity extends AppCompatActivity {
                 tvRecurringCategoryName.setText(selectedCategory.getName());
                 imgRecurringCategoryIcon.setImageResource(selectedCategory.getIconResId());
                 imgRecurringCategoryIcon.setColorFilter(ContextCompat.getColor(this, R.color.primary_green_dark));
-                // checkInputs(); // Cần gọi để cập nhật trạng thái nút lưu
+                // checkInputs(); // You may want to call this to update the save button state
             }
         }
     }

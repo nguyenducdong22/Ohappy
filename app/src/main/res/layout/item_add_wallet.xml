@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thêm ví mới"
+        android:text="Add new wallet"
         android:textSize="16sp"
         android:textColor="@color/primary_green"
         android:layout_marginStart="16dp"/>

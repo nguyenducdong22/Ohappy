@@ -16,5 +16,5 @@
         android:padding="12dp"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:text="Bạn: Đây là tin nhắn của tôi." />
+        android:text="You: This is my message." />
 </LinearLayout>

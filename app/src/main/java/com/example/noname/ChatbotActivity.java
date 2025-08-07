@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.util.Log;
-import android.content.Context; // <<< THÊM IMPORT NÀY >>>
-import android.view.inputmethod.InputMethodManager; // <<< THÊM IMPORT NÀY >>>
+import android.content.Context; // <<< ADDED THIS IMPORT >>>
+import android.view.inputmethod.InputMethodManager; // <<< ADDED THIS IMPORT >>>
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,26 +54,26 @@ public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAd
         btnSendChat.setOnClickListener(v -> {
             String message = etChatInput.getText().toString().trim();
             if (!message.isEmpty()) {
-                // Gọi phương thức gửi và nhận phản hồi
+                // Call the method to send the message and get a reply
                 sendMessageAndGetReply(message);
 
-                // <<< THÊM CÁC DÒNG NÀY ĐỂ XÓA VĂN BẢN VÀ ẨN BÀN PHÍM >>>
-                etChatInput.setText(""); // Xóa văn bản
-                etChatInput.clearFocus(); // Xóa focus khỏi trường nhập liệu
+                // <<< ADD THESE LINES TO CLEAR TEXT AND HIDE THE KEYBOARD >>>
+                etChatInput.setText(""); // Clear the text
+                etChatInput.clearFocus(); // Clear focus from the input field
 
-                // Ẩn bàn phím ảo
+                // Hide the soft keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(etChatInput.getWindowToken(), 0);
                 }
-                // <<< KẾT THÚC THÊM >>>
+                // <<< END OF ADDITION >>>
 
             } else {
-                Toast.makeText(this, "Vui lòng nhập tin nhắn!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a message!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        chatAdapter.addMessage(new ChatMessage("Chào bạn! Tôi có thể giúp gì cho bạn?", ChatMessage.SENDER_BOT));
+        chatAdapter.addMessage(new ChatMessage("Hello! How can I help you?", ChatMessage.SENDER_BOT));
         recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
         performApiPrewarming();
@@ -83,7 +83,7 @@ public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAd
         chatAdapter.addMessage(new ChatMessage(message, ChatMessage.SENDER_USER));
         recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
-        ChatMessage loadingMessage = new ChatMessage("Đang phản hồi...", ChatMessage.SENDER_BOT);
+        ChatMessage loadingMessage = new ChatMessage("Responding...", ChatMessage.SENDER_BOT);
         chatAdapter.addMessage(loadingMessage);
         recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
 
@@ -110,7 +110,7 @@ public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAd
 
                     chatAdapter.addMessage(new ChatMessage(responseText, ChatMessage.SENDER_BOT));
                     recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
-                    Toast.makeText(ChatbotActivity.this, "Đã nhận phản hồi từ AI!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatbotActivity.this, "Received response from AI!", Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -127,9 +127,9 @@ public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAd
                         chatAdapter.notifyDataSetChanged();
                     }
 
-                    chatAdapter.addMessage(new ChatMessage("Lỗi: " + errorMessage, ChatMessage.SENDER_BOT));
+                    chatAdapter.addMessage(new ChatMessage("Error: " + errorMessage, ChatMessage.SENDER_BOT));
                     recyclerViewChat.scrollToPosition(chatMessageList.size() - 1);
-                    Toast.makeText(ChatbotActivity.this, "Lỗi kết nối AI: " + errorMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatbotActivity.this, "AI connection error: " + errorMessage, Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -153,10 +153,10 @@ public class ChatbotActivity extends AppCompatActivity implements ChatMessagesAd
 
     @Override
     public void onSuggestedQuestionClick(String question) {
-        // Khi một câu hỏi gợi ý được nhấp, gửi nó như một tin nhắn mới
+        // When a suggested question is clicked, send it as a new message
         sendMessageAndGetReply(question);
 
-        // Optional: Xóa bàn phím và focus sau khi click gợi ý
+        // Optional: Clear keyboard and focus after clicking a suggestion
         etChatInput.clearFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {

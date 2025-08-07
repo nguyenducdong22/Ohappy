@@ -38,7 +38,7 @@
                 android:id="@+id/tv_screen_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ngân sách Đang áp dụng"
+                android:text="Active Budgets"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -48,7 +48,6 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -80,7 +79,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Số tiền bạn có thể chi"
+                        android:text="Amount you can spend"
                         android:textColor="@color/text_secondary_gray"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"/>
@@ -89,7 +88,7 @@
                         android:id="@+id/tv_remaining_spendable_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.00 đ"
+                        android:text="0.00 ₫"
                         android:textColor="@color/text_main_header"
                         android:textSize="36sp"
                         android:textStyle="bold"
@@ -119,7 +118,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng ngân sách"
+                                android:text="Total budget"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -148,7 +147,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tổng đã chi"
+                                android:text="Total spent"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -169,14 +168,14 @@
                                 android:id="@+id/tv_days_to_end_of_month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 ngày"
+                                android:text="0 days"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Đến cuối tháng"
+                                android:text="Until month end"
                                 android:textColor="@color/text_secondary_gray"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -186,7 +185,7 @@
                         android:id="@+id/btn_create_budget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tạo Ngân sách"
+                        android:text="Create Budget"
                         android:textColor="@color/white"
                         android:backgroundTint="@color/primary_green"
                         android:paddingStart="32dp"
@@ -204,7 +203,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Các ngân sách của bạn"
+                android:text="Your budgets"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"

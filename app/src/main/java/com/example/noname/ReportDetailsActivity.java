@@ -57,7 +57,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     long selectedAccountId = result.getData().getLongExtra("selected_account_id", -1);
                     if (selectedAccountId != -1) {
-                        // Sửa lỗi: Truyền ID trực tiếp vào các phương thức
+                        // Fix: Pass ID directly into the methods
                         loadWalletDetails(selectedAccountId);
                         loadReportData(selectedAccountId);
                     }
@@ -116,13 +116,13 @@ public class ReportDetailsActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
-        tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Tháng trước"));
-        tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Tháng này"), true);
+        tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("Last Month"));
+        tabLayoutMonthsReport.addTab(tabLayoutMonthsReport.newTab().setText("This Month"), true);
     }
 
     private void setupListeners() {
         btnCloseReport.setOnClickListener(v -> finish());
-        btnCalendar.setOnClickListener(v -> Toast.makeText(this, "Mở Lịch", Toast.LENGTH_SHORT).show());
+        btnCalendar.setOnClickListener(v -> Toast.makeText(this, "Open Calendar", Toast.LENGTH_SHORT).show());
         walletButton.setOnClickListener(v -> {
             Intent intent = new Intent(ReportDetailsActivity.this, ChooseWalletActivity.class);
             walletLauncher.launch(intent);
@@ -165,9 +165,9 @@ public class ReportDetailsActivity extends AppCompatActivity {
         if (currentAccountId != -1) {
             loadWalletDetails(currentAccountId);
         } else {
-            tvWalletName.setText("Không có ví");
+            tvWalletName.setText("No Wallet");
             ivWalletIcon.setImageResource(R.drawable.ic_wallet);
-            Toast.makeText(this, "Chưa có ví nào để hiển thị báo cáo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No wallet to display report for", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -181,7 +181,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
             int iconResId = getResources().getIdentifier(iconName, "drawable", getPackageName());
             ivWalletIcon.setImageResource(iconResId != 0 ? iconResId : R.drawable.ic_wallet);
         } else {
-            tvWalletName.setText("Không có ví");
+            tvWalletName.setText("No Wallet");
             ivWalletIcon.setImageResource(R.drawable.ic_wallet);
         }
     }
@@ -229,9 +229,9 @@ public class ReportDetailsActivity extends AppCompatActivity {
 
     private String getWalletIconName(String walletName) {
         Map<String, String> walletIconMap = new HashMap<>();
-        walletIconMap.put("Tiền mặt", "ic_wallet_cash");
-        walletIconMap.put("Ví Momo", "ic_wallet_momo");
-        walletIconMap.put("Ngân hàng", "ic_wallet_bank");
+        walletIconMap.put("Cash", "ic_wallet_cash");
+        walletIconMap.put("Momo Wallet", "ic_wallet_momo");
+        walletIconMap.put("Bank", "ic_wallet_bank");
         return walletIconMap.getOrDefault(walletName, "ic_wallet");
     }
 }

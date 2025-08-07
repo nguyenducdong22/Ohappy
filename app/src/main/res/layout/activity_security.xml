@@ -16,7 +16,7 @@
             android:id="@+id/toolbar_security"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/theme_red_primary"
+            android:background="@color/primary_green"
             app:title="@string/security_title"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="?attr/homeAsUpIndicator"
@@ -38,7 +38,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_security_check"
-                app:tint="@color/theme_red_primary"
+                app:tint="@color/primary_green"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"/>
 

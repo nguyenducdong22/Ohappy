@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="Ăn uống"
+                tools:text="Food &amp; Drink"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -66,7 +66,7 @@
                 android:id="@+id/tv_spent_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="150,000 đ"
+                tools:text="150,000 ₫"
                 android:textSize="14sp"
                 android:textColor="@color/expense_item_red"
                 android:layout_marginEnd="4dp" />
@@ -84,7 +84,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="500,000 đ"
+                tools:text="500,000 ₫"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary_gray" />
 

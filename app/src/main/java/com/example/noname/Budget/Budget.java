@@ -18,6 +18,9 @@ public class Budget implements Serializable {
     private String endDate;
     private boolean repeat;
 
+    // THÊM MỚI: Constructor rỗng để hỗ trợ tạo đối tượng từ Cursor
+    public Budget() {}
+
     public Budget(long id, long userId, long categoryId, String groupName, int groupIconResId, double amount, String startDate, String endDate, boolean repeat) {
         this.id = id;
         this.userId = userId;

@@ -348,7 +348,7 @@
     <string name="update_successful">Update successful!</string>
     <string name="update_failed">Update failed. Please try again.</string>
     <string name="error_full_name_empty">Name cannot be empty</string>
-
+    <string name="account_option_recurring_expenses">Recurring Expenses</string>
     <!-- Saving Gold -->
     <string name="account_option_set_saving_gold">Set Saving Goals</string>
     <string name="title_set_saving_gold_goal">Set Saving Goal</string>

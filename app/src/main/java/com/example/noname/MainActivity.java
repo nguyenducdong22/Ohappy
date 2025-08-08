@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayoutWeekMonthReport = findViewById(R.id.tab_layout_week_month_report);
 
         // Other Cards
-        dealCard = findViewById(R.id.deal_card);
         topExpenseCard = findViewById(R.id.top_expense_card);
         tvTopExpense1 = findViewById(R.id.tv_top_expense_1);
         tvTopExpense2 = findViewById(R.id.tv_top_expense_2);

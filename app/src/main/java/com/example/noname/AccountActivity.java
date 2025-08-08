@@ -1,3 +1,4 @@
+// AccountActivity.java
 package com.example.noname;
 
 import android.content.Context;
@@ -22,6 +23,7 @@ import com.example.noname.database.DatabaseHelper;
 import com.example.noname.database.LocaleHelper;
 import com.example.noname.database.UserDAO;
 import com.example.noname.databinding.ActivityAccountBinding;
+import com.example.noname.OverviewSavingGoldActivity;
 
 
 public class AccountActivity extends BaseActivity {
@@ -117,6 +119,11 @@ public class AccountActivity extends BaseActivity {
         });
         binding.optionRecurringExpenses.setOnClickListener(v -> {
             Intent intent = new Intent(AccountActivity.this, RecurringExpensesActivity.class);
+            startActivity(intent);
+        });
+        // Thêm listener cho "Saving Gold"
+        binding.optionSetSavingGold.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, OverviewSavingGoldActivity.class);
             startActivity(intent);
         });
     }

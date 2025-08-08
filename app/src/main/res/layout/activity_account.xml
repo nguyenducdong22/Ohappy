@@ -140,6 +140,12 @@
                     style="@style/AccountOptionItem"
                     app:drawableStartCompat="@drawable/ic_repeat"
                     android:text="@string/account_option_recurring_expenses" />
+                <TextView
+                    android:id="@+id/option_set_saving_gold"
+                    style="@style/AccountOptionItem"
+                    app:drawableStartCompat="@drawable/ic_money" android:text="Set Saving Gold" />
+
+                <View style="@style/Divider" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -47,12 +47,12 @@
 
         <activity android:name=".Budget.BudgetOverviewActivity" android:exported="false" />
         <activity android:name=".Budget.AddBudgetActivity" android:exported="false" />
-        <activity android:name=".Budget.ChooseGroupActivity" android:exported="false" /> <activity android:name=".Forgotpassword.ForgotPasswordRequestActivity" android:exported="false"/>
+        <activity android:name=".Forgotpassword.ForgotPasswordRequestActivity" android:exported="false"/>
         <activity android:name=".Forgotpassword.OtpVerificationActivity" android:exported="false"/>
         <activity android:name=".TransactionHistoryActivity" />
         <activity android:name=".ReportDetailsActivity" />
-
-
+        <activity android:name=".OverviewSavingGoldActivity" android:exported="false"/>
+        <activity android:name=".SetSavingGoldActivity" android:exported="false" />
 
     </application>
 

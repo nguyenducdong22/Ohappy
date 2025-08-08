@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">noName</string>
     <string name="select_theme">Select Theme</string>
@@ -230,8 +231,6 @@
     <string name="recurring_expense_frequency_placeholder">Monthly (Day 15)</string>
     <string name="recurring_expense_icon_desc">Recurring expense icon</string>
 
-    <string name="account_option_recurring_expenses">Recurring Expenses</string>
-
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_system">System</string>
@@ -350,17 +349,16 @@
     <string name="update_failed">Update failed. Please try again.</string>
     <string name="error_full_name_empty">Name cannot be empty</string>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- Saving Gold -->
+    <string name="account_option_set_saving_gold">Set Saving Goals</string>
+    <string name="title_set_saving_gold_goal">Set Saving Goal</string>
+    <string name="hint_goal_name">Goal Name</string>
+    <string name="hint_target_amount">Target Amount</string>
+    <string name="text_select_target_date">Select Target Date</string>
+    <string name="text_current_progress">Current Progress</string>
+    <string name="hint_amount_saved">Amount Saved</string>
+    <string name="action_save_goal">Save Goal</string>
+    <string name="action_delete_goal">Delete this Goal</string>
+    <string name="title_saving_goals">Saving Goals</string>
+    <string name="empty_state_saving_goals">You don\'t have any saving goals yet.\nPress the \'+\' button to add a new one!</string>
 </resources>

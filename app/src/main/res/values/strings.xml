@@ -358,7 +358,17 @@
 
 
 
-
+    <string name="account_option_set_saving_gold">Set Saving Goals</string>
+    <string name="title_set_saving_gold_goal">Set Saving Goal</string>
+    <string name="hint_goal_name">Goal Name</string>
+    <string name="hint_target_amount">Target Amount</string>
+    <string name="text_select_target_date">Select Target Date</string>
+    <string name="text_current_progress">Current Progress</string>
+    <string name="hint_amount_saved">Amount Saved</string>
+    <string name="action_save_goal">Save Goal</string>
+    <string name="action_delete_goal">Delete this Goal</string>
+    <string name="title_saving_goals">Saving Goals</string>
+    <string name="empty_state_saving_goals">You don\'t have any saving goals yet.\nPress the \'+\' button to add a new one!</string>
 
 
 
